@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "1.0",
+  "description": "Biblioteca de modulos de estilo reutilizaveis. Um modulo e um fragmento nomeado de descricao sonora que uma cancao referencia por id (styleModules). A ferramenta liga/desliga modulos para recompor o style e gerar variacoes sem reescrever. As categorias espelham as CINCO CAMADAS AUDIVEIS (modelo consolidado do guia usesuno + Cinzeiro): genre (lane), motion (movimento/pulso), instrument (fontes sonoras), vocal (voz/lead), mood (clima), production (espaco de mixagem), tempo (andamento). Estes sao exemplos-semente; a biblioteca cresce com o uso.",
+  "modules": [
+    { "id": "genre-dark-ambient",     "category": "genre",      "label": "Dark ambient",      "fragment": "dark ambient cinematic",              "notes": "Atmosferico, sem pulso definido. Base de exploracao." },
+    { "id": "genre-epic-orchestral",  "category": "genre",      "label": "Epico orquestral",  "fragment": "epic orchestral, cinematic",          "notes": "Orquestra completa. Clima grandioso." },
+    { "id": "genre-industrial",       "category": "genre",      "label": "Industrial medieval","fragment": "dark industrial medieval",           "notes": "Forja, metal, decadencia. Identidade do Cinzeiro." },
+    { "id": "genre-kpop-girlcrush",   "category": "genre",      "label": "K-pop girl crush",  "fragment": "k-pop girl crush, confident female vocal", "notes": "Vocal feminino confiante e afiado. Herdado dos albuns BR." },
+    { "id": "genre-folk",             "category": "genre",      "label": "Folk melancolico",  "fragment": "folk melancholic, european folk",     "notes": "Corda acustica, clima triste." },
+
+    { "id": "motion-driving",         "category": "motion",     "label": "Pulso conduzido",   "fragment": "driving rhythm",                      "notes": "Movimento para frente, energia constante." },
+    { "id": "motion-halftime",        "category": "motion",     "label": "Half-time",         "fragment": "half-time pulse",                     "notes": "Metade do andamento sentido, peso." },
+    { "id": "motion-sparse",          "category": "motion",     "label": "Esparso",           "fragment": "sparse, spacious",                    "notes": "Poucos eventos, muito espaco. Ambient." },
+
+    { "id": "instr-solo-cello",       "category": "instrument", "label": "Cello solo",        "fragment": "solo cello",                          "notes": "Cello sozinho, expressivo." },
+    { "id": "instr-taiko",            "category": "instrument", "label": "Tambores taiko",    "fragment": "taiko drums",                         "notes": "Percussao japonesa pesada. Use 1 por faixa." },
+    { "id": "instr-anvil",            "category": "instrument", "label": "Bigorna/martelo",   "fragment": "anvil hammer rhythm, metallic percussion", "notes": "Percussao de forja. Identidade do Cinzeiro." },
+    { "id": "instr-piano",            "category": "instrument", "label": "Piano delicado",    "fragment": "delicate piano arpeggios",            "notes": "Frase especifica funciona melhor que 'piano' pelado." },
+    { "id": "instr-strings",          "category": "instrument", "label": "Cordas quentes",    "fragment": "warm string quartet",                 "notes": "Quarteto de cordas, calor." },
+
+    { "id": "vocal-female-soprano",   "category": "vocal",      "label": "Soprano feminina",  "fragment": "female soprano soloist",              "notes": "Voz aguda lirica. So em faixa com vocal." },
+    { "id": "vocal-male-baritone",    "category": "vocal",      "label": "Baritono masculino","fragment": "male baritone vocalist",             "notes": "Voz masculina grave." },
+    { "id": "vocal-whisper",          "category": "vocal",      "label": "Sussurro close-mic","fragment": "close-mic whisper",                   "notes": "Intimo, proximo do microfone." },
+    { "id": "vocal-none",             "category": "vocal",      "label": "Sem vocal",         "fragment": "no vocals",                           "notes": "Reforco redundante ao [Instrumental] no Lyrics. Sempre em faixa instrumental." },
+
+    { "id": "mood-melancholic",       "category": "mood",       "label": "Melancolico",       "fragment": "melancholic",                         "notes": "Triste/nostalgico. Folk, ambient, ballad." },
+    { "id": "mood-ominous",           "category": "mood",       "label": "Ameacador",         "fragment": "ominous, dark",                       "notes": "Tensao/ameaca. Dark ambient, industrial." },
+    { "id": "mood-heroic",            "category": "mood",       "label": "Heroico",           "fragment": "heroic, sweeping",                    "notes": "Grandioso/epico. Orquestral, coral." },
+    { "id": "mood-nostalgic",         "category": "mood",       "label": "Nostalgico",        "fragment": "nostalgic, bittersweet",              "notes": "Agridoce, memoria." },
+
+    { "id": "prod-cinematic",         "category": "production", "label": "Producao cinematica","fragment": "cinematic production",                "notes": "Espaco largo, dinamica de trilha." },
+    { "id": "prod-intimate-dry",      "category": "production", "label": "Seco e intimo",     "fragment": "dry upfront mix",                     "notes": "Pouco reverb, voz/instrumento a frente." },
+    { "id": "prod-tape",             "category": "production", "label": "Fita saturada",     "fragment": "tape-saturated",                      "notes": "Calor analogico, lo-fi." },
+
+    { "id": "tempo-slow-70",          "category": "tempo",      "label": "Lento ~70 BPM",     "fragment": "slow tempo 70 bpm",                   "notes": "Use junto do campo bpm. BPM e aproximacao no Suno." },
+    { "id": "tempo-mid-100",          "category": "tempo",      "label": "Medio ~100 BPM",    "fragment": "mid tempo 100 bpm",                   "notes": "Andamento intermediario." },
+    { "id": "tempo-fast-128",         "category": "tempo",      "label": "Rapido ~128 BPM",   "fragment": "128 bpm",                             "notes": "Dance/pop energetico." }
+  ]
+}

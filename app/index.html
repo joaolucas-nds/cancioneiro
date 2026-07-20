@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cancioneiro</title>
+<!--
+  Cancioneiro — leitor de acervo de cancoes para IA de musica (Suno).
+  Arquivo unico: HTML + CSS (<style>) + JS (<script>). Sem build, sem dependencias.
+
+  Como carrega o acervo (auto-deteccao de ambiente):
+   - Servido por http(s):// (ex.: GitHub Pages): faz fetch de data/demo.json ao abrir.
+   - Aberto como file:// (duplo-clique): fetch e bloqueado pelo navegador, entao
+     mostra o botao de importar. O usuario escolhe o .json do disco.
+   - Em qualquer modo: botoes "Importar .json" e "Baixar .json" sempre disponiveis.
+
+  Fonte de verdade = o arquivo JSON (DEC-004). O localStorage guarda SO estado
+  efemero (marcacoes "usei", filtros). Se o localStorage falhar, a ferramenta
+  continua 100% funcional, so nao lembra as marcas entre sessoes.
+-->
+<style>
+  /* ---- Tokens de design ---------------------------------------------------
+     Identidade "cancioneiro": livro de cancoes. Papel quente + tinta escura,
+     acento de brasa (ember). Display serifado evoca coletanea impressa; mono
+     nos blocos copiaveis sinaliza "isto e para colar num campo". */
+  :root {
+    --paper:      #f4efe6;   /* fundo, cor de papel */
+    --paper-2:    #ece4d6;   /* cartao/superficie elevada */
+    --ink:        #23201b;   /* texto principal, quase-preto quente */
+    --ink-soft:   #6b6154;   /* texto secundario */
+    --line:       #d8cdb8;   /* divisorias */
+    --ember:      #b8461e;   /* acento: brasa (copiar, ativo) */
+    --ember-soft: #e5c9ba;   /* brasa clara (fundos de destaque) */
+    --moss:       #4b6b4a;   /* estado "usei/aprovada" */
+    --radius:     10px;
+    --mono: "SF Mono", "JetBrains Mono", "Fira Code", ui-monospace, Menlo, Consolas, monospace;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #1c1a17; --paper-2: #26231e; --ink: #ece4d6; --ink-soft: #a89e8d;
+      --line: #38332b; --ember: #e0703f; --ember-soft: #4a2a1c; --moss: #8fb271;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: var(--sans); line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  /* ---- Cabecalho ---- */
+  header {
+    padding: 20px 24px; border-bottom: 1px solid var(--line);
+    display: flex; flex-wrap: wrap; align-items: center; gap: 16px;
+    position: sticky; top: 0; background: var(--paper); z-index: 10;
+  }
+  .brand { display: flex; align-items: baseline; gap: 10px; margin-right: auto; }
+  .brand h1 {
+    font-family: var(--serif); font-weight: 600; font-size: 26px;
+    margin: 0; letter-spacing: -0.01em;
+  }
+  .brand .sub { color: var(--ink-soft); font-size: 13px; }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  button, .btn {
+    font-family: var(--sans); font-size: 13px; cursor: pointer;
+    border: 1px solid var(--line); background: var(--paper-2); color: var(--ink);
+    padding: 7px 12px; border-radius: 8px; transition: all .12s;
+  }
+  button:hover, .btn:hover { border-color: var(--ember); color: var(--ember); }
+  button:focus-visible, .btn:focus-visible, input:focus-visible {
+    outline: 2px solid var(--ember); outline-offset: 2px;
+  }
+  .btn-primary { background: var(--ember); color: #fff; border-color: var(--ember); }
+  .btn-primary:hover { filter: brightness(1.08); color: #fff; }
+
+  /* ---- Barra de controles ---- */
+  .controls {
+    padding: 14px 24px; border-bottom: 1px solid var(--line);
+    display: flex; gap: 14px; flex-wrap: wrap; align-items: center;
+    font-size: 13px;
+  }
+  .controls label { color: var(--ink-soft); margin-right: 4px; }
+  select, input[type="search"] {
+    font-family: var(--sans); font-size: 13px; padding: 6px 10px;
+    border: 1px solid var(--line); border-radius: 8px;
+    background: var(--paper); color: var(--ink);
+  }
+  input[type="search"] { min-width: 200px; }
+
+  /* ---- Layout ---- */
+  main { padding: 24px; max-width: 1100px; margin: 0 auto; }
+  .empty {
+    text-align: center; color: var(--ink-soft); padding: 80px 20px;
+    font-size: 15px;
+  }
+  .empty strong { color: var(--ink); }
+
+  .album { margin-bottom: 36px; }
+  .album-head {
+    display: flex; align-items: baseline; gap: 12px; margin-bottom: 4px;
+    border-bottom: 2px solid var(--ink); padding-bottom: 6px;
+  }
+  .album-head h2 { font-family: var(--serif); font-size: 21px; margin: 0; }
+  .album-head .count { color: var(--ink-soft); font-size: 13px; }
+  .album-desc { color: var(--ink-soft); font-size: 13px; margin: 6px 0 16px; }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+
+  /* ---- Cartao de cancao ---- */
+  .card {
+    background: var(--paper-2); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 16px; display: flex; flex-direction: column; gap: 12px;
+    position: relative;
+  }
+  .card.used { border-color: var(--moss); }
+  .card.used::before {
+    content: "✓ usei"; position: absolute; top: -1px; right: -1px;
+    background: var(--moss); color: #fff; font-size: 11px;
+    padding: 3px 8px; border-radius: 0 var(--radius) 0 var(--radius);
+  }
+  .card-title { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .card-title h3 { font-family: var(--serif); font-size: 17px; margin: 0; }
+  .badge {
+    font-size: 11px; padding: 2px 7px; border-radius: 20px;
+    background: var(--paper); border: 1px solid var(--line); color: var(--ink-soft);
+  }
+  .badge.state { text-transform: capitalize; }
+  .meta { font-size: 12px; color: var(--ink-soft); display: flex; gap: 10px; flex-wrap: wrap; }
+  .meta .ctx { font-style: italic; }
+
+  /* Bloco copiavel: rotulo FORA, conteudo mono DENTRO (regra inviolavel) */
+  .field { }
+  .field-head {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft);
+  }
+  .field-head .copy-btn { margin-left: auto; padding: 3px 10px; font-size: 12px; }
+  .field-head .copy-btn.copied { background: var(--moss); color: #fff; border-color: var(--moss); }
+  .block {
+    font-family: var(--mono); font-size: 12.5px; line-height: 1.45;
+    background: var(--paper); border: 1px solid var(--line); border-radius: 8px;
+    padding: 10px; white-space: pre-wrap; word-break: break-word;
+    max-height: 200px; overflow-y: auto; margin: 0;
+  }
+  .block.lyrics { color: var(--ink); }
+
+  .exclude { font-size: 12px; color: var(--ink-soft); }
+  .exclude .tag {
+    display: inline-block; background: var(--ember-soft); color: var(--ink);
+    padding: 1px 7px; border-radius: 4px; margin: 2px 2px 0 0; font-family: var(--mono); font-size: 11px;
+  }
+
+  /* Variantes e modulos: recolhiveis para nao poluir */
+  details { border-top: 1px dashed var(--line); padding-top: 8px; }
+  details summary {
+    cursor: pointer; font-size: 12px; color: var(--ember); font-weight: 600;
+    list-style: none; user-select: none;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details summary::before { content: "▸ "; }
+  details[open] summary::before { content: "▾ "; }
+  .variant { margin-top: 10px; }
+  .variant .vlabel { font-size: 12px; color: var(--ink-soft); margin-bottom: 3px; }
+
+  /* Painel de modulos de estilo (as cinco camadas audiveis) */
+  .modules { margin-top: 8px; }
+  .layer { margin-bottom: 8px; }
+  .layer-name { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-soft); margin-bottom: 3px; }
+  .chip {
+    display: inline-block; font-family: var(--mono); font-size: 11px;
+    padding: 3px 9px; margin: 2px 3px 0 0; border-radius: 20px; line-height: 1.4;
+    border: 1px solid var(--line); background: var(--paper); color: var(--ink-soft); cursor: pointer;
+  }
+  .chip:hover { border-color: var(--ember); color: var(--ember); }
+  .chip.on:hover { color: #fff; }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+  .chip.on { background: var(--ember); color: #fff; border-color: var(--ember); }
+  .recomposed {
+    margin-top: 8px; font-family: var(--mono); font-size: 11.5px;
+    background: var(--paper); border: 1px dashed var(--ember); border-radius: 6px; padding: 8px;
+    white-space: pre-wrap; word-break: break-word;
+  }
+  .card-foot { display: flex; gap: 8px; margin-top: 2px; }
+  .card-foot button { font-size: 12px; padding: 5px 10px; }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--ink); color: var(--paper); padding: 10px 18px; border-radius: 8px;
+    font-size: 13px; opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 100;
+  }
+  .toast.show { opacity: 1; }
+  .note { font-size: 12px; color: var(--ink-soft); }
+  a { color: var(--ember); }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <h1>Cancioneiro</h1>
+    <span class="sub">acervo de canções · copiar para o Suno sem procurar</span>
+  </div>
+  <div class="actions">
+    <button id="import-btn">Importar .json</button>
+    <button id="download-btn">Baixar .json</button>
+    <input type="file" id="file-input" accept=".json,application/json" hidden>
+  </div>
+</header>
+
+<div class="controls" id="controls" hidden>
+  <div><label for="filter-album">Álbum</label>
+    <select id="filter-album"><option value="">todos</option></select></div>
+  <div><label for="filter-state">Estado</label>
+    <select id="filter-state">
+      <option value="">todos</option>
+      <option value="ideia">ideia</option>
+      <option value="gerada">gerada</option>
+      <option value="editada">editada</option>
+      <option value="loop-pronto">loop-pronto</option>
+      <option value="aprovada">aprovada</option>
+    </select></div>
+  <div><label for="filter-used">Uso</label>
+    <select id="filter-used">
+      <option value="">todos</option>
+      <option value="used">só usados</option>
+      <option value="unused">só não usados</option>
+    </select></div>
+  <input type="search" id="search" placeholder="buscar título, estilo, tag…">
+  <span class="note" id="stats"></span>
+</div>
+
+<main id="main">
+  <div class="empty" id="empty">
+    <p><strong>Nenhum acervo carregado.</strong></p>
+    <p>Clique em <strong>Importar .json</strong> e escolha um arquivo do seu acervo<br>
+    (ex.: <code>data/demo.json</code>), ou publique no GitHub Pages para carregar sozinho.</p>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+
+/* ===================================================================
+   Estado da aplicacao
+   =================================================================== */
+const App = {
+  collection: null,       // o acervo carregado (objeto do JSON)
+  modulesById: {},        // indice id -> modulo de estilo
+  ui: loadUiState(),      // marcacoes/filtros efemeros (localStorage)
+};
+
+/* Camadas audiveis (modelo das cinco camadas, alinhado ao guia do usesuno).
+   Cada modulo de estilo declara sua "category"; aqui damos ordem e rotulo. */
+const LAYERS = [
+  { key: "genre",      label: "Gênero / lane" },
+  { key: "motion",     label: "Movimento" },
+  { key: "instrument", label: "Instrumentos" },
+  { key: "vocal",      label: "Voz" },
+  { key: "mood",       label: "Clima" },
+  { key: "production", label: "Produção" },
+  { key: "tempo",      label: "Andamento" },
+];
+
+/* ===================================================================
+   Persistencia efemera (localStorage com degradacao graciosa)
+   Se falhar (modo privado, cota, file:// restrito), a ferramenta segue
+   funcionando; so nao lembra as marcas. Nunca e fonte de verdade (DEC-004).
+   =================================================================== */
+function loadUiState() {
+  try {
+    return JSON.parse(localStorage.getItem("cancioneiro:ui") || "{}");
+  } catch (e) { return {}; }
+}
+function saveUiState() {
+  try {
+    localStorage.setItem("cancioneiro:ui", JSON.stringify(App.ui));
+  } catch (e) { /* silencioso: marcas sao bonus, nao travam nada */ }
+}
+/** Marca de "usei" por id de cancao. */
+function isUsed(id) { return !!(App.ui.used && App.ui.used[id]); }
+function toggleUsed(id) {
+  App.ui.used = App.ui.used || {};
+  if (App.ui.used[id]) delete App.ui.used[id]; else App.ui.used[id] = true;
+  saveUiState();
+}
+
+/* ===================================================================
+   Carregamento do acervo — auto-deteccao de ambiente
+   =================================================================== */
+async function tryAutoLoad() {
+  // file:// nao permite fetch de arquivos locais: nem tenta, mostra o import.
+  if (location.protocol === "file:") return;
+  // Tenta caminhos plausiveis: app servido na raiz (data/) ou em subpasta app/ (../data/).
+  // O default e demo.json; troque aqui ou use "Importar" para outro acervo.
+  const candidates = ["data/demo.json", "../data/demo.json"];
+  for (const path of candidates) {
+    try {
+      const res = await fetch(path, { cache: "no-store" });
+      if (!res.ok) continue;
+      const json = await res.json();
+      setCollection(json);
+      toast("Acervo carregado de " + path);
+      return;
+    } catch (e) { /* tenta o proximo */ }
+  }
+  // Nenhum encontrado: fica no estado vazio, aguardando import manual.
+}
+
+function importFromFile(file) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const json = JSON.parse(reader.result);
+      setCollection(json);
+      toast("Acervo importado: " + (json.title || file.name));
+    } catch (e) {
+      toast("Arquivo inválido: não é um JSON válido");
+    }
+  };
+  reader.onerror = () => toast("Não consegui ler o arquivo");
+  reader.readAsText(file);
+}
+
+/** Valida minimamente e adota a colecao. */
+function setCollection(json) {
+  if (!json || !Array.isArray(json.albums)) {
+    toast("JSON sem 'albums' — não parece uma coleção do Cancioneiro");
+    return;
+  }
+  App.collection = json;
+  App.modulesById = {};
+  (json.styleModules || []).forEach(m => { App.modulesById[m.id] = m; });
+  populateAlbumFilter();
+  render();
+}
+
+function downloadCollection() {
+  if (!App.collection) { toast("Nada para baixar ainda"); return; }
+  const blob = new Blob([JSON.stringify(App.collection, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = (App.collection.title || "acervo").toLowerCase().replace(/\s+/g, "-") + ".json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* ===================================================================
+   Recomposicao de style a partir dos modulos ligados
+   O style base da cancao continua sendo a fonte; os modulos LIGADOS
+   entram como fragmentos adicionais (dedup simples por texto). A ferramenta
+   MOSTRA o resultado e deixa copiar — nao reescreve o JSON.
+   =================================================================== */
+function recomposedStyle(song) {
+  const active = song._activeModules || new Set(song.styleModules || []);
+  const frags = [];
+  const seen = new Set();
+  // base primeiro (as primeiras palavras pesam mais no Suno)
+  song.style.split(",").map(s => s.trim()).filter(Boolean).forEach(s => {
+    const k = s.toLowerCase(); if (!seen.has(k)) { seen.add(k); frags.push(s); }
+  });
+  (song.styleModules || []).forEach(id => {
+    if (!active.has(id)) return; // desligado: remove do resultado
+  });
+  // adiciona fragmentos dos modulos ativos que ainda nao estao no texto
+  active.forEach(id => {
+    const m = App.modulesById[id]; if (!m) return;
+    m.fragment.split(",").map(s => s.trim()).filter(Boolean).forEach(s => {
+      const k = s.toLowerCase(); if (!seen.has(k)) { seen.add(k); frags.push(s); }
+    });
+  });
+  return frags.join(", ");
+}
+
+/* ===================================================================
+   Copia para a area de transferencia
+   =================================================================== */
+async function copyText(text, btn) {
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch (e) {
+    // Fallback para file:// / navegadores sem Clipboard API
+    const ta = document.createElement("textarea");
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    try { document.execCommand("copy"); } catch (_) {}
+    document.body.removeChild(ta);
+  }
+  if (btn) {
+    btn.classList.add("copied");
+    const orig = btn.textContent; btn.textContent = "copiado ✓";
+    setTimeout(() => { btn.classList.remove("copied"); btn.textContent = orig; }, 1200);
+  }
+}
+
+/* ===================================================================
+   Renderizacao
+   =================================================================== */
+function populateAlbumFilter() {
+  const sel = document.getElementById("filter-album");
+  sel.innerHTML = '<option value="">todos</option>';
+  (App.collection.albums || []).forEach(a => {
+    const o = document.createElement("option");
+    o.value = a.id; o.textContent = a.title; sel.appendChild(o);
+  });
+}
+
+function currentFilters() {
+  return {
+    album: document.getElementById("filter-album").value,
+    state: document.getElementById("filter-state").value,
+    used:  document.getElementById("filter-used").value,
+    q:     document.getElementById("search").value.trim().toLowerCase(),
+  };
+}
+
+function songMatches(song, f) {
+  if (f.state && song.state !== f.state) return false;
+  if (f.used === "used" && !isUsed(song.id)) return false;
+  if (f.used === "unused" && isUsed(song.id)) return false;
+  if (f.q) {
+    const hay = [song.title, song.style, song.lyrics, (song.tags || []).join(" "),
+                 song.context || "", song.language].join(" ").toLowerCase();
+    if (!hay.includes(f.q)) return false;
+  }
+  return true;
+}
+
+function render() {
+  const main = document.getElementById("main");
+  const controls = document.getElementById("controls");
+  if (!App.collection) { controls.hidden = true; return; }
+  controls.hidden = false;
+
+  const f = currentFilters();
+  main.innerHTML = "";
+  let shown = 0, total = 0;
+
+  (App.collection.albums || []).forEach(album => {
+    if (f.album && album.id !== f.album) return;
+    const songs = (album.songs || []).filter(s => { total++; return songMatches(s, f); });
+    if (!songs.length) return;
+    shown += songs.length;
+
+    const sec = document.createElement("section");
+    sec.className = "album";
+    sec.innerHTML =
+      '<div class="album-head"><h2></h2><span class="count"></span></div>' +
+      (album.description ? '<div class="album-desc"></div>' : "");
+    sec.querySelector("h2").textContent = album.title;
+    sec.querySelector(".count").textContent = songs.length + " faixa" + (songs.length > 1 ? "s" : "");
+    if (album.description) sec.querySelector(".album-desc").textContent = album.description;
+
+    const grid = document.createElement("div");
+    grid.className = "cards";
+    songs.forEach(song => grid.appendChild(renderCard(song)));
+    sec.appendChild(grid);
+    main.appendChild(sec);
+  });
+
+  if (!shown) {
+    main.innerHTML = '<div class="empty"><p><strong>Nada bate com os filtros.</strong></p>' +
+      '<p>Ajuste o álbum, o estado ou a busca acima.</p></div>';
+  }
+  document.getElementById("stats").textContent =
+    App.collection.title + " · " + shown + "/" + total + " faixas";
+}
+
+function fieldBlock(label, content, extraClass) {
+  const wrap = document.createElement("div");
+  wrap.className = "field";
+  const head = document.createElement("div");
+  head.className = "field-head";
+  const lab = document.createElement("span"); lab.textContent = label;
+  const btn = document.createElement("button");
+  btn.className = "copy-btn"; btn.textContent = "copiar";
+  btn.addEventListener("click", () => copyText(content, btn));
+  head.appendChild(lab); head.appendChild(btn);
+  const pre = document.createElement("pre");
+  pre.className = "block" + (extraClass ? " " + extraClass : "");
+  pre.textContent = content;
+  wrap.appendChild(head); wrap.appendChild(pre);
+  return wrap;
+}
+
+function renderCard(song) {
+  const card = document.createElement("div");
+  card.className = "card" + (isUsed(song.id) ? " used" : "");
+
+  // Titulo + estado + idioma (REFERENCIA HUMANA — nunca copiavel)
+  const title = document.createElement("div");
+  title.className = "card-title";
+  const h3 = document.createElement("h3"); h3.textContent = song.title;
+  title.appendChild(h3);
+  const st = document.createElement("span"); st.className = "badge state"; st.textContent = song.state;
+  title.appendChild(st);
+  const lang = document.createElement("span"); lang.className = "badge"; lang.textContent = song.language;
+  title.appendChild(lang);
+  card.appendChild(title);
+
+  // Metadados de referencia
+  const meta = document.createElement("div");
+  meta.className = "meta";
+  if (song.bpm) { const b = document.createElement("span"); b.textContent = song.bpm + " BPM"; meta.appendChild(b); }
+  if (song.key) { const k = document.createElement("span"); k.textContent = song.key; meta.appendChild(k); }
+  if (song.context) { const c = document.createElement("span"); c.className = "ctx"; c.textContent = song.context; meta.appendChild(c); }
+  if (meta.children.length) card.appendChild(meta);
+
+  // Campos COPIAVEIS: rotulo fora, conteudo dentro
+  const styleField = fieldBlock("Style of Music", recomposedStyle(song));
+  styleField.querySelector(".block").setAttribute("data-role", "style-block");
+  card.appendChild(styleField);
+  card.appendChild(fieldBlock("Lyrics", song.lyrics, "lyrics"));
+
+  // exclude styles (copiavel para o campo Exclude do Suno)
+  if (song.excludeStyles && song.excludeStyles.length) {
+    const ex = document.createElement("div");
+    ex.className = "exclude";
+    ex.innerHTML = '<div class="field-head"><span>Exclude styles</span></div>';
+    song.excludeStyles.forEach(t => {
+      const tag = document.createElement("span"); tag.className = "tag"; tag.textContent = t; ex.appendChild(tag);
+    });
+    const btn = document.createElement("button");
+    btn.className = "copy-btn"; btn.textContent = "copiar exclude"; btn.style.marginTop = "6px";
+    btn.addEventListener("click", () => copyText(song.excludeStyles.join(", "), btn));
+    ex.appendChild(document.createElement("br")); ex.appendChild(btn);
+    card.appendChild(ex);
+  }
+
+  // Painel de modulos de estilo (liga/desliga -> recompoe o style acima)
+  if ((song.styleModules && song.styleModules.length) || Object.keys(App.modulesById).length) {
+    card.appendChild(renderModules(song, card));
+  }
+
+  // Variantes (mesma letra, style alternativo)
+  if (song.variants && song.variants.length) {
+    const det = document.createElement("details");
+    det.innerHTML = "<summary>" + song.variants.length + " variante" + (song.variants.length > 1 ? "s" : "") + " de estilo</summary>";
+    song.variants.forEach(v => {
+      const vd = document.createElement("div"); vd.className = "variant";
+      const vl = document.createElement("div"); vl.className = "vlabel"; vl.textContent = v.label;
+      vd.appendChild(vl);
+      vd.appendChild(fieldBlock("Style (variante)", v.style));
+      det.appendChild(vd);
+    });
+    card.appendChild(det);
+  }
+
+  // Notas de producao (referencia humana)
+  if (song.notes) {
+    const det = document.createElement("details");
+    det.innerHTML = "<summary>notas de produção</summary>";
+    const p = document.createElement("p"); p.className = "note"; p.style.marginTop = "8px";
+    p.textContent = song.notes;
+    det.appendChild(p);
+    card.appendChild(det);
+  }
+
+  // Rodape: marcar "usei" manualmente
+  const foot = document.createElement("div");
+  foot.className = "card-foot";
+  const usedBtn = document.createElement("button");
+  usedBtn.textContent = isUsed(song.id) ? "desmarcar usei" : "marcar usei";
+  usedBtn.addEventListener("click", () => {
+    toggleUsed(song.id);
+    render();
+  });
+  foot.appendChild(usedBtn);
+  card.appendChild(foot);
+
+  return card;
+}
+
+function renderModules(song, card) {
+  const wrap = document.createElement("details");
+  wrap.className = "modules-details";
+  const active = new Set(song.styleModules || []);
+  song._activeModules = active;
+
+  wrap.innerHTML = "<summary>módulos de estilo (ligar/desligar)</summary>";
+  const box = document.createElement("div");
+  box.className = "modules";
+
+  // agrupa os modulos por camada
+  LAYERS.forEach(layer => {
+    const mods = Object.values(App.modulesById).filter(m => m.category === layer.key);
+    if (!mods.length) return;
+    const ldiv = document.createElement("div"); ldiv.className = "layer";
+    const ln = document.createElement("div"); ln.className = "layer-name"; ln.textContent = layer.label;
+    ldiv.appendChild(ln);
+    mods.forEach(m => {
+      // botao (nao span) para foco/acionamento por teclado nativo
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "chip" + (active.has(m.id) ? " on" : "");
+      chip.textContent = m.label;
+      chip.title = m.fragment + (m.notes ? " — " + m.notes : "");
+      chip.setAttribute("aria-pressed", active.has(m.id) ? "true" : "false");
+      chip.addEventListener("click", () => {
+        const on = active.has(m.id);
+        if (on) active.delete(m.id); else active.add(m.id);
+        chip.classList.toggle("on");
+        chip.setAttribute("aria-pressed", on ? "false" : "true");
+        const composed = recomposedStyle(song);
+        recompUI.textContent = composed;
+        // atualiza o bloco copiavel de Style do cartao (seletor explicito)
+        const styleBlock = card.querySelector('[data-role="style-block"]');
+        if (styleBlock) styleBlock.textContent = composed;
+      });
+      ldiv.appendChild(chip);
+    });
+    box.appendChild(ldiv);
+  });
+
+  const recompUI = document.createElement("div");
+  recompUI.className = "recomposed";
+  recompUI.textContent = recomposedStyle(song);
+  box.appendChild(recompUI);
+
+  wrap.appendChild(box);
+  return wrap;
+}
+
+/* ===================================================================
+   Toast
+   =================================================================== */
+let toastTimer;
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+/* ===================================================================
+   Ligacao de eventos + boot
+   =================================================================== */
+document.getElementById("import-btn").addEventListener("click", () =>
+  document.getElementById("file-input").click());
+document.getElementById("file-input").addEventListener("change", e => {
+  if (e.target.files[0]) importFromFile(e.target.files[0]);
+  e.target.value = "";
+});
+document.getElementById("download-btn").addEventListener("click", downloadCollection);
+["filter-album", "filter-state", "filter-used"].forEach(id =>
+  document.getElementById(id).addEventListener("change", render));
+document.getElementById("search").addEventListener("input", render);
+
+tryAutoLoad();
+</script>
+</body>
+</html>

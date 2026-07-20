@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cancioneiro/schema/collection.schema.json",
+  "title": "Collection",
+  "description": "O arquivo de topo que a ferramenta carrega. Uma colecao agrupa albuns; cada album agrupa cancoes (blocos). A biblioteca de modulos de estilo pode ser embutida aqui ou referenciada em style-modules.json.",
+  "type": "object",
+  "required": ["schemaVersion", "title", "albums"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "description": "Versao do esquema para migracao futura. Ex.: '1.0'.",
+      "pattern": "^[0-9]+\\.[0-9]+$"
+    },
+    "title": {
+      "type": "string",
+      "description": "Nome da colecao/acervo. Ex.: 'Acervo Pessoal', 'Cinzeiro-OST'."
+    },
+    "description": {
+      "type": ["string", "null"],
+      "description": "Descricao livre da colecao."
+    },
+    "targetTool": {
+      "type": "string",
+      "description": "Ferramenta-alvo padrao dos prompts. Default 'suno'; agnostico por design (DEC-003).",
+      "default": "suno"
+    },
+    "styleModules": {
+      "type": "array",
+      "description": "Biblioteca de modulos de estilo reutilizaveis desta colecao. Segue o formato de style-modules.json. Opcional aqui se estiver em arquivo separado.",
+      "items": { "type": "object" },
+      "default": []
+    },
+    "albums": {
+      "type": "array",
+      "description": "Os albuns da colecao.",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "songs"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$",
+            "description": "Id unico do album na colecao."
+          },
+          "title": { "type": "string", "description": "Nome do album." },
+          "description": { "type": ["string", "null"], "description": "Descricao/tema do album." },
+          "songs": {
+            "type": "array",
+            "description": "As cancoes deste album. Cada uma segue song.schema.json.",
+            "items": { "$ref": "song.schema.json" }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1.0",
+  "title": "Cinzeiro-OST (amostra)",
+  "description": "Amostra de conversao do acervo existente para o esquema canonico. Uma faixa do projeto Cinzeiro-OST, convertida a partir de FAIXAS.md para provar que os campos do esquema cobrem o caso real (dois campos separados, [Instrumental], tags de arco linear, referencia humana isolada do copiavel).",
+  "targetTool": "suno",
+  "albums": [
+    {
+      "id": "cinzeiro-ost",
+      "title": "Cinzeiro — Trilha Sonora",
+      "description": "OST instrumental de jogo. Descida em espiral pelas Forjas Eternas. Amostra de 1 faixa.",
+      "songs": [
+        {
+          "id": "cinzeiro-01",
+          "title": "Abertura das Forjas",
+          "language": "instrumental",
+          "state": "ideia",
+          "bpm": 70,
+          "key": "D minor",
+          "style": "dark ambient cinematic intro, solo cello descending melody, drone building slowly, medieval forge ruins, ominous, no drums, atmospheric, slow tempo 70 bpm, d minor, no vocals",
+          "lyrics": "[Intro]\n[Build]\n[Climax]\n[Outro]",
+          "styleModules": ["genre-dark-ambient", "instr-solo-cello", "mood-ominous", "tempo-slow-70", "vocal-none"],
+          "excludeStyles": [],
+          "variants": [],
+          "context": "Abertura do jogo. O jogo comeca em silencio; a superficie, depois a descida. Unica vez em que o Tema dos Cinzeiros e tocado em forma plena.",
+          "notes": "Faixa LINEAR (nao loop), por isso usa tags de arco no lyrics em vez de [Instrumental] sozinho. Uma geracao base ~2min; se ficar curta, estender a partir da dissolucao final. Depois de aprovada, isolar o trecho do Tema (6s-1min) para servir de fonte de Cover nas faixas 11 e 16.",
+          "tags": ["abertura", "linear", "tema-central"]
+        }
+      ]
+    }
+  ]
+}

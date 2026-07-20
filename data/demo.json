@@ -1,0 +1,306 @@
+{
+  "schemaVersion": "1.0",
+  "title": "Acervo de demonstracao",
+  "description": "Colecao de demonstracao do Cancioneiro. Mistura uma faixa instrumental (Cinzeiro-OST, convertida de FAIXAS.md) e faixas com vocal (amostras no estilo dos albuns BR) para exercitar todos os campos do esquema: dois campos separados, [Instrumental], tags de arco linear, variantes, modulos de estilo e exclusao.",
+  "targetTool": "suno",
+  "albums": [
+    {
+      "id": "cinzeiro-ost",
+      "title": "Cinzeiro — Trilha Sonora",
+      "description": "OST instrumental de jogo. Descida em espiral pelas Forjas Eternas.",
+      "songs": [
+        {
+          "id": "cinzeiro-01",
+          "title": "Abertura das Forjas",
+          "language": "instrumental",
+          "state": "ideia",
+          "bpm": 70,
+          "key": "D minor",
+          "style": "dark ambient cinematic intro, solo cello descending melody, drone building slowly, medieval forge ruins, ominous, no drums, atmospheric, slow tempo 70 bpm, d minor, no vocals",
+          "lyrics": "[Intro]\n[Build]\n[Climax]\n[Outro]",
+          "styleModules": [
+            "genre-dark-ambient",
+            "instr-solo-cello",
+            "mood-ominous",
+            "tempo-slow-70",
+            "vocal-none"
+          ],
+          "excludeStyles": [],
+          "variants": [],
+          "context": "Abertura do jogo. Comeca em silencio; a superficie, depois a descida. Unica vez em que o Tema dos Cinzeiros e tocado em forma plena.",
+          "notes": "Faixa LINEAR (nao loop): usa tags de arco no lyrics em vez de [Instrumental] sozinho. Depois de aprovada, isolar o trecho do Tema (6s-1min) para Cover nas faixas 11 e 16.",
+          "tags": [
+            "abertura",
+            "linear",
+            "tema-central"
+          ]
+        },
+        {
+          "id": "cinzeiro-04",
+          "title": "Brasas Eternas",
+          "language": "instrumental",
+          "state": "ideia",
+          "bpm": 75,
+          "key": "D Phrygian",
+          "style": "dark industrial medieval, anvil hammer rhythm, low brass drone, metallic percussion, ancient forge decayed grandeur, phrygian mode, 75 bpm, no vocals",
+          "lyrics": "[Instrumental]",
+          "styleModules": [
+            "mood-ominous",
+            "instr-anvil",
+            "vocal-none"
+          ],
+          "excludeStyles": [
+            "electric guitar"
+          ],
+          "variants": [
+            {
+              "label": "Variante A — mais drone/atmosferico",
+              "style": "dark industrial medieval, forge ambience, anvil hammer rhythm, low brass drone, metallic percussion, ancient forge amber warmth decayed, phrygian mode, 75 bpm, no vocals",
+              "excludeStyles": []
+            },
+            {
+              "label": "Variante B — mais ritmico/presente",
+              "style": "dark industrial medieval, anvil hammer rhythm prominent, low brass drone underneath, metallic percussion driving, ancient forge decayed grandeur, phrygian mode, 75 bpm, no vocals",
+              "excludeStyles": []
+            }
+          ],
+          "context": "Forjas Abandonadas — o coracao do jogo. Grandiosidade em declinio. Faixa-loop de exploracao (circular), por isso [Instrumental] sozinho.",
+          "notes": "Faixa mais importante da OST: valida a sonoridade-alvo. Gerar 2-4x de cada variante e comparar contra referencias (Hollow Knight, Dead Cells).",
+          "tags": [
+            "exploracao",
+            "loop",
+            "prioridade"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "demo-br",
+      "title": "Amostras BR (com vocal)",
+      "description": "Amostras ilustrativas no estilo dos albuns BR, para exercitar faixas com vocal, variantes e idioma.",
+      "songs": [
+        {
+          "id": "brv-04",
+          "title": "Deleta Ele",
+          "language": "pt-BR",
+          "state": "gerada",
+          "bpm": 128,
+          "key": null,
+          "style": "k-pop girl crush, confident female vocal, punchy synth bass, trap hi-hats, glossy pop production, energetic, 128 bpm",
+          "lyrics": "[Verse]\nBloqueia, deleta, some do meu feed\n(nao era amor, era so um hobby ruim)\n[Pre-Chorus]\nApaga a conversa, esvazia a lixeira\n[Chorus]\nDeleta ele, deleta ele\nMemoria cheia, libera a tela\nDeleta ele, deleta ele\nVersao nova de mim, sem ele nela",
+          "styleModules": [
+            "genre-kpop-girlcrush"
+          ],
+          "excludeStyles": [
+            "male vocals"
+          ],
+          "variants": [
+            {
+              "label": "VAR A — mais eletronico",
+              "style": "k-pop girl crush, confident female vocal, hyperpop synths, distorted bass, glitchy, energetic, 130 bpm",
+              "excludeStyles": []
+            }
+          ],
+          "context": "Faixa de virada — personagem decide seguir em frente.",
+          "notes": "Gerar 2-3x e comparar o refrao. Ad-libs entre () funcionam melhor em trap/k-pop que respeita pausas.",
+          "tags": [
+            "k-pop",
+            "vocal-feminino",
+            "virada"
+          ]
+        }
+      ]
+    }
+  ],
+  "styleModules": [
+    {
+      "id": "genre-dark-ambient",
+      "category": "genre",
+      "label": "Dark ambient",
+      "fragment": "dark ambient cinematic",
+      "notes": "Atmosferico, sem pulso definido. Base de exploracao."
+    },
+    {
+      "id": "genre-epic-orchestral",
+      "category": "genre",
+      "label": "Epico orquestral",
+      "fragment": "epic orchestral, cinematic",
+      "notes": "Orquestra completa. Clima grandioso."
+    },
+    {
+      "id": "genre-industrial",
+      "category": "genre",
+      "label": "Industrial medieval",
+      "fragment": "dark industrial medieval",
+      "notes": "Forja, metal, decadencia. Identidade do Cinzeiro."
+    },
+    {
+      "id": "genre-kpop-girlcrush",
+      "category": "genre",
+      "label": "K-pop girl crush",
+      "fragment": "k-pop girl crush, confident female vocal",
+      "notes": "Vocal feminino confiante e afiado. Herdado dos albuns BR."
+    },
+    {
+      "id": "genre-folk",
+      "category": "genre",
+      "label": "Folk melancolico",
+      "fragment": "folk melancholic, european folk",
+      "notes": "Corda acustica, clima triste."
+    },
+    {
+      "id": "motion-driving",
+      "category": "motion",
+      "label": "Pulso conduzido",
+      "fragment": "driving rhythm",
+      "notes": "Movimento para frente, energia constante."
+    },
+    {
+      "id": "motion-halftime",
+      "category": "motion",
+      "label": "Half-time",
+      "fragment": "half-time pulse",
+      "notes": "Metade do andamento sentido, peso."
+    },
+    {
+      "id": "motion-sparse",
+      "category": "motion",
+      "label": "Esparso",
+      "fragment": "sparse, spacious",
+      "notes": "Poucos eventos, muito espaco. Ambient."
+    },
+    {
+      "id": "instr-solo-cello",
+      "category": "instrument",
+      "label": "Cello solo",
+      "fragment": "solo cello",
+      "notes": "Cello sozinho, expressivo."
+    },
+    {
+      "id": "instr-taiko",
+      "category": "instrument",
+      "label": "Tambores taiko",
+      "fragment": "taiko drums",
+      "notes": "Percussao japonesa pesada. Use 1 por faixa."
+    },
+    {
+      "id": "instr-anvil",
+      "category": "instrument",
+      "label": "Bigorna/martelo",
+      "fragment": "anvil hammer rhythm, metallic percussion",
+      "notes": "Percussao de forja. Identidade do Cinzeiro."
+    },
+    {
+      "id": "instr-piano",
+      "category": "instrument",
+      "label": "Piano delicado",
+      "fragment": "delicate piano arpeggios",
+      "notes": "Frase especifica funciona melhor que 'piano' pelado."
+    },
+    {
+      "id": "instr-strings",
+      "category": "instrument",
+      "label": "Cordas quentes",
+      "fragment": "warm string quartet",
+      "notes": "Quarteto de cordas, calor."
+    },
+    {
+      "id": "vocal-female-soprano",
+      "category": "vocal",
+      "label": "Soprano feminina",
+      "fragment": "female soprano soloist",
+      "notes": "Voz aguda lirica. So em faixa com vocal."
+    },
+    {
+      "id": "vocal-male-baritone",
+      "category": "vocal",
+      "label": "Baritono masculino",
+      "fragment": "male baritone vocalist",
+      "notes": "Voz masculina grave."
+    },
+    {
+      "id": "vocal-whisper",
+      "category": "vocal",
+      "label": "Sussurro close-mic",
+      "fragment": "close-mic whisper",
+      "notes": "Intimo, proximo do microfone."
+    },
+    {
+      "id": "vocal-none",
+      "category": "vocal",
+      "label": "Sem vocal",
+      "fragment": "no vocals",
+      "notes": "Reforco redundante ao [Instrumental] no Lyrics. Sempre em faixa instrumental."
+    },
+    {
+      "id": "mood-melancholic",
+      "category": "mood",
+      "label": "Melancolico",
+      "fragment": "melancholic",
+      "notes": "Triste/nostalgico. Folk, ambient, ballad."
+    },
+    {
+      "id": "mood-ominous",
+      "category": "mood",
+      "label": "Ameacador",
+      "fragment": "ominous, dark",
+      "notes": "Tensao/ameaca. Dark ambient, industrial."
+    },
+    {
+      "id": "mood-heroic",
+      "category": "mood",
+      "label": "Heroico",
+      "fragment": "heroic, sweeping",
+      "notes": "Grandioso/epico. Orquestral, coral."
+    },
+    {
+      "id": "mood-nostalgic",
+      "category": "mood",
+      "label": "Nostalgico",
+      "fragment": "nostalgic, bittersweet",
+      "notes": "Agridoce, memoria."
+    },
+    {
+      "id": "prod-cinematic",
+      "category": "production",
+      "label": "Producao cinematica",
+      "fragment": "cinematic production",
+      "notes": "Espaco largo, dinamica de trilha."
+    },
+    {
+      "id": "prod-intimate-dry",
+      "category": "production",
+      "label": "Seco e intimo",
+      "fragment": "dry upfront mix",
+      "notes": "Pouco reverb, voz/instrumento a frente."
+    },
+    {
+      "id": "prod-tape",
+      "category": "production",
+      "label": "Fita saturada",
+      "fragment": "tape-saturated",
+      "notes": "Calor analogico, lo-fi."
+    },
+    {
+      "id": "tempo-slow-70",
+      "category": "tempo",
+      "label": "Lento ~70 BPM",
+      "fragment": "slow tempo 70 bpm",
+      "notes": "Use junto do campo bpm. BPM e aproximacao no Suno."
+    },
+    {
+      "id": "tempo-mid-100",
+      "category": "tempo",
+      "label": "Medio ~100 BPM",
+      "fragment": "mid tempo 100 bpm",
+      "notes": "Andamento intermediario."
+    },
+    {
+      "id": "tempo-fast-128",
+      "category": "tempo",
+      "label": "Rapido ~128 BPM",
+      "fragment": "128 bpm",
+      "notes": "Dance/pop energetico."
+    }
+  ]
+}

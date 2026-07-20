@@ -1,0 +1,26 @@
+# .gitignore — Cancioneiro
+# NAO ignore .claude/, meta/, schema/, data/ nem logs/ (versionados de proposito).
+
+# Lixo de SO / editor
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/
+
+# Se um dia a ferramenta ganhar toolchain (revisita DEC-002):
+node_modules/
+dist/
+build/
+.env
+.env.local
+*.log
+
+# Exports gerados (o .md/.json exportado pela ferramenta e derivado, nao fonte):
+export/
+*.export.md
+*.export.json
+
+# Backups locais
+*.bak
+backups/

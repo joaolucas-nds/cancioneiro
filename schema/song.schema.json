@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cancioneiro/schema/song.schema.json",
+  "title": "Song",
+  "description": "Uma cancao no esquema canonico do Cancioneiro. Separa RIGIDAMENTE conteudo copiavel (style, lyrics) de referencia humana (title, context, language, notes). O botao de copiar da ferramenta entrega SO os campos copiaveis.",
+  "type": "object",
+  "required": ["id", "title", "language", "state", "style", "lyrics"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Identificador unico e estavel da cancao dentro da colecao. Ex.: 'cinzeiro-01', 'brv-04'.",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "title": {
+      "type": "string",
+      "description": "REFERENCIA HUMANA. Titulo da cancao. Nunca vai para o Suno."
+    },
+    "language": {
+      "type": "string",
+      "description": "REFERENCIA HUMANA. Idioma da letra (codigo ou nome). Ex.: 'pt-BR', 'ja', 'la', 'instrumental'."
+    },
+    "state": {
+      "type": "string",
+      "description": "Estado no ciclo de producao. Filtravel na ferramenta.",
+      "enum": ["ideia", "gerada", "editada", "loop-pronto", "aprovada"]
+    },
+    "style": {
+      "type": "string",
+      "description": "COPIAVEL. Texto EXATO do campo 'Style of Music' do Suno: genero, instrumentos, clima, tempo. Sem colchetes. Sem rotulos. E o que o botao 'copiar style' entrega. Pode ser recomposto a partir de styleModules pela ferramenta."
+    },
+    "lyrics": {
+      "type": "string",
+      "description": "COPIAVEL. Texto EXATO do campo 'Lyrics' do Suno. Para instrumental use '[Instrumental]'. Tags de estrutura ([Intro], [Build], [Climax], [Outro]) so em faixas de arco linear. E o que o botao 'copiar lyrics' entrega."
+    },
+    "bpm": {
+      "type": ["integer", "null"],
+      "description": "Andamento pretendido. Lembrete: o Suno trata BPM como aproximacao, nao comando exato.",
+      "minimum": 20,
+      "maximum": 300
+    },
+    "key": {
+      "type": ["string", "null"],
+      "description": "REFERENCIA HUMANA. Tom/modo pretendido. Ex.: 'D minor', 'D Phrygian'. Pode ser mencionado no style se relevante."
+    },
+    "styleModules": {
+      "type": "array",
+      "description": "Ids de modulos de estilo (de style-modules.json) que compoem/aumentam o style desta cancao. A ferramenta permite liga-los/desliga-los para gerar variacoes.",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "excludeStyles": {
+      "type": "array",
+      "description": "COPIAVEL (para o campo 'exclude styles' do Suno, quando disponivel). Estilos/elementos a excluir. Mais confiavel que escrever 'no X' no style.",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "variants": {
+      "type": "array",
+      "description": "Estilos alternativos para a MESMA letra (o 'Parte 3 - Variacoes' dos guias antigos). Cada variante troca so o style; a lyrics permanece a da cancao.",
+      "items": {
+        "type": "object",
+        "required": ["label", "style"],
+        "additionalProperties": false,
+        "properties": {
+          "label": { "type": "string", "description": "REFERENCIA HUMANA. Nome curto da variante. Ex.: 'Metal Sinfonico', 'Versao suave'." },
+          "style": { "type": "string", "description": "COPIAVEL. O style alternativo." },
+          "excludeStyles": { "type": "array", "items": { "type": "string" }, "default": [] }
+        }
+      },
+      "default": []
+    },
+    "context": {
+      "type": ["string", "null"],
+      "description": "REFERENCIA HUMANA. Contexto de cena/uso (ex.: 'batalha final', 'creditos'). Ajuda voce a lembrar para que serve. Nunca vai para o Suno."
+    },
+    "notes": {
+      "type": ["string", "null"],
+      "description": "REFERENCIA HUMANA. Notas de producao livres (ex.: 'gerar 2-3x e comparar', 'isolar trecho 6s-1min')."
+    },
+    "tags": {
+      "type": "array",
+      "description": "REFERENCIA HUMANA. Etiquetas livres para busca/filtro (ex.: 'romantica', 'boss', 'loop').",
+      "items": { "type": "string" },
+      "default": []
+    }
+  }
+}
