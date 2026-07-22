@@ -4,6 +4,22 @@
 
 ---
 
+## [0.4.0] — 2026-07-21
+
+Export para Markdown e correção do Style recomposto.
+
+### Added
+- **Export MD** (i-006): botões para exportar em Markdown a faixa (rodapé do cartão), o álbum (cabeçalho do álbum) e o acervo inteiro (cabeçalho). O `.md` mantém a regra inviolável — rótulo fora, conteúdo copiável em bloco limpo. Export de faixa usa o Style recomposto com os módulos ligados.
+
+### Fixed
+- **FIX-002: duplicação no Style recomposto.** Ligar módulos repetia conceitos já presentes no style base (ex.: base "dark ambient cinematic intro" + módulo "dark ambient cinematic" → ambos no texto), poluindo o prompt e desperdiçando as primeiras palavras (as que mais pesam no Suno). O dedup passou a comparar **por contenção**, não só igualdade exata.
+
+### Changed
+- `downloadCollection` refatorado sobre helper genérico `downloadFile`; cabeçalho do álbum alinhado ao centro.
+- DEC-008 revisada após falha real de entrega (ver DECISIONS).
+
+---
+
 ## [0.3.0] — 2026-07-19
 
 Fecha o ciclo chat→ferramenta e adiciona validação de acervo.

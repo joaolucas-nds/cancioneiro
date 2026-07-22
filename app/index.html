@@ -98,11 +98,12 @@
 
   .album { margin-bottom: 36px; }
   .album-head {
-    display: flex; align-items: baseline; gap: 12px; margin-bottom: 4px;
+    display: flex; align-items: center; gap: 12px; margin-bottom: 4px;
     border-bottom: 2px solid var(--ink); padding-bottom: 6px;
   }
   .album-head h2 { font-family: var(--serif); font-size: 21px; margin: 0; }
   .album-head .count { color: var(--ink-soft); font-size: 13px; }
+  .album-head .album-md { margin-left: auto; font-size: 12px; padding: 4px 10px; }
   .album-desc { color: var(--ink-soft); font-size: 13px; margin: 6px 0 16px; }
 
   .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
@@ -205,6 +206,7 @@
   <div class="actions">
     <button id="import-btn">Importar .json</button>
     <button id="download-btn">Baixar .json</button>
+    <button id="export-md-btn">Exportar .md</button>
     <input type="file" id="file-input" accept=".json,application/json" hidden>
   </div>
 </header>
@@ -338,15 +340,98 @@ function setCollection(json) {
   render();
 }
 
-function downloadCollection() {
-  if (!App.collection) { toast("Nada para baixar ainda"); return; }
-  const blob = new Blob([JSON.stringify(App.collection, null, 2)], { type: "application/json" });
+/** Dispara o download de um conteudo como arquivo. */
+function downloadFile(filename, content, mime) {
+  const blob = new Blob([content], { type: mime || "text/plain" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
-  a.href = url;
-  a.download = (App.collection.title || "acervo").toLowerCase().replace(/\s+/g, "-") + ".json";
+  a.href = url; a.download = filename;
   a.click();
   URL.revokeObjectURL(url);
+}
+
+function slug(s) { return (s || "acervo").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
+
+function downloadCollection() {
+  if (!App.collection) { toast("Nada para baixar ainda"); return; }
+  downloadFile(slug(App.collection.title) + ".json",
+    JSON.stringify(App.collection, null, 2), "application/json");
+}
+
+/* ===================================================================
+   Export para Markdown (legivel, para colar num chat/Projeto)
+   REGRA INVIOLAVEL: o rotulo fica FORA do bloco copiavel. style e lyrics
+   vao em blocos de codigo; a legenda vem ACIMA do bloco, nunca dentro.
+   Assim o que se copia do .md e so o conteudo do campo, sem rotulo — o
+   mesmo principio da ferramenta e do esquema.
+   =================================================================== */
+function songToMarkdown(song, useRecomposed) {
+  const L = [];
+  L.push("### " + song.title);
+  // metadados = referencia humana, em texto normal (nunca no bloco)
+  const meta = [];
+  meta.push("Idioma: " + song.language);
+  meta.push("Estado: " + song.state);
+  if (song.bpm) meta.push("BPM: " + song.bpm);
+  if (song.key) meta.push("Tom: " + song.key);
+  L.push("_" + meta.join(" · ") + "_");
+  if (song.context) L.push("\nContexto: " + song.context);
+  L.push("");
+  // Style — legenda fora, conteudo no bloco
+  L.push("**Style of Music** (copie o bloco):");
+  L.push("```");
+  L.push(useRecomposed ? recomposedStyle(song) : song.style);
+  L.push("```");
+  L.push("");
+  // Lyrics
+  L.push("**Lyrics** (copie o bloco):");
+  L.push("```");
+  L.push(song.lyrics);
+  L.push("```");
+  L.push("");
+  if (song.excludeStyles && song.excludeStyles.length) {
+    L.push("**Exclude styles** (copie o bloco):");
+    L.push("```");
+    L.push(song.excludeStyles.join(", "));
+    L.push("```");
+    L.push("");
+  }
+  if (song.variants && song.variants.length) {
+    song.variants.forEach(v => {
+      L.push("_Variante: " + v.label + "_ (copie o bloco):");
+      L.push("```");
+      L.push(v.style);
+      L.push("```");
+      L.push("");
+    });
+  }
+  if (song.notes) L.push("Notas: " + song.notes);
+  L.push("");
+  return L.join("\n");
+}
+
+function albumToMarkdown(album) {
+  const L = ["## " + album.title];
+  if (album.description) L.push("_" + album.description + "_");
+  L.push("");
+  (album.songs || []).forEach(s => L.push(songToMarkdown(s, false)));
+  return L.join("\n");
+}
+
+function collectionToMarkdown(coll) {
+  const L = ["# " + coll.title];
+  if (coll.description) L.push("_" + coll.description + "_");
+  L.push("");
+  (coll.albums || []).forEach(a => { L.push(albumToMarkdown(a)); L.push("\n---\n"); });
+  return L.join("\n");
+}
+
+/** Exporta o acervo inteiro como .md. */
+function exportCollectionMd() {
+  if (!App.collection) { toast("Nada para exportar ainda"); return; }
+  downloadFile(slug(App.collection.title) + ".md",
+    collectionToMarkdown(App.collection), "text/markdown");
+  toast("Acervo exportado em Markdown");
 }
 
 /* ===================================================================
@@ -358,20 +443,30 @@ function downloadCollection() {
 function recomposedStyle(song) {
   const active = song._activeModules || new Set(song.styleModules || []);
   const frags = [];
-  const seen = new Set();
-  // base primeiro (as primeiras palavras pesam mais no Suno)
-  song.style.split(",").map(s => s.trim()).filter(Boolean).forEach(s => {
-    const k = s.toLowerCase(); if (!seen.has(k)) { seen.add(k); frags.push(s); }
-  });
-  (song.styleModules || []).forEach(id => {
-    if (!active.has(id)) return; // desligado: remove do resultado
-  });
-  // adiciona fragmentos dos modulos ativos que ainda nao estao no texto
-  active.forEach(id => {
-    const m = App.modulesById[id]; if (!m) return;
-    m.fragment.split(",").map(s => s.trim()).filter(Boolean).forEach(s => {
-      const k = s.toLowerCase(); if (!seen.has(k)) { seen.add(k); frags.push(s); }
+
+  /* Um fragmento e redundante se ja esta CONTIDO no que temos (ou contem algo
+     que temos). Ex.: base tem "dark ambient cinematic intro"; o modulo traz
+     "dark ambient cinematic" -> redundante, nao adiciona. Comparacao exata
+     nao pegaria isso e o Style saia poluido, desperdicando as primeiras
+     palavras (que sao as que mais pesam no Suno). */
+  function isRedundant(frag) {
+    const f = frag.toLowerCase();
+    return frags.some(existing => {
+      const e = existing.toLowerCase();
+      return e === f || e.includes(f) || f.includes(e);
     });
+  }
+  function add(frag) {
+    const s = frag.trim();
+    if (s && !isRedundant(s)) frags.push(s);
+  }
+
+  // base primeiro (as primeiras palavras pesam mais no Suno)
+  song.style.split(",").forEach(add);
+  // depois os fragmentos dos modulos ativos que agreguem algo novo
+  active.forEach(id => {
+    const m = App.modulesById[id];
+    if (m) m.fragment.split(",").forEach(add);
   });
   return frags.join(", ");
 }
@@ -453,6 +548,14 @@ function render() {
     sec.querySelector("h2").textContent = album.title;
     sec.querySelector(".count").textContent = songs.length + " faixa" + (songs.length > 1 ? "s" : "");
     if (album.description) sec.querySelector(".album-desc").textContent = album.description;
+    // botao de exportar este album em .md
+    const albMd = document.createElement("button");
+    albMd.className = "album-md"; albMd.textContent = "exportar álbum .md";
+    albMd.addEventListener("click", () => {
+      downloadFile(slug(album.title) + ".md", albumToMarkdown(album), "text/markdown");
+      toast("Álbum exportado: " + album.title);
+    });
+    sec.querySelector(".album-head").appendChild(albMd);
 
     const grid = document.createElement("div");
     grid.className = "cards";
@@ -569,6 +672,14 @@ function renderCard(song) {
     render();
   });
   foot.appendChild(usedBtn);
+  const mdBtn = document.createElement("button");
+  mdBtn.textContent = "exportar .md";
+  mdBtn.title = "Exporta esta faixa em Markdown (usa o Style recomposto com os módulos ligados)";
+  mdBtn.addEventListener("click", () => {
+    downloadFile(slug(song.title) + ".md", songToMarkdown(song, true), "text/markdown");
+    toast("Faixa exportada: " + song.title);
+  });
+  foot.appendChild(mdBtn);
   card.appendChild(foot);
 
   return card;
@@ -645,6 +756,7 @@ document.getElementById("file-input").addEventListener("change", e => {
   e.target.value = "";
 });
 document.getElementById("download-btn").addEventListener("click", downloadCollection);
+document.getElementById("export-md-btn").addEventListener("click", exportCollectionMd);
 ["filter-album", "filter-state", "filter-used"].forEach(id =>
   document.getElementById(id).addEventListener("change", render));
 document.getElementById("search").addEventListener("input", render);

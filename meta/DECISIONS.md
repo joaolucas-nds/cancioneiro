@@ -107,3 +107,31 @@
 **Causa raiz:** Caminho relativo unico e fragil; nao considerava a profundidade da pasta do app.
 **Solucao:** O auto-load tenta uma lista de caminhos candidatos (`data/demo.json` e `../data/demo.json`), adotando o primeiro que responder 200. Validado com servidor local nos dois layouts.
 **Licao:** Testar o fetch no layout real de deploy (app em subpasta) antes de assumir que "funciona local". O teste pegou o bug antes da entrega.
+
+---
+
+## DEC-008 — Entrega sem duplicatas: os arquivos que mudaram, uma vez so
+
+**Data:** 2026-07-19 (revisada 2026-07-21 apos falha real)
+**Contexto:** Eu entregava o repo como .zip E TAMBEM repetia arquivos-chave soltos via present_files. Como os soltos ja estavam dentro do zip, viravam duplicata confusa. A primeira versao desta decisao dizia "entregar por git diff + commit, sem zip nem soltos" — e isso FALHOU na pratica: numa sessao seguinte implementei o export MD, commitei no repo do meu ambiente e nao entreguei arquivo nenhum, dizendo ao usuario para "sincronizar". Nao existe sincronizacao entre o ambiente do assistente e a maquina do usuario: o repo do ambiente e descartavel. O usuario ficou uma versao atras sem saber.
+
+**Decisao:** Entregar SEMPRE os arquivos que mudaram, **uma vez so**:
+- Poucos arquivos alterados -> entregar os arquivos direto (present_files), sem zip.
+- Muitos arquivos / arvore nova -> entregar o zip, e NAO repetir arquivos soltos junto.
+- Nunca os dois ao mesmo tempo. Nunca dizer "sincronize" ou "puxe do repo": o repo do ambiente NAO chega ao usuario sozinho.
+- O comando de `git commit` continua sendo entregue, para o usuario aplicar no repo dele.
+
+**Consequencias:** (+) O usuario sempre recebe o que foi produzido. (+) Sem duplicata confusa. (−) Exige julgar "poucos vs muitos" a cada entrega — regra simples: se cabe em ~4 arquivos, entrega direto.
+
+**Licao:** uma regra de higiene (menos ruido) nunca pode custar a entrega em si. Verificar "o usuario consegue OBTER o que eu produzi?" antes de fechar a resposta.
+
+---
+
+## FIX-002 — Duplicacao de conceitos no Style recomposto
+
+**Data:** 2026-07-21
+**Sintoma:** Com modulos ligados, o Style recomposto terminava repetindo conceitos ja presentes na base. Visivel no print do usuario: `...no vocals, dark ambient cinematic, solo cello, dark` — sendo que a base ja dizia "dark ambient cinematic intro", "solo cello descending melody" e "ominous".
+**Causa raiz:** O dedup comparava apenas strings IDENTICAS. Como o fragmento do modulo ("dark ambient cinematic") e um SUBCONJUNTO do item da base ("dark ambient cinematic intro"), a comparacao exata nao pegava, e o fragmento entrava de novo.
+**Impacto:** Prompt poluido no Suno; desperdicio das primeiras ~20-30 palavras, que sao as que mais pesam.
+**Solucao:** Dedup **por contencao**: um fragmento e descartado se ja esta contido em algum item presente, ou se contem algum. Validado com 8 checks, incluindo "nenhuma redundancia por contencao em nenhuma faixa" e "ligar modulo novo ainda adiciona".
+**Licao:** Ver a ferramenta rodando (print do usuario) revelou em segundos um bug que os testes de logica nao pegavam, porque o teste checava duplicata EXATA — o mesmo criterio errado do codigo. Teste que espelha a premissa do bug nao encontra o bug.

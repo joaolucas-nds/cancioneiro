@@ -18,7 +18,7 @@ O mínimo que já é útil: ler o acervo e copiar sem procurar.
 - ✅ `app/index.html`: importar/carregar JSON, renderizar álbuns → canções como cartões (i-001).
 - ✅ Botão copiar por campo (Style / Lyrics separados), com marcação de "já copiado" + "usei" manual (i-003).
 - ✅ Filtro por estado da canção + álbum + uso + busca textual (i-007).
-- ⬜ Export MD de 1 canção (i-006, parcial).
+- ✅ Export MD de faixa / álbum / acervo (i-006).
 - ✅ Prompt-modelo para chats gerarem no esquema (i-002).
 - ✅ Script de validação de acervo `scripts/validate.py`.
 - ⬜ Converter `album_guia_suno.md` inteiro como segundo dataset (i-008).
@@ -29,7 +29,7 @@ O diferencial sobre os builders genéricos. **Núcleo já entregue no v0** (pain
 - ✅ Módulos de estilo ligáveis/desligáveis por menu, recompondo o style (i-004) — v0 entregue, refinar UX na iteração.
 - ⬜ Controle de BPM por slider/stepper (i-005).
 - ⬜ Campo de exclusão de estilos (i-009).
-- ⬜ Export MD de álbum inteiro e de tudo (i-006, completo).
+- ✅ Export MD completo (i-006).
 - ⬜ Importar prompts prontos dos álbuns como módulos.
 
 ## 💭 Fase 4 — Refino e escala (futura, sob demanda)

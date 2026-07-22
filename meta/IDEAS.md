@@ -22,7 +22,7 @@ Fragmentos de estilo nomeados (`melancholic`, `taiko-drums`, `female-soprano`, f
 ### i-005 💡 Controle de BPM por slider/roll
 BPM como valor manipulável na ferramenta (slider ou stepper), refletindo no style copiado. Cuidado registrado no HISTORY: Suno trata BPM como aproximação, não comando exato — a ferramenta ajuda a *escrever* o BPM, não garante que o Suno obedeça. Fase 3.
 
-### i-006 💡 Export MD seletivo (1 canção / 1 álbum / tudo)
+### i-006 ✅ Export MD seletivo (1 canção / 1 álbum / tudo)
 Gerar `.md` legível sob demanda a partir do JSON, com o formato limpo (rótulo FORA do bloco copiável). Serve para colar num chat ou subir num Projeto. Fase 2/3.
 
 ### i-007 ✅ Estados de canção como no Cinzeiro (ideia→gerada→…→aprovada)

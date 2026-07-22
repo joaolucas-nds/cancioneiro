@@ -3,13 +3,13 @@
 > **O agora.** O que funciona, o que está em progresso, o que está quebrado, backlog curto.
 > Rolante: item resolvido sai daqui e vai para o CHANGELOG. Médio/longo prazo vive no ROADMAP.
 
-**Versão atual:** 0.3.0 · **Fase:** 2 — Ferramenta v0 + tooling de acervo
+**Versão atual:** 0.4.0 · **Fase:** 2 — Ferramenta v0 + export MD
 
 ---
 
-## Última sessão (2026-07-19, parte 3)
+## Última sessão (2026-07-21)
 
-Verifiquei a integridade do repo (2 commits, JSON conformes ao schema por validação estrutural, lógica 11/11, HTML são). Entreguei o **prompt-modelo para chats** (`schema/PROMPT-PARA-CHATS.md`) — fecha o ciclo chat→ferramenta — e um **script de validação** (`scripts/validate.py`) que checa datasets contra o schema (migrado para a API nova do jsonschema, testado com caso negativo).
+Ferramenta publicada e rodando no GitHub Pages (confirmado por print do usuário). Descoberto que a entrega da sessão anterior FALHOU: implementei o export MD, commitei no ambiente do assistente e não entreguei arquivo — o usuário ficou na 0.3.0 sem saber. DEC-008 corrigida (lição registrada). Entregue agora: **export MD** (faixa/álbum/acervo) + **correção do bug de duplicação no Style recomposto** (dedup por contenção), visível no print do usuário.
 
 
 ## Funciona (pronto)
@@ -20,6 +20,8 @@ Verifiquei a integridade do repo (2 commits, JSON conformes ao schema por valida
 - **Hospedagem:** `index.html` raiz redireciona para o app; pronto para GitHub Pages.
 - **Prompt-modelo** (`schema/PROMPT-PARA-CHATS.md`): texto colável que faz um chat gerar JSON no esquema (cinco camadas + regra copiável/referência + saída JSON pura).
 - **Validação** (`scripts/validate.py`): valida `data/*.json` contra o schema; código 1 se falhar. Comando no CLAUDE.md.
+- **Export MD** (i-006): exportar faixa / álbum / acervo em `.md` legível (rótulo fora do bloco). Faixa usa o Style recomposto.
+- **Publicado no GitHub Pages:** `joaolucas-nds.github.io/cancioneiro/app/index.html` — funcionando.
 
 ## Em progresso
 
