@@ -3,13 +3,13 @@
 > **O agora.** O que funciona, o que está em progresso, o que está quebrado, backlog curto.
 > Rolante: item resolvido sai daqui e vai para o CHANGELOG. Médio/longo prazo vive no ROADMAP.
 
-**Versão atual:** 0.4.0 · **Fase:** 2 — Ferramenta v0 + export MD
+**Versão atual:** 0.4.1 · **Fase:** 2 concluída · Fase 3 (qualidade de prompt) a iniciar
 
 ---
 
-## Última sessão (2026-07-21)
+## Última sessão (2026-07-21, auditoria)
 
-Ferramenta publicada e rodando no GitHub Pages (confirmado por print do usuário). Descoberto que a entrega da sessão anterior FALHOU: implementei o export MD, commitei no ambiente do assistente e não entreguei arquivo — o usuário ficou na 0.3.0 sem saber. DEC-008 corrigida (lição registrada). Entregue agora: **export MD** (faixa/álbum/acervo) + **correção do bug de duplicação no Style recomposto** (dedup por contenção), visível no print do usuário.
+Auditoria completa do projeto contra a premissa original + pesquisa de refinamento. Resultado: **7 divergências de documentação** corrigidas (README dizia "v0.1.0, ferramenta a construir"; i-009 já implementado mas marcado aberto; backlog com item já feito) e **1 bug real corrigido** (FIX-003: dedup por substring barrava "female vocals" quando a base tinha "male vocals"). Pesquisa trouxe constraints verificáveis e acionáveis: limite de ~1.000 caracteres no Style com **truncamento silencioso**, teto prático de ~10 tags, e campo de exclusão mais confiável que negação no texto. Consolidado no HISTORY (seções 9-13) e vira a Fase 3.
 
 
 ## Funciona (pronto)
@@ -21,11 +21,12 @@ Ferramenta publicada e rodando no GitHub Pages (confirmado por print do usuário
 - **Prompt-modelo** (`schema/PROMPT-PARA-CHATS.md`): texto colável que faz um chat gerar JSON no esquema (cinco camadas + regra copiável/referência + saída JSON pura).
 - **Validação** (`scripts/validate.py`): valida `data/*.json` contra o schema; código 1 se falhar. Comando no CLAUDE.md.
 - **Export MD** (i-006): exportar faixa / álbum / acervo em `.md` legível (rótulo fora do bloco). Faixa usa o Style recomposto.
-- **Publicado no GitHub Pages:** `joaolucas-nds.github.io/cancioneiro/app/index.html` — funcionando.
+- **Publicado no GitHub Pages** em `https://joaolucas-nds.github.io/cancioneiro/app/index.html` — validado de olho pelo dono, funcionando `[relatado pelo dono, com print da interface em 2026-07-21]`.
+- **0.4.1 aplicada no repo do dono** `[verificado no mount em 2026-07-21: app com FIX-003, STATUS/CHANGELOG em 0.4.1]`.
 
 ## Em progresso
 
-- Validação visual da ferramenta (aguarda você abrir e dar o olhar de dono).
+- (nada em execução — aguardando escolha da Fase 3)
 
 ## Quebrado / pendências que travam
 
@@ -33,12 +34,17 @@ Ferramenta publicada e rodando no GitHub Pages (confirmado por print do usuário
 
 ## Backlog curto (próximas ações concretas)
 
-1. **Publicar no GitHub Pages** e abrir o link para validar de olho (passo seu — instruções na entrega).
-2. **Ajustes de UI pós-validação visual** — melhor levar para o Claude Code (iteração fina por spec).
-3. **Converter 1 álbum inteiro** (candidato: `album_guia_suno.md`) como dataset real, validando com `scripts/validate.py`.
-4. **Testar o prompt-modelo na prática:** colar num chat, gerar 1 faixa, importar na ferramenta, ver se fecha o ciclo.
+1. **Painel de qualidade do prompt** (Fase 3, recomendado): contador de caracteres do Style (limite ~1.000, o Suno trunca em silêncio), contador de tags com aviso acima de ~10, e detecção de "no X" no style sugerindo migrar para `excludeStyles`. Fundamentado no HISTORY §9-11.
+2. **Controle de BPM** (i-005) — pedido explícito na premissa original, ainda não feito.
+3. **Converter 1 álbum real** (i-008) — depende de subir um `.md` de origem.
+4. **Testar o prompt-modelo ponta a ponta:** colar num chat, gerar, importar.
+
 
 ## Notas de estado
 
+- **Repo local do dono:** `C:\Users\alexk\Tools\cancioneiro` (Windows). O repositório é a fonte de verdade; o ambiente do assistente é descartável e NÃO sincroniza sozinho — ver DEC-008.
+- **Fluxo de upload:** o dono usa FlatDrop para achatar a árvore ao subir no Projeto de chat (`_MANIFEST_cancioneiro.md` e `_TREE_cancioneiro.md` são artefatos dessa ferramenta, não fazem parte do repo). Por isso os arquivos chegam achatados no mount com nomes como `index__app.html`.
+- **Pendência de contexto — ASU:** o dono perguntou se o "modo ASU" do KCM seria melhor que o modo Code para este projeto. O assistente NÃO tem a definição de ASU (o CEREBRO só o cita de passagem em nomenclatura de specs, `AAMMDD-asuNNNN.yaml`). Recomendação ficou pendente até o dono colar a descrição do ASU `[relatado pelo dono, sem material de apoio]`.
 - Os álbuns antigos NÃO estão mais no mount desta sessão (o Projeto foi atualizado com os arquivos do cancioneiro). Para converter um álbum real, subir o `.md` de origem de novo.
-- Nota de design registrada: na recomposição de style, se um fragmento já está no style base, desligar o módulo correspondente não o remove do texto — a base é a fonte, módulos só aumentam. Comportamento correto e intencional.
+- Nota de design: na recomposição de style, se um fragmento já está no style base, desligar o módulo não o remove — a base é a fonte, módulos só aumentam. Correto e intencional.
+- O dedup compara **sequências de palavras** (não substring), após FIX-003. Plural simples é normalizado.

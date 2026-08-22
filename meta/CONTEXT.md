@@ -15,7 +15,7 @@ O problema que resolve: hoje as canções vivem espalhadas em vários `.md` de �
 
 1. **O esquema (schema/) — o contrato.** Um formato JSON canônico único que descreve uma canção (campos de Suno + metadados) e uma coleção (álbuns, blocos, módulos de estilo). É o que os chats passam a gerar, no lugar dos `.md` de convenção livre. Resolve o problema de padronização na raiz. Ver `schema/song.schema.json`.
 
-2. **A ferramenta (app/) — o leitor.** Um `index.html` autônomo (v0 já construído) que importa/carrega um JSON no esquema, renderiza cada canção como um cartão organizado por álbum, e oferece copy-por-campo com marcação de "já copiado"/"usei", troca modular de estilo por camada (recompõe o Style ao vivo), filtros e busca, e import/download de JSON. Export MD seletivo fica para a Fase 3. **Roda de dois modos** (ver DEC-006): servida por GitHub Pages (`https://`) ela carrega o acervo sozinha; aberta como arquivo local (`file://`) ela espera import manual — auto-detecta o ambiente.
+2. **A ferramenta (app/) — o leitor.** Um `index.html` autônomo (v0 já construído) que importa/carrega um JSON no esquema, renderiza cada canção como um cartão organizado por álbum, e oferece copy-por-campo com marcação de "já copiado"/"usei", troca modular de estilo por camada (recompõe o Style ao vivo), filtros e busca, import/download de JSON e export MD seletivo (faixa, álbum ou acervo). **Roda de dois modos** (ver DEC-006): servida por GitHub Pages (`https://`) ela carrega o acervo sozinha; aberta como arquivo local (`file://`) ela espera import manual — auto-detecta o ambiente.
 
 ## Por que estas escolhas (resumo — detalhe em DECISIONS)
 
@@ -87,6 +87,12 @@ Conhecimento destilado no GLOSSARY e no HISTORY (herdado do guia de produção d
 - **`localStorage` não é backup.** Limpar o navegador apaga marcações. O acervo real está no JSON versionado.
 - **A interface do Suno muda.** Nomes de botões/menus (Extend, Persona, Custom Mode, Creative Sliders) variam entre versões. O conhecimento no HISTORY tem data — reconfirmar na conta antes de assumir que algo sumiu.
 - **Não competir com o gerador genérico.** Já existem builders de prompt (usesuno.com, sunobuilder). O diferencial do Cancioneiro é *organizar o acervo próprio por álbum/bloco com copy marcável e troca modular*, não gerar prompt do zero.
+
+## Onde vive
+
+- **Repo do dono:** `C:\Users\alexk\Tools\cancioneiro` (Windows). Fonte de verdade.
+- **Publicado:** `https://joaolucas-nds.github.io/cancioneiro/app/index.html` (GitHub Pages, branch main, root). A raiz do site redireciona para o app.
+- **Upload para o Projeto de chat:** via FlatDrop, que achata a árvore (por isso `app/index.html` chega como `index__app.html`).
 
 ## Produto / uso
 

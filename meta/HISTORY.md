@@ -67,6 +67,73 @@ Já existem ferramentas no nicho: usesuno.com (biblioteca de style prompts + ext
 
 Se o Cancioneiro algum dia lidar com faixas de jogo com loop, o guia do Cinzeiro tem um checklist completo de loop (Zero Crossing para faixas com pulso; crossfade para drones; reverb-tail como fallback; teste de 20–30 repetições; export .ogg q6–7). Fora do escopo atual — está aqui como ponteiro, não como conteúdo ativo.
 
+
+## 9 · Limites de campo — CONFIRMADO (multiplas fontes convergentes, jul/2026)
+
+Numeros que valem para os modelos atuais (V4.5 / V5 / V5.5):
+
+| Campo | V4.5 / V5 / V5.5 | V4 e anteriores |
+|---|---|---|
+| Style of Music | **~1.000 caracteres** | ~200 |
+| Lyrics | **5.000 caracteres** | 3.000 |
+| Titulo | 100 | 80 |
+
+**O detalhe que importa: o Suno TRUNCA EM SILENCIO.** Passou do limite, o excedente
+simplesmente nao chega ao modelo — sem aviso, sem erro. O usuario so percebe porque
+"o resultado saiu estranho". Isso e a justificativa mais forte para a ferramenta ter
+**contador de caracteres**: e um problema invisivel que so uma ferramenta resolve.
+
+Ressalva pratica: em Lyrics, ~3.000 caracteres e o ponto em que o Suno comeca a
+"correr" (pular secoes, encurtar), mesmo com a caixa aceitando 5.000. Ou seja, o
+limite util e menor que o limite tecnico.
+
+Mito comum a corrigir: guias que dizem "Style caiu para 200 caracteres no v5.5"
+estao copiando a linha do V4. Nao vale para os modelos atuais.
+
+## 10 · Quantidade e ordem de tags — CONVERGENTE (com faixa de incerteza)
+
+- **Ponto doce: ~5 a 8 tags** segundo as fontes mais cautelosas; outras esticam ate 8-15.
+  Convergencia honesta: **abaixo de 4 e vago demais; acima de ~10 o modelo comeca a
+  ignorar as tags finais** e a media dos sinais conflitantes vira resultado generico.
+- **Ordem importa:** o Suno pesa mais as tags iniciais. Genero primeiro, clima em seguida.
+  Mover o genero da 5a para a 1a posicao melhora a aderencia sem mudar mais nada.
+- Prioridade quando precisar cortar: genero > clima > instrumento principal > estilo vocal > BPM.
+
+## 11 · Exclusao > negacao no texto — CONFIRMADO (relevante para o esquema)
+
+Escrever "no X" dentro do Style funciona, mas o **campo de exclusao dedicado
+(negative tags / exclude styles) e mais barato e mais confiavel**. A API expoe isso
+como parametro proprio. Consequencia para o Cancioneiro: quando houver "no alguma-coisa"
+dentro do `style`, o certo e migrar para `excludeStyles`. A ferramenta pode detectar e
+sugerir isso.
+
+Nota de nuance: uma fonte observa que 1-2 restricoes negativas ajudam a direcionar o
+modelo (dao especificidade). Entao o objetivo nao e eliminar negacoes — e coloca-las
+no campo certo.
+
+## 12 · Mudancas de interface (jul/2026) — reconfirmar na conta
+
+- **Lyrics Editor dedicado** (redesenho de julho/2026 na web): permite rotular secoes
+  (Verse/Chorus/Outro) pela interface, fazendo o mesmo trabalho das tags em colchetes.
+  As tags `[Verse]`/`[Chorus]` **continuam funcionando** — o editor e uma alternativa
+  de UI, nao uma substituicao. Tambem trouxe "Lyricist" (perfil que fixa um estilo de
+  escrita) e edicao por linguagem natural.
+- **Creative Sliders / parametros de peso:** a API expoe `styleWeight` e um controle de
+  desvio criativo (0.00-1.00). Sao um terceiro eixo de controle alem de style e meta-tags.
+  Candidatos a campo de esquema no futuro, se o fluxo pedir.
+- **v5.5 (26/mar/2026) e camada de personalizacao, nao motor novo.** Sintaxe de prompt,
+  meta-tags e limites seguem os do v5. Voices, Custom Models e My Taste sao os tres
+  aditivos reais. Prompts que funcionavam no v5 seguem funcionando.
+- **Contexto juridico:** processo da GEMA (Alemanha) contra a Suno com decisao adiada
+  para 31/jul/2026. Nao afeta o uso da ferramenta; anotado por ser risco de plataforma.
+
+## 13 · Implicacao direta para o Cancioneiro
+
+Os itens 9-11 desta pagina sao **acionaveis** e nenhum concorrente cobre bem:
+contador de caracteres (problema invisivel por truncamento silencioso), contador de
+tags com aviso acima de ~10, checagem de ordem (genero primeiro) e deteccao de "no X"
+no style para migrar ao campo de exclusao. Ver ROADMAP Fase 3.
+
 ## Fontes (resumo)
 
 Suno.wiki; help.suno.com; suno.com/blog; guias 2026 de criadores (com ceticismo proporcional à venda de curso); r/SunoAI via resumos secundários; guia de produção do Cinzeiro-OST (jun/2026). Datas de verificação: fev–jul/2026. **A interface muda — reconfirme nomes de botão na sua conta.**

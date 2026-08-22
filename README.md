@@ -2,7 +2,7 @@
 
 Ferramenta local para **organizar, copiar e variar** prompts de música gerados por IA (Suno hoje; agnóstica por design), a partir de um **acervo de canções em JSON canônico**.
 
-> **Estado:** v0.1.0 — Fundação. O esquema e a documentação existem; a ferramenta (`app/index.html`) ainda será construída. Ver `meta/ROADMAP.md`.
+> **Estado:** v0.4.1 — ferramenta em uso. Lê o acervo, copia por campo, troca módulos de estilo e exporta Markdown. Publicada no GitHub Pages. Ver `meta/ROADMAP.md`.
 
 ## O problema
 
@@ -23,16 +23,30 @@ cancioneiro/
 ├── meta/                      # contexto do projeto (CEREBRO, CONTEXT, STATUS, ...)
 ├── schema/                    # o contrato JSON (song, collection, style-modules)
 ├── data/                      # o acervo real, no esquema
-├── app/                       # a ferramenta (index.html) — a construir
+├── app/                       # a ferramenta (index.html)
 └── logs/                      # diários de sessão
 ```
 
-## Como começar (quando a ferramenta existir)
+## Como começar
 
-1. Abra `app/index.html` no navegador (duplo-clique — sem instalar nada).
-2. Importe um JSON de `data/` (ex.: `exemplo-cinzeiro.json`).
+1. **Pelo navegador (recomendado):** abra a versão publicada no GitHub Pages — o acervo carrega sozinho.
+   **Ou local:** duplo-clique em `app/index.html` (modo `file://`) e clique em *Importar .json*.
+2. Escolha um acervo de `data/` (ex.: `demo.json`).
 3. Navegue por álbuns, copie style/lyrics por botão, marque o que usou.
-4. Exporte uma seleção para `.md` se precisar do formato legível.
+4. Ligue/desligue **módulos de estilo** por camada para gerar variações — o Style recompõe ao vivo.
+5. Exporte em `.md` (faixa, álbum ou acervo inteiro) se precisar do formato legível.
+
+## Validar o acervo
+
+```
+pip install jsonschema referencing --break-system-packages
+python3 scripts/validate.py
+```
+Checa todos os `data/*.json` contra o esquema. Rode antes de commitar mudança em `data/` ou `schema/`.
+
+## Gerar canções com um chat
+
+Cole o conteúdo de `schema/PROMPT-PARA-CHATS.md` num chat de IA junto do seu pedido — ele devolve JSON já no esquema, pronto para importar.
 
 ## Fonte de verdade
 

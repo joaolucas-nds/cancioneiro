@@ -135,3 +135,25 @@
 **Impacto:** Prompt poluido no Suno; desperdicio das primeiras ~20-30 palavras, que sao as que mais pesam.
 **Solucao:** Dedup **por contencao**: um fragmento e descartado se ja esta contido em algum item presente, ou se contem algum. Validado com 8 checks, incluindo "nenhuma redundancia por contencao em nenhuma faixa" e "ligar modulo novo ainda adiciona".
 **Licao:** Ver a ferramenta rodando (print do usuario) revelou em segundos um bug que os testes de logica nao pegavam, porque o teste checava duplicata EXATA — o mesmo criterio errado do codigo. Teste que espelha a premissa do bug nao encontra o bug.
+
+---
+
+## FIX-003 — Falso positivo no dedup do Style (substring vs palavra)
+
+**Data:** 2026-07-21
+**Sintoma:** O dedup por contencao introduzido no FIX-002 descartava fragmentos legitimos. Casos reais: com "male vocals" na base, o modulo "female vocals" era silenciosamente descartado (porque "male vocals" e substring de "female vocals"); com "harpsichord lead" na base, o modulo "harp" era barrado.
+**Causa raiz:** A comparacao usava substring cru (`a.includes(b)`), que ignora fronteira de palavra. Duas palavras diferentes podem conter uma a outra como sequencia de caracteres sem terem relacao semantica.
+**Impacto:** Silencioso e pior que o bug original — o usuario ligava um modulo e ele simplesmente nao aparecia, sem explicacao. Vocal feminino sendo barrado por vocal masculino e um caso que aconteceria na pratica.
+**Solucao:** Comparar **sequencias de palavras**: um fragmento e redundante se sua sequencia de palavras aparece inteira e contigua em outro (ou vice-versa). Plural simples normalizado ("pads" ~ "pad") para nao reintroduzir duplicata por causa do -s. Validado com 14 checks: 3 de falso positivo corrigido, 4 de dedup legitimo preservado, 7 de regressao do FIX-002.
+**Licao:** Ao corrigir um bug de comparacao, testar explicitamente o **falso positivo** (o que NAO deve ser barrado), nao so o caso que motivou a correcao. O FIX-002 so testava "nao duplica"; faltava "nao barra o que e diferente".
+
+---
+
+## DEC-009 — Pensamento estendido ligado nas sessoes de trabalho deste projeto
+
+**Data:** 2026-07-21
+**Contexto:** O dono identificou que as conversas anteriores rodaram com o pensamento estendido DESLIGADO, e observou que era a causa dos problemas de desenvolvimento `[relatado pelo dono, 2026-07-21]`. A evidencia apoia: com pensamento desligado ocorreram (a) a falha de entrega da 0.4.0 — implementei e commitei no ambiente do assistente sem entregar arquivo, mandando o dono "sincronizar" algo que nao sincroniza; (b) o FIX-002 introduzindo o falso positivo do FIX-003, com teste que espelhava a premissa errada do codigo.
+
+**Decisao:** Sessoes de trabalho deste projeto rodam com **pensamento estendido LIGADO**. O projeto envolve decisao de arquitetura, analise de dominio (Suno) e correcao de logica com armadilhas sutis — as tres coisas degradam sem raciocinio explicito.
+
+**Consequencias:** (+) Menos erro de reflexo e menos retrabalho. (+) Auditorias e correcoes de comparacao ficam confiaveis. (−) Respostas um pouco mais lentas — custo aceitavel diante do retrabalho evitado.

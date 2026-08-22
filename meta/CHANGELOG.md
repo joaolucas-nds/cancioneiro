@@ -4,6 +4,20 @@
 
 ---
 
+## [0.4.1] — 2026-07-21
+
+Auditoria: correção de bug no dedup e alinhamento da documentação.
+
+### Fixed
+- **FIX-003: falso positivo no dedup do Style.** A comparação por substring crua barrava fragmentos legítimos — "female vocals" era descartado quando a base tinha "male vocals" (uma é substring da outra), e "harp" era barrado por "harpsichord". Passou a comparar **sequências de palavras**, com normalização simples de plural. 14 checks, incluindo regressão do FIX-002.
+- Documentação desalinhada com o código: README anunciava "v0.1.0 — ferramenta a construir" (estava em 0.4.0 e publicada); CONTEXT dizia que o export MD ficaria para a Fase 3 (já entregue); ROADMAP e IDEAS marcavam o campo de exclusão como pendente (já implementado); STATUS listava no backlog a publicação no Pages (já feita) e a validação visual (já ocorrida).
+
+### Added
+- **HISTORY §9-13:** limites de campo verificados (Style ~1.000 chars, Lyrics 5.000 com ponto doce em ~3.000, título 100) e o achado central de que **o Suno trunca em silêncio**; teto prático de tags (~5-10, acima de 10 o modelo ignora as finais); ordem de tags (gênero primeiro); campo de exclusão mais confiável que negação no texto; mudanças de interface de jul/2026 (Lyrics Editor, Lyricist); contexto do processo GEMA.
+- README: seções de validação do acervo e de geração por chat.
+
+---
+
 ## [0.4.0] — 2026-07-21
 
 Export para Markdown e correção do Style recomposto.

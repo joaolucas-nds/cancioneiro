@@ -31,8 +31,8 @@ Adotar o ciclo de estados que o FAIXAS.md do Cinzeiro já usa, como campo `state
 ### i-008 💡 Importar acervo existente convertendo por álbum
 Converter os `ALBUM_*.md` e `album_guia_suno.md` para o esquema, um álbum por vez (semi-assistido por chat), populando `data/`. Começar pelo `album_guia_suno.md` (mais limpo). Backlog do STATUS.
 
-### i-009 💡 Campo de exclusão de estilos ("exclude styles")
-A pesquisa apontou que o Suno tem um campo de estilos a excluir que funciona melhor que "no X" no texto. O esquema pode ter um campo `excludeStyles[]` que a ferramenta copia para esse campo do Suno. Avaliar na Fase 3.
+### i-009 ✅ Campo de exclusão de estilos ("exclude styles")
+A pesquisa apontou que o Suno tem um campo de estilos a excluir que funciona melhor que "no X" no texto (reconfirmado em jul/2026: o campo dedicado é mais barato e confiável que negação no style). Implementado: `excludeStyles[]` no esquema + exibição e botão de copiar na ferramenta.
 
 ### i-010 💡 Duas camadas por faixa (exploração + combate) para OST de jogo
 Herança do Cinzeiro (DEC-M-002/006 de lá): faixas de jogo podem ter duas versões sincronizadas. O esquema poderia suportar `layers[]` numa canção. Só relevante se o Cancioneiro for usado para OST de jogo — parquear até haver demanda real.
@@ -54,6 +54,21 @@ Bônus: botão que exporta as marcações de sessão (hoje em localStorage) para
 
 ### i-016 💡 Rodar validate.py em pre-commit / CI
 Já que `scripts/validate.py` existe e retorna código 1 em erro, plugá-lo num hook de pre-commit (ou GitHub Action) garante que nenhum dataset quebrado entre no repo. Baixo esforço, alta rede de segurança. Fase 2/3.
+
+### i-017 💡 Contador de caracteres do Style e do Lyrics
+O Suno **trunca em silêncio** ao passar de ~1.000 caracteres no Style (5.000 no Lyrics, com ~3.000 como ponto doce). Sem aviso, sem erro — o excedente só não chega ao modelo. É um problema invisível que só uma ferramenta resolve. Mostrar contador ao vivo, com aviso ao aproximar do limite. Ver HISTORY §9. **Alta prioridade** — é exatamente o "consumir espaço desnecessário" da premissa original.
+
+### i-018 💡 Contador de tags com aviso de excesso
+Acima de ~10 tags o Suno começa a ignorar as finais e a média dos sinais vira resultado genérico; o ponto doce fica entre 5 e 8. A ferramenta pode contar as vírgulas do Style e avisar quando passar, sugerindo o que cortar pela ordem de prioridade (gênero > clima > instrumento > vocal > BPM). Ver HISTORY §10.
+
+### i-019 💡 Detectar "no X" no style e sugerir migrar para excludeStyles
+O campo de exclusão dedicado é mais confiável e barato que negação dentro do texto. Quando houver "no alguma-coisa" no `style`, a ferramenta destaca e oferece mover para `excludeStyles` num clique. Ver HISTORY §11.
+
+### i-020 💡 Aviso de ordem: gênero nas primeiras palavras
+O Suno pesa mais as tags iniciais; gênero primeiro, clima em seguida. A ferramenta pode sinalizar quando o primeiro fragmento não parece um gênero (comparando com a camada `genre` da biblioteca de módulos). Sugestão leve, não imposição.
+
+### i-021 💡 Campos de peso (styleWeight / desvio criativo)
+A API expõe pesos 0.00-1.00 para aderência ao estilo e desvio criativo (os Creative Sliders). Poderiam virar campos opcionais do esquema para registrar a configuração usada numa geração. Só vale se o fluxo passar a depender disso. Fase 4.
 
 ## Feedback para o Kit
 

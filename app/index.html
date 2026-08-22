@@ -444,16 +444,37 @@ function recomposedStyle(song) {
   const active = song._activeModules || new Set(song.styleModules || []);
   const frags = [];
 
-  /* Um fragmento e redundante se ja esta CONTIDO no que temos (ou contem algo
-     que temos). Ex.: base tem "dark ambient cinematic intro"; o modulo traz
-     "dark ambient cinematic" -> redundante, nao adiciona. Comparacao exata
-     nao pegaria isso e o Style saia poluido, desperdicando as primeiras
-     palavras (que sao as que mais pesam no Suno). */
+  /* Um fragmento e redundante quando sua sequencia de PALAVRAS ja aparece
+     inteira em outro fragmento (ou vice-versa). Ex.: base tem "dark ambient
+     cinematic intro"; o modulo traz "dark ambient cinematic" -> redundante.
+
+     A comparacao e por palavra, nao por substring crua: substring gerava
+     falso positivo grave ("male vocals" barrava "female vocals", pois uma e
+     substring da outra; "harpsichord" barrava "harp"). Plural simples e
+     normalizado ("pads" ~ "pad") para nao duplicar por causa do -s. */
+  function words(s) {
+    return s.toLowerCase().split(/\s+/).filter(Boolean)
+      .map(w => w.replace(/[^a-z0-9]/g, ""))          // tira pontuacao
+      .map(w => (w.length > 3 && w.endsWith("s") ? w.slice(0, -1) : w)); // plural simples
+  }
+  /** true se a sequencia `a` aparece inteira e contigua dentro de `b`. */
+  function containsSequence(b, a) {
+    if (a.length > b.length) return false;
+    for (let i = 0; i <= b.length - a.length; i++) {
+      let ok = true;
+      for (let j = 0; j < a.length; j++) {
+        if (b[i + j] !== a[j]) { ok = false; break; }
+      }
+      if (ok) return true;
+    }
+    return false;
+  }
   function isRedundant(frag) {
-    const f = frag.toLowerCase();
+    const f = words(frag);
+    if (!f.length) return true;
     return frags.some(existing => {
-      const e = existing.toLowerCase();
-      return e === f || e.includes(f) || f.includes(e);
+      const e = words(existing);
+      return containsSequence(e, f) || containsSequence(f, e);
     });
   }
   function add(frag) {
