@@ -157,3 +157,25 @@
 **Decisao:** Sessoes de trabalho deste projeto rodam com **pensamento estendido LIGADO**. O projeto envolve decisao de arquitetura, analise de dominio (Suno) e correcao de logica com armadilhas sutis — as tres coisas degradam sem raciocinio explicito.
 
 **Consequencias:** (+) Menos erro de reflexo e menos retrabalho. (+) Auditorias e correcoes de comparacao ficam confiaveis. (−) Respostas um pouco mais lentas — custo aceitavel diante do retrabalho evitado.
+
+---
+
+## DEC-010 — Divisao de escrita entre chat e Code (um dono por documento)
+
+**Data:** 2026-10-20
+**Contexto:** O fluxo mudou: o chat agora le e grava na pasta do projeto (pasta vinculada no app desktop), em vez de receber uma copia achatada. O meio deixou de impedir dois escritores no mesmo arquivo — antes o mount impedia; agora so a regra impede.
+
+**Decisao:** Adotado o padrao do kit. O **chat** escreve inteiros: a analise, a WO, `meta/CONTEXT.md`, `meta/CEREBRO.md`, `INSTRUCOES-DO-PROJETO.md` e `meta/GLOSSARY.md`. O **Code** escreve: o codigo, `meta/STATUS.md`, `meta/DECISIONS.md`, `meta/CHANGELOG.md` e a sua secao do log do dia. `meta/IDEAS.md` e todo documento grande e vivo mudam por WO.
+
+**Consequencias:** (+) Fim da ambiguidade sobre quem reescreve o que. (+) Commit e push ficam numa raia so (Code); o git pelo chat e apenas leitura, com `GIT_OPTIONAL_LOCKS=0`. (−) Mudanca em documento do Code passa a exigir WO, o que custa um artefato a mais por ciclo.
+
+---
+
+## DEC-011 — Merge do kit v1.127.0 em fatias; fatia 1 aplicada
+
+**Data:** 2026-10-20
+**Contexto:** O projeto estava no kit v1.74.0 contra um pacote v1.127.0. Aplicar 53 versoes de uma vez significa rodar o merge inteiro sob as regras velhas que o proprio pacote veio corrigir.
+
+**Decisao:** O merge vai em fatias. **Fatia 1 (esta):** `.claude/settings.json` (as duas correcoes obrigatorias) e as tres skills do modo Code — `apply-wo`, `wrap`, `sondar` —, mais o modelo de WO. A `apply-spec` sai. Fatias seguintes: `CLAUDE.md` + arquivos de exclusao; depois `CEREBRO.md` + `INSTRUCOES-DO-PROJETO.md` (fusao); depois os `meta/` restantes e a varredura de linhas revogadas.
+
+**Consequencias:** (+) `Write` e `additionalDirectories` consertados: criar log e gravar relatorio na pasta-pai param de pedir aprovacao a cada arquivo. (+) O carimbo de versao passa a dizer v1.127.0 nas skills e no modelo de WO. (−) O `meta/CEREBRO.md` continua carimbado v1.74.0 ate a fatia de fusao — divergencia conhecida e temporaria. (−) `CLAUDE.md` e `meta/CEREBRO.md` ainda citam `meta/specs/` e `/apply-spec`; corrigir e da fatia 2.
