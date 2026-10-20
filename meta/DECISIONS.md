@@ -190,3 +190,27 @@
 **Decisao:** Regra de exclusao usa `pasta/*` (o conteudo), nunca `pasta/` (a pasta), e modelo de pasta ignorada exige o PAR completo — a linha do conteudo seguida da linha `!pasta/_TEMPLATE.md`. As regras moram dentro do bloco do editor do FlatDrop; explicacao fica acima dele, nunca dentro. Fica registrado que o canal principal deste projeto e a pasta vinculada (o chat le e grava no disco) e que o `.flatdropignore` so vale no canal de reserva.
 
 **Consequencias:** (+) `meta/workorders/_TEMPLATE.md` volta a subir ao Projeto; o corpo das WOs aplicadas, nao. (+) `.claude/settings.local.json` passa a ser ignorado pelo git, em vez de ficar untracked indefinidamente. (−) `meta/specs/` continua no disco com um `.gitkeep` orfao — remover e de uma fatia seguinte, junto com as citacoes a ela no `meta/CEREBRO.md` e no `meta/CONTEXT.md`.
+
+---
+
+## DEC-013 — CEREBRO adotado do kit v1.127.0; o especifico do projeto vive nos outros meta/
+
+**Data:** 2026-10-20
+**Contexto:** O `meta/CEREBRO.md` estava no kit v1.74.0, 53 versoes atras. O manifesto marca o arquivo como `fusao`, o que pressupoe comportamento proprio a preservar. A comparacao linha a linha contra o template v1.127.0 mostrou outra coisa: das 192 linhas nao-vazias do arquivo vivo, 20 nao tinham correspondente no template, e todas as 20 eram texto do kit ANTIGO — cadencia «sessao», `meta/specs/`, `/apply-spec`, ASU, o teto das Instrucoes sem o teto por configuracao, o DECISIONS arquivado por tamanho e o carimbo de versao. Nenhuma linha era deste projeto.
+
+**Decisao:** O CEREBRO passa a ser o template v1.127.0 adotado integralmente, com tres especializacoes: a secao «Tecnicas especificas deste projeto» preenchida com os seis itens operacionais do Cancioneiro; a remissao a DEC-010 na divisao de escrita; e a nota de que nao ha build e a validacao e o `validate.py`. Fica registrado o principio que isto confirma: **o conhecimento deste projeto mora no CONTEXT, no HISTORY, no DECISIONS e nas Instrucoes — nao no CEREBRO**, que e a camada generica e portanto a mais barata de atualizar.
+
+**Alternativas consideradas:** (a) merge paragrafo a paragrafo preservando a redacao viva — descartada: a medicao mostrou que nao havia redacao propria a preservar, e o custo seria reescrever 104 KB para chegar ao mesmo texto; (b) adotar o template sem preencher «Tecnicas especificas» — descartada: e a unica secao que um template-update futuro nao sobrescreve, e deixa-la vazia joga o conhecimento operacional de volta para arquivos que o assistente nao le a cada turno.
+
+**Consequencias:** (+) Os quatro carimbos do kit (CEREBRO, modelo de WO, skills) passam a dizer v1.127.0. (+) Entram no comportamento: medicao delegada, bloco de fecho com carimbo `Base:`, sonda e exploracao, analise antes do compromisso, canal da pasta vinculada, correspondencia entre projetos. (+) Atualizacao futura do CEREBRO fica barata, porque o especifico esta fora dele. (−) O arquivo quase triplicou (36,9 → 104,2 KB); e lido sob demanda, nao a cada turno, mas pesa quando lido. (−) `meta/CONTEXT.md` ainda cita `meta/specs/` na arvore (linha 50) e a pasta morta continua no disco — fatia 4.
+
+---
+
+## DEC-014 — Instrucoes do Projeto na forma v1.127.0, com o dominio preservado; a fonte e o arquivo do repo
+
+**Data:** 2026-10-20
+**Contexto:** As Instrucoes sao lidas em TODA mensagem e existem em duas copias: o arquivo do repositorio e o painel do Projeto no claude.ai. A versao viva estava em v1.74.0 e carregava tres linhas revogadas pelo kit — «sempre que o usuario sinalizar upload» (v1.90.0), «Ritual de inicio de sessao» (v1.106.0) e «arquivo novo para baixar... nunca blocos soltos» (v1.106.0) —, as tres dirigindo comportamento a cada turno.
+
+**Decisao:** Adotada a forma v1.127.0, preservando integralmente o que e deste projeto: «O que e», a regra de dominio inviolavel, o bloco «Dominio (Suno)» e a lista compacta de arquivos de contexto. Fica registrado que **a fonte e o arquivo do repositorio**: mudanca nas Instrucoes muda primeiro o arquivo versionado, e o fecho do turno pede ao dono que cole o conteudo no painel do Projeto. O tamanho sai de `wc -m` medido no turno, nunca de numero gravado em documento.
+
+**Consequencias:** (+) O ritual passa a ser por turno, com leitura barata e verificavel (`git log -3`, `git status`, pasta-pai). (+) A divisao de escrita (DEC-010) e o teste do falso positivo (FIX-003) ficam a vista em todo turno. (+) 6.386 caracteres, com folga de ~1.060 sobre o teto aplicavel de 7.450 (6.900 padrao + 550 do modo Code). (−) **As duas copias ficam divergentes ate o dono colar a nova no painel do Projeto** — e, enquanto isso, o painel continua mandando as tres linhas revogadas. E a pendencia mais urgente desta fatia. (−) A regra «entregue o git commit pronto» mudou de forma: havendo WO no turno, o bloco e de quem aplica.

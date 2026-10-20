@@ -7,11 +7,17 @@
 
 ---
 
+## Última conversa (2026-10-20, fatia 3 do kit v1.127.0)
+
+- Kit: fatia 3 aplicada (WO 0004). `meta/CEREBRO.md` adotado do template v1.127.0 com três especializações (DEC-013); `INSTRUCOES-DO-PROJETO.md` fundido preservando o domínio (DEC-014); `meta/LOG-TEMPLATE.md` alinhado à cadência de turno e à DEC-010.
+- **Pendência do dono:** o painel do Projeto no claude.ai ainda manda as três linhas revogadas — colar nele o conteúdo novo de `INSTRUCOES-DO-PROJETO.md`.
+- Pendente do kit: fatia 4 (demais `meta/`, `meta/specs/`, títulos `## Última sessão` deste arquivo).
+
 ## Última sessão (2026-10-20, kit v1.127.0 — fatias 1 e 2)
 
 - Kit: fatias 1 e 2 do v1.127.0 aplicadas. Skills `apply-wo`, `wrap`, `sondar` instaladas e `apply-spec` removida; `.claude/settings.json` com `Write` e `additionalDirectories`; `CLAUDE.md`, `.gitignore` e `.flatdropignore` atualizados.
-- Pendente do kit: `meta/CEREBRO.md` + `INSTRUCOES-DO-PROJETO.md` (fatia 3, fusão — os dois ainda carimbados/escritos no v1.74.0); os demais `meta/` (fatia 4); a pasta morta `meta/specs/`.
-- Pendente de varredura: cadência «sessão→turno» — **52 ocorrências medidas em 18 arquivos** (`grep -rnoiE` em `meta/ CLAUDE.md INSTRUCOES-DO-PROJETO.md README.md .claude/ .gitignore .flatdropignore logs/`), das quais **3 corrigidas nesta fatia** (as do `CLAUDE.md` e do `.flatdropignore`) e ~22 já justificadas como relato/domínio. Declarada **PENDENTE**, não encerrada.
+- Pendente do kit: os demais `meta/` (fatia 4); a pasta morta `meta/specs/`. (CEREBRO e Instruções saíram da pendência: fatia 3 aplicada, ver bloco acima.)
+- Pendente de varredura: cadência «sessão→turno» — **46 ocorrências varridas** (`grep -rnoiE` em `meta/ CLAUDE.md INSTRUCOES-DO-PROJETO.md README.md .claude/ .gitignore .flatdropignore logs/`; medida nas fatias 1-2: 52): **corrigidas nesta fatia 20** (CEREBRO 11, Instruções 3, LOG-TEMPLATE 6), **legítimas e justificadas 17**, **a corrigir 2** (os dois títulos `## Última sessão` do próprio STATUS, que viram `## Última conversa` na fatia 4). Declarada **PENDENTE**, não encerrada.
 - Pendente de produto: a pergunta de 2026-10-17 sobre o `album-referencias.json` (pasta-pai) continua aberta.
 
 ## Última sessão (2026-07-21, auditoria)
