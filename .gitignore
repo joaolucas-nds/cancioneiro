@@ -8,6 +8,9 @@ Thumbs.db
 .vscode/
 .idea/
 
+# Config local do Claude Code (permissoes desta maquina; nao vai para o repo).
+.claude/settings.local.json
+
 # Se um dia a ferramenta ganhar toolchain (revisita DEC-002):
 node_modules/
 dist/

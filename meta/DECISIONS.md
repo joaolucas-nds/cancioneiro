@@ -179,3 +179,14 @@
 **Decisao:** O merge vai em fatias. **Fatia 1 (esta):** `.claude/settings.json` (as duas correcoes obrigatorias) e as tres skills do modo Code — `apply-wo`, `wrap`, `sondar` —, mais o modelo de WO. A `apply-spec` sai. Fatias seguintes: `CLAUDE.md` + arquivos de exclusao; depois `CEREBRO.md` + `INSTRUCOES-DO-PROJETO.md` (fusao); depois os `meta/` restantes e a varredura de linhas revogadas.
 
 **Consequencias:** (+) `Write` e `additionalDirectories` consertados: criar log e gravar relatorio na pasta-pai param de pedir aprovacao a cada arquivo. (+) O carimbo de versao passa a dizer v1.127.0 nas skills e no modelo de WO. (−) O `meta/CEREBRO.md` continua carimbado v1.74.0 ate a fatia de fusao — divergencia conhecida e temporaria. (−) `CLAUDE.md` e `meta/CEREBRO.md` ainda citam `meta/specs/` e `/apply-spec`; corrigir e da fatia 2.
+
+---
+
+## DEC-012 — `.flatdropignore` na forma "pasta/*", e o canal achatado vira reserva
+
+**Data:** 2026-10-20
+**Contexto:** O `.flatdropignore` usava `logs/` e `meta/specs/` — a forma que PODA o diretorio antes de descer. Nessa forma um `!` dentro da pasta nunca chega a ser avaliado, entao o modelo de WO versionado na fatia 1 nao subia ao Projeto. A pasta `meta/specs/` tambem ficou morta quando a skill `apply-spec` saiu.
+
+**Decisao:** Regra de exclusao usa `pasta/*` (o conteudo), nunca `pasta/` (a pasta), e modelo de pasta ignorada exige o PAR completo — a linha do conteudo seguida da linha `!pasta/_TEMPLATE.md`. As regras moram dentro do bloco do editor do FlatDrop; explicacao fica acima dele, nunca dentro. Fica registrado que o canal principal deste projeto e a pasta vinculada (o chat le e grava no disco) e que o `.flatdropignore` so vale no canal de reserva.
+
+**Consequencias:** (+) `meta/workorders/_TEMPLATE.md` volta a subir ao Projeto; o corpo das WOs aplicadas, nao. (+) `.claude/settings.local.json` passa a ser ignorado pelo git, em vez de ficar untracked indefinidamente. (−) `meta/specs/` continua no disco com um `.gitkeep` orfao — remover e de uma fatia seguinte, junto com as citacoes a ela no `meta/CEREBRO.md` e no `meta/CONTEXT.md`.

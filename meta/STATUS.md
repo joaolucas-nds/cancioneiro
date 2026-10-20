@@ -7,6 +7,13 @@
 
 ---
 
+## Última sessão (2026-10-20, kit v1.127.0 — fatias 1 e 2)
+
+- Kit: fatias 1 e 2 do v1.127.0 aplicadas. Skills `apply-wo`, `wrap`, `sondar` instaladas e `apply-spec` removida; `.claude/settings.json` com `Write` e `additionalDirectories`; `CLAUDE.md`, `.gitignore` e `.flatdropignore` atualizados.
+- Pendente do kit: `meta/CEREBRO.md` + `INSTRUCOES-DO-PROJETO.md` (fatia 3, fusão — os dois ainda carimbados/escritos no v1.74.0); os demais `meta/` (fatia 4); a pasta morta `meta/specs/`.
+- Pendente de varredura: cadência «sessão→turno» — **52 ocorrências medidas em 18 arquivos** (`grep -rnoiE` em `meta/ CLAUDE.md INSTRUCOES-DO-PROJETO.md README.md .claude/ .gitignore .flatdropignore logs/`), das quais **3 corrigidas nesta fatia** (as do `CLAUDE.md` e do `.flatdropignore`) e ~22 já justificadas como relato/domínio. Declarada **PENDENTE**, não encerrada.
+- Pendente de produto: a pergunta de 2026-10-17 sobre o `album-referencias.json` (pasta-pai) continua aberta.
+
 ## Última sessão (2026-07-21, auditoria)
 
 Auditoria completa do projeto contra a premissa original + pesquisa de refinamento. Resultado: **7 divergências de documentação** corrigidas (README dizia "v0.1.0, ferramenta a construir"; i-009 já implementado mas marcado aberto; backlog com item já feito) e **1 bug real corrigido** (FIX-003: dedup por substring barrava "female vocals" quando a base tinha "male vocals"). Pesquisa trouxe constraints verificáveis e acionáveis: limite de ~1.000 caracteres no Style com **truncamento silencioso**, teto prático de ~10 tags, e campo de exclusão mais confiável que negação no texto. Consolidado no HISTORY (seções 9-13) e vira a Fase 3.
