@@ -19,12 +19,12 @@ Canções geradas por chats vivem espalhadas em `.md` de álbum, cada um com con
 cancioneiro/
 ├── INSTRUCOES-DO-PROJETO.md   # instruções curtas (raiz)
 ├── CLAUDE.md                  # guia do Claude Code (raiz)
-├── .claude/                   # kit do Claude Code (settings + skills)
+├── .claude/                   # kit do Claude Code (settings + skills: apply-wo, wrap, sondar)
 ├── meta/                      # contexto do projeto (CEREBRO, CONTEXT, STATUS, ...)
 ├── schema/                    # o contrato JSON (song, collection, style-modules)
 ├── data/                      # o acervo real, no esquema
 ├── app/                       # a ferramenta (index.html)
-└── logs/                      # diários de sessão
+└── logs/                      # diário do dia
 ```
 
 ## Como começar

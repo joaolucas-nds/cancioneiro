@@ -45,3 +45,23 @@
 **v5 / v5.5** — modelos atuais do Suno (jul/2026). O conhecimento técnico do projeto foi verificado contra essa geração; reconfirmar na conta antes de assumir comportamento, pois a interface muda com frequência.
 
 **Custom Mode** — modo do Suno que separa os campos (Style / Lyrics) para controle fino, por oposição ao Simple Mode (descrição única). O Cancioneiro assume Custom Mode.
+
+---
+
+## Comandos / artefatos
+
+**WO (ordem de trabalho)** — instrucao de APLICACAO que o chat autora e o Code posiciona: ancora semantica mais o texto exato de cada edicao. Vive em `meta/workorders/AAMMDD-woNNNN-desc.md`. Diz **como aplicar**; a spec diz **o que construir**.
+
+**Spec de feature** — o que construir e quando esta pronto: problema, criterios de aceite verificaveis, decisoes, fora de escopo. Modelo em `meta/SPEC.md`; as specs preenchidas vao para `meta/specs/`, pasta que nasce no primeiro uso.
+
+**`/apply-wo`** — skill do Claude Code que aplica uma WO. Recusa a WO cujo cabecalho nao traz «Ancoras lidas em» preenchido, e PARA se uma ancora nao bater exatamente.
+
+**`/wrap`** — skill que fecha a tarefa: confere o relatorio anterior contra o git, atualiza STATUS e DECISIONS, escreve o log do dia, commita e empurra.
+
+**`/sondar`** — skill de exploracao: le o material sem hipotese previa e devolve CANDIDATOS a checagem, nunca veredito. Exploracao produz hipotese; instrumento produz evidencia.
+
+**Relatorio de trabalho** — o que o Code grava ao fechar qualquer tarefa, em `../AAMMDD-HHMM-code-<slug>-<ato>-<alvo>.txt` (pasta-pai, fora do versionamento). O `<ato>` e vocabulario fechado: `apply` · `wrap` · `probe` · `explore`.
+
+**Carimbo do kit** — a linha `Gerado pelo Kit de Contexto Universal vX.Y.Z` no fim do CEREBRO, do modelo de WO e das tres skills. Nao se funde: substitui-se pela do pacote mais recente. Os cinco devem concordar.
+
+**Analise** — documento que precede o compromisso numa mudanca nao-trivial: problema, restricoes medidas, opcoes com o motivo do descarte, recomendacao, riscos, ponto de decisao. Vive em `meta/analises/`, pasta que nasce no primeiro uso. Nao decide nem abre trabalho sozinha.

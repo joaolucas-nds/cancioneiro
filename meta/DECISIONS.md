@@ -214,3 +214,16 @@
 **Decisao:** Adotada a forma v1.127.0, preservando integralmente o que e deste projeto: «O que e», a regra de dominio inviolavel, o bloco «Dominio (Suno)» e a lista compacta de arquivos de contexto. Fica registrado que **a fonte e o arquivo do repositorio**: mudanca nas Instrucoes muda primeiro o arquivo versionado, e o fecho do turno pede ao dono que cole o conteudo no painel do Projeto. O tamanho sai de `wc -m` medido no turno, nunca de numero gravado em documento.
 
 **Consequencias:** (+) O ritual passa a ser por turno, com leitura barata e verificavel (`git log -3`, `git status`, pasta-pai). (+) A divisao de escrita (DEC-010) e o teste do falso positivo (FIX-003) ficam a vista em todo turno. (+) 6.386 caracteres, com folga de ~1.060 sobre o teto aplicavel de 7.450 (6.900 padrao + 550 do modo Code). (−) **As duas copias ficam divergentes ate o dono colar a nova no painel do Projeto** — e, enquanto isso, o painel continua mandando as tres linhas revogadas. E a pendencia mais urgente desta fatia. (−) A regra «entregue o git commit pronto» mudou de forma: havendo WO no turno, o bloco e de quem aplica.
+
+---
+
+## DEC-015 — Os meta/ especializados nao sao substituidos pelo template; a pasta `meta/specs/` morre
+
+**Data:** 2026-10-20
+**Contexto:** Fatia 4 do merge do kit v1.127.0. Ao contrario das fatias 1-3, onde o template era mais novo que o arquivo vivo, aqui o vivo e mais rico em todos os sete arquivos comparados — o template traz esqueletos com placeholders (`[Nome do Projeto]`, `F1 — [Nome da fase]`). O manifesto ja prevê este caso: «template generico nao e candidato a substituir arquivo vivo refinado; os meta/ ja especializados caem por padrao em (c)». O CEREBRO v1.127.0 cita nominalmente o caso do IDEAS organizado por ID estavel como desvio legitimo. Separadamente: `meta/specs/` existia vazia desde 2026-07-20 e a skill que a lia saiu na fatia 1.
+
+**Decisao:** `CONTEXT`, `STATUS`, `IDEAS`, `ROADMAP`, `GLOSSARY`, `HISTORY` e `CHANGELOG` **permanecem na forma deste projeto**. Do template entram apenas: o arquivo novo `meta/SPEC.md` (modelo de spec de feature, que o projeto nao tinha) e o eixo «Comandos / artefatos» no `GLOSSARY`. A pasta `meta/specs/` e **removida**; o modelo de spec mora em `meta/SPEC.md` e a pasta renasce quando a primeira spec for escrita — pasta nunca nasce para receber um modelo.
+
+**Alternativas consideradas:** (a) adotar os templates e reinjetar o conteudo — descartada: seria regressao de forma, e o CEREBRO do proprio kit diz isso; (b) manter `meta/specs/` vazia «porque pode servir» — descartada: pasta vazia versionada com `.gitkeep` orfao e exatamente o estado que faz um assistente futuro procurar spec onde nao ha nenhuma, e foi o que aconteceu nesta semana.
+
+**Consequencias:** (+) O funil fica completo: exploracao → sonda → analise/spec → WO → DECISIONS, com modelo para cada peca. (+) O vocabulario novo do kit entra no glossario, que e onde se procura. (+) A arvore do repositorio no `CONTEXT` e no `README` para de mentir. (−) `meta/analises/` ainda nao existe e o modelo dela nao entra (natureza `modelo-em-espera`): quando a primeira analise nascer, ha de vir do pacote. (−) Duas pastas do projeto passam a ser «nascem no primeiro uso», o que so funciona se estiver escrito — por isso a nota no `meta/SPEC.md` e no glossario.

@@ -22,7 +22,7 @@ O mínimo que já é útil: ler o acervo e copiar sem procurar.
 - ✅ Prompt-modelo para chats gerarem no esquema (i-002).
 - ✅ Script de validação de acervo `scripts/validate.py`.
 - ⬜ Converter `album_guia_suno.md` inteiro como segundo dataset (i-008).
-**Marco:** conseguir usar a ferramenta de verdade numa sessão de geração no Suno.
+**Marco:** conseguir usar a ferramenta de verdade numa rodada de geração no Suno.
 
 ## ⬜ Fase 3 — Qualidade de prompt e modularidade
 O diferencial real sobre os builders genéricos: a ferramenta não só organiza, ela **impede prompt ruim**. Fundamentado em constraints verificados (HISTORY §9-11). Núcleo modular já entregue no v0.

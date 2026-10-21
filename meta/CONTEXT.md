@@ -42,12 +42,13 @@ cancioneiro/
 ├── CLAUDE.md                  # guia do Claude Code (raiz, < 200 linhas)
 ├── README.md                  # apresentação do repo
 ├── .gitignore
-├── .claude/                   # kit do Claude Code (settings + skills) — vem do zip
+├── .claude/                   # kit do Claude Code: settings + skills (apply-wo, wrap, sondar)
 ├── meta/                      # arquivos de contexto (o "cérebro" do projeto)
 │   ├── CEREBRO.md   CONTEXT.md   STATUS.md   DECISIONS.md
 │   ├── CHANGELOG.md   IDEAS.md   ROADMAP.md   GLOSSARY.md
-│   ├── HISTORY.md   LOG-TEMPLATE.md
-│   └── specs/                 # specs de doc para o Code aplicar (chat autora)
+│   ├── HISTORY.md   LOG-TEMPLATE.md   SPEC.md
+│   └── workorders/            # WO: instrução de aplicação que o chat autora e o Code posiciona
+│       └── _TEMPLATE.md      # o modelo (sobe ao Projeto; o corpo das WOs, não)
 ├── schema/                    # o contrato JSON
 │   ├── song.schema.json       # uma canção
 │   ├── collection.schema.json # a coleção (álbuns + módulos)
@@ -60,7 +61,7 @@ cancioneiro/
 ├── index.html                 # redireciona para app/ (URL limpa no Pages)
 ├── app/
 │   └── index.html             # a ferramenta (v0 pronto)
-└── logs/                      # diários de sessão (fora do Projeto de chat)
+└── logs/                      # diário do dia (fora do Projeto de chat)
 ```
 
 ## Como as peças críticas funcionam

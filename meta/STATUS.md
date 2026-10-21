@@ -7,20 +7,14 @@
 
 ---
 
-## Última conversa (2026-10-20, fatia 3 do kit v1.127.0)
+## Última conversa (2026-10-20, kit v1.127.0 — fatias 1 a 4)
 
-- Kit: fatia 3 aplicada (WO 0004). `meta/CEREBRO.md` adotado do template v1.127.0 com três especializações (DEC-013); `INSTRUCOES-DO-PROJETO.md` fundido preservando o domínio (DEC-014); `meta/LOG-TEMPLATE.md` alinhado à cadência de turno e à DEC-010.
+- Kit: as quatro fatias do v1.127.0 aplicadas (WOs 0002-0005). Skills `apply-wo`, `wrap`, `sondar` instaladas e `apply-spec` removida; `.claude/settings.json` com `Write` e `additionalDirectories`; `CLAUDE.md`, `.gitignore` e `.flatdropignore` atualizados. `meta/CEREBRO.md` adotado do template com três especializações (DEC-013); `INSTRUCOES-DO-PROJETO.md` fundido preservando o domínio (DEC-014); `meta/LOG-TEMPLATE.md` alinhado à cadência de turno e à DEC-010. Fatia 4: os demais `meta/` ficam na forma do projeto, entra `meta/SPEC.md`, a pasta morta `meta/specs/` sai (DEC-015); ideias i-022 a i-024 capturadas.
 - **Pendência do dono:** o painel do Projeto no claude.ai ainda manda as três linhas revogadas — colar nele o conteúdo novo de `INSTRUCOES-DO-PROJETO.md`.
-- Pendente do kit: fatia 4 (demais `meta/`, `meta/specs/`, títulos `## Última sessão` deste arquivo).
-
-## Última sessão (2026-10-20, kit v1.127.0 — fatias 1 e 2)
-
-- Kit: fatias 1 e 2 do v1.127.0 aplicadas. Skills `apply-wo`, `wrap`, `sondar` instaladas e `apply-spec` removida; `.claude/settings.json` com `Write` e `additionalDirectories`; `CLAUDE.md`, `.gitignore` e `.flatdropignore` atualizados.
-- Pendente do kit: os demais `meta/` (fatia 4); a pasta morta `meta/specs/`. (CEREBRO e Instruções saíram da pendência: fatia 3 aplicada, ver bloco acima.)
-- Pendente de varredura: cadência «sessão→turno» — **46 ocorrências varridas** (`grep -rnoiE` em `meta/ CLAUDE.md INSTRUCOES-DO-PROJETO.md README.md .claude/ .gitignore .flatdropignore logs/`; medida nas fatias 1-2: 52): **corrigidas nesta fatia 20** (CEREBRO 11, Instruções 3, LOG-TEMPLATE 6), **legítimas e justificadas 17**, **a corrigir 2** (os dois títulos `## Última sessão` do próprio STATUS, que viram `## Última conversa` na fatia 4). Declarada **PENDENTE**, não encerrada.
+- Varredura de cadência «sessão→turno»: **ENCERRADA na primeira classe** («manda» = zero ocorrências em arquivo que dirige comportamento). O total medido continua alto porque as outras quatro classes são legítimas: relato histórico datado, domínio (sessão do navegador/Suno), contraste deliberado do kit e meta-documentação da própria correção. Números do fecho no relatório da WO 0005.
 - Pendente de produto: a pergunta de 2026-10-17 sobre o `album-referencias.json` (pasta-pai) continua aberta.
 
-## Última sessão (2026-07-21, auditoria)
+## Última conversa (2026-07-21, auditoria)
 
 Auditoria completa do projeto contra a premissa original + pesquisa de refinamento. Resultado: **7 divergências de documentação** corrigidas (README dizia "v0.1.0, ferramenta a construir"; i-009 já implementado mas marcado aberto; backlog com item já feito) e **1 bug real corrigido** (FIX-003: dedup por substring barrava "female vocals" quando a base tinha "male vocals"). Pesquisa trouxe constraints verificáveis e acionáveis: limite de ~1.000 caracteres no Style com **truncamento silencioso**, teto prático de ~10 tags, e campo de exclusão mais confiável que negação no texto. Consolidado no HISTORY (seções 9-13) e vira a Fase 3.
 

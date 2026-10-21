@@ -70,6 +70,15 @@ O Suno pesa mais as tags iniciais; gênero primeiro, clima em seguida. A ferrame
 ### i-021 💡 Campos de peso (styleWeight / desvio criativo)
 A API expõe pesos 0.00-1.00 para aderência ao estilo e desvio criativo (os Creative Sliders). Poderiam virar campos opcionais do esquema para registrar a configuração usada numa geração. Só vale se o fluxo passar a depender disso. Fase 4.
 
+### i-022 💡 Skill que ensina a gerar o JSON do Cancioneiro
+`[relatado pelo dono, 2026-08-22]` Uma skill do projeto que ensine um chat a produzir o JSON canonico seguindo o esquema a risca — estrutura, campos obrigatorios, a regra de dominio (rotulo fora do bloco copiavel). Hoje isso vive no `schema/PROMPT-PARA-CHATS.md`, que e um texto colavel: a skill seria a versao que o proprio Claude Code carrega. **Sobreposicao a resolver antes de construir:** i-002 (o prompt-modelo) ja cobre parte disto; decidir se a skill substitui o prompt-modelo ou se os dois convivem em canais diferentes (chat colavel × skill do repo).
+
+### i-023 💡 Skill com os macetes do Suno
+`[relatado pelo dono, 2026-08-22]` Uma skill que consolide o que o projeto sabe sobre gerar musica com IA: como estruturar cada parte, onde cada coisa entra, possibilidades e exemplos. **O material ja existe** — e o `meta/HISTORY.md` §1-13, com nivel de confianca e fontes. A ideia e a FORMA, nao o conteudo: transformar conhecimento lido sob demanda em skill lida antes de trabalhar. Pesar contra o custo: skill e lida sempre, HISTORY so quando preciso.
+
+### i-024 💡 Molde para o projeto gerar skill de estilo proprio
+`[relatado pelo dono, 2026-08-22]` Nao e uma skill, e um **molde que gera skills** — uma por estilo musical, capturando como manter o mesmo estilo, voz, idioma, forma de escrever letra, tom e melodia, e como guiar edicao, extend e cover. Serviria para replicar ou refinar um estilo ja estabelecido. E a ideia mais ambiciosa das tres e a mais dependente das outras duas; candidata a analise (`meta/analises/`) antes de qualquer spec, porque mexe no formato de um artefato que outra pessoa vai ler.
+
 ## Feedback para o Kit
 
 - **[2026-07-19] Nicho pediria uma variante "ferramenta+conteúdo".** Este projeto é dev, mas o "produto" é metade código (app) e metade dado curado (acervo JSON). O template de Desenvolvimento cobre bem a parte código; a parte "acervo de dados como entregável" ficou por conta do CONTEXT. Não faltou nada crítico, mas um nicho híbrido "ferramenta que consome conteúdo estruturado" seria útil.
@@ -79,6 +88,7 @@ A API expõe pesos 0.00-1.00 para aderência ao estilo e desvio criativo (os Cre
 - **[2026-10-20] O manifesto do v1.127.0 conta 4 carimbos de versao; sao 5.** O texto diz «o CEREBRO, o modelo de WO e as duas skills», mas o pacote traz carimbo tambem em `sondar.SKILL__template-update.md`. O texto nao acompanhou a chegada da terceira skill. Medido: `grep -o "Kit de Contexto Universal v[0-9.]*"` nos arquivos do pacote devolve 5.
 - **[2026-10-20] Natureza `fusao` pode ser falso positivo, e custa caro quando e.** O manifesto marca CEREBRO e INSTRUCOES como `fusao`, o que faz o merge comecar pressupondo redacao propria a preservar. Neste projeto o CEREBRO nao tinha nenhuma: 20 das 192 linhas divergiam, todas texto do kit antigo. Sugestao ao kit: ensinar a **medir** a divergencia antes de escolher o metodo (comparacao normalizada linha a linha), porque o metodo de fusao paragrafo a paragrafo custa muito mais e, quando o arquivo nao evoluiu, chega ao mesmo resultado. O caso oposto tambem existe — as Instrucoes DESTE projeto eram fusao de verdade.
 - **[2026-10-20] A varredura de linhas revogadas cria ocorrencias novas enquanto corrige as antigas.** As WOs e os relatorios que documentam a correcao citam o termo revogado para explica-lo, e entram na contagem seguinte como se fossem divida. A contagem total sobe ou cai pouco, e parece que o trabalho nao andou. Sugestao: o manifesto pedir a contagem **por natureza** (manda / relata / dominio / contraste / meta-documentacao da propria correcao), nao so o total — e dizer que o alvo e zero na primeira classe, nao no total.
+- **[2026-10-20] O carimbo de modos nao cobre o caso «o template e mais pobre que o vivo», e o manifesto resolve isso em prosa.** A natureza `template` diz «comparar e adotar novidade e seguro», e a regra que protege o arquivo vivo esta num paragrafo mais abaixo. Numa fatia em que SETE arquivos caem todos em (c), ler na ordem leva a propor substituicao sete vezes antes de chegar a regra que a proibe. Sugestao: o manifesto trazer, ao lado da natureza, qual das tres respostas e o DEFAULT esperado para aquele arquivo — `adotar`, `fundir` ou `(c) fica o vivo` —, que e informacao que quem gera o pacote tem e quem o recebe precisa descobrir lendo tudo.
 
 ## Concluídas
 
