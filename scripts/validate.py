@@ -27,6 +27,27 @@ def load(path):
         return json.load(f)
 
 
+def check_module_refs(data, rel):
+    """Todo id em songs[].styleModules resolve no styleModules[] da propria colecao.
+
+    JSON Schema nao faz referencia cruzada: id orfao passa na validacao estrutural
+    e vira fragmento silenciosamente ausente na ferramenta (ver DEC-016).
+    """
+    index = {m.get("id") for m in data.get("styleModules", []) if isinstance(m, dict)}
+    orphans = []
+    for album in data.get("albums", []):
+        for song in album.get("songs", []):
+            for mid in song.get("styleModules", []) or []:
+                if mid not in index:
+                    orphans.append((album.get("id", "?"), song.get("id", "?"), mid))
+    if orphans:
+        print(f"ERRO de referencia em {rel} ({len(orphans)} id(s) de modulo sem indice):")
+        for a, s, mid in orphans[:8]:
+            print(f"   [{a} > {s}] styleModules: '{mid}' nao existe em styleModules[]")
+        return 1
+    return 0
+
+
 def main(argv):
     targets = argv[1:] or sorted(glob.glob(os.path.join(ROOT, "data", "*.json")))
     if not targets:
@@ -66,6 +87,7 @@ def main(argv):
     except ImportError:
         print("Aviso: pacote 'jsonschema' ausente — so checagem de sintaxe.")
         print("       Instale com: pip install jsonschema --break-system-packages")
+        print("       ATE LA, 'OK' abaixo significa so JSON bem formado — nao conformidade.")
 
     for path in targets:
         rel = os.path.relpath(path, ROOT)
@@ -78,6 +100,8 @@ def main(argv):
 
         if validator is None:
             print(f"OK (sintaxe)  {rel}")
+            # o modo degradado tambem confere referencias (nao depende do pacote)
+            errors += check_module_refs(data, rel)
             continue
 
         errs = sorted(validator.iter_errors(data), key=lambda e: list(e.path))
@@ -91,11 +115,17 @@ def main(argv):
             n_songs = sum(len(a.get("songs", [])) for a in data.get("albums", []))
             print(f"OK  {rel}  ({len(data.get('albums', []))} álbuns, {n_songs} faixas)")
 
+        # referencia cruzada: o schema nao alcanca isto
+        errors += check_module_refs(data, rel)
+
     print()
     if errors:
         print(f"FALHOU: {errors} arquivo(s) com erro.")
         return 1
-    print("Tudo conforme ao esquema.")
+    if validator is None:
+        print("Sintaxe OK. ESQUEMA NAO CONFERIDO (pacote 'jsonschema' ausente).")
+    else:
+        print("Tudo conforme ao esquema.")
     return 0
 
 

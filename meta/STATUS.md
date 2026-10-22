@@ -7,6 +7,12 @@
 
 ---
 
+## Última conversa (2026-10-22, WO 0006 — round-trip do acervo)
+
+- Round-trip corrigido (FIX-004/005): o estado dos módulos ligados saiu de dentro da coleção (`App.activeModules[song.id]`) e o `importFromFile` separa o `try` do parse do `try` da carga. `data/exemplo-cinzeiro.json` completado com os 5 módulos que citava (DEC-016); `scripts/validate.py` ganha checagem de referência cruzada e passa a declarar quando o esquema NÃO foi conferido (sem `jsonschema`).
+- A pergunta de 2026-10-17 sobre o `album-referencias.json` está **fechada**. A resposta ao «como evitar que erros como esse continuem» é o FIX-005 (mensagem que nomeia causa só pode vir da operação que a produz), não o FIX-004.
+- **Pendência do dono:** os 4 itens do roteiro de conferência na tela da WO 0006 (importar, baixar, reimportar, chip) — não carimbados como feitos.
+
 ## Última conversa (2026-10-20, kit v1.127.0 — fatias 1 a 4)
 
 - Kit: as quatro fatias do v1.127.0 aplicadas (WOs 0002-0005). Skills `apply-wo`, `wrap`, `sondar` instaladas e `apply-spec` removida; `.claude/settings.json` com `Write` e `additionalDirectories`; `CLAUDE.md`, `.gitignore` e `.flatdropignore` atualizados. `meta/CEREBRO.md` adotado do template com três especializações (DEC-013); `INSTRUCOES-DO-PROJETO.md` fundido preservando o domínio (DEC-014); `meta/LOG-TEMPLATE.md` alinhado à cadência de turno e à DEC-010. Fatia 4: os demais `meta/` ficam na forma do projeto, entra `meta/SPEC.md`, a pasta morta `meta/specs/` sai (DEC-015); ideias i-022 a i-024 capturadas.

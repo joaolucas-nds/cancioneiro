@@ -47,6 +47,8 @@ cancioneiro/
 │   ├── CEREBRO.md   CONTEXT.md   STATUS.md   DECISIONS.md
 │   ├── CHANGELOG.md   IDEAS.md   ROADMAP.md   GLOSSARY.md
 │   ├── HISTORY.md   LOG-TEMPLATE.md   SPEC.md
+│   ├── analises/              # uma análise por decisão não-trivial (nasceu em 2026-10-21)
+│   │   └── _TEMPLATE.md
 │   └── workorders/            # WO: instrução de aplicação que o chat autora e o Code posiciona
 │       └── _TEMPLATE.md      # o modelo (sobe ao Projeto; o corpo das WOs, não)
 ├── schema/                    # o contrato JSON

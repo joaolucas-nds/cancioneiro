@@ -250,6 +250,9 @@
    Estado da aplicacao
    =================================================================== */
 const App = {
+  // Estado efemero dos modulos ligados, por song.id. NUNCA dentro da colecao:
+  // o que esta na colecao e serializado pelo "Baixar .json" (ver FIX-004).
+  activeModules: {},
   collection: null,       // o acervo carregado (objeto do JSON)
   modulesById: {},        // indice id -> modulo de estilo
   ui: loadUiState(),      // marcacoes/filtros efemeros (localStorage)
@@ -315,12 +318,21 @@ async function tryAutoLoad() {
 function importFromFile(file) {
   const reader = new FileReader();
   reader.onload = () => {
+    // Dois try separados de proposito: um catch que nomeia uma causa especifica
+    // so pode envolver a operacao que produz aquela causa (ver FIX-005).
+    let json;
     try {
-      const json = JSON.parse(reader.result);
+      json = JSON.parse(reader.result);
+    } catch (e) {
+      toast("Arquivo inválido: não é um JSON válido");
+      return;
+    }
+    try {
       setCollection(json);
       toast("Acervo importado: " + (json.title || file.name));
     } catch (e) {
-      toast("Arquivo inválido: não é um JSON válido");
+      toast("Não consegui carregar o acervo: " + e.message);
+      console.error("[cancioneiro] falha em setCollection:", e);
     }
   };
   reader.onerror = () => toast("Não consegui ler o arquivo");
@@ -441,7 +453,7 @@ function exportCollectionMd() {
    MOSTRA o resultado e deixa copiar — nao reescreve o JSON.
    =================================================================== */
 function recomposedStyle(song) {
-  const active = song._activeModules || new Set(song.styleModules || []);
+  const active = App.activeModules[song.id] || new Set(song.styleModules || []);
   const frags = [];
 
   /* Um fragmento e redundante quando sua sequencia de PALAVRAS ja aparece
@@ -710,7 +722,7 @@ function renderModules(song, card) {
   const wrap = document.createElement("details");
   wrap.className = "modules-details";
   const active = new Set(song.styleModules || []);
-  song._activeModules = active;
+  App.activeModules[song.id] = active;
 
   wrap.innerHTML = "<summary>módulos de estilo (ligar/desligar)</summary>";
   const box = document.createElement("div");

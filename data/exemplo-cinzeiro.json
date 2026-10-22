@@ -3,6 +3,43 @@
   "title": "Cinzeiro-OST (amostra)",
   "description": "Amostra de conversao do acervo existente para o esquema canonico. Uma faixa do projeto Cinzeiro-OST, convertida a partir de FAIXAS.md para provar que os campos do esquema cobrem o caso real (dois campos separados, [Instrumental], tags de arco linear, referencia humana isolada do copiavel).",
   "targetTool": "suno",
+  "styleModules": [
+    {
+      "id": "genre-dark-ambient",
+      "category": "genre",
+      "label": "Dark ambient",
+      "fragment": "dark ambient cinematic",
+      "notes": "Atmosferico, sem pulso definido. Base de exploracao."
+    },
+    {
+      "id": "instr-solo-cello",
+      "category": "instrument",
+      "label": "Cello solo",
+      "fragment": "solo cello",
+      "notes": "Cello sozinho, expressivo."
+    },
+    {
+      "id": "mood-ominous",
+      "category": "mood",
+      "label": "Ameacador",
+      "fragment": "ominous, dark",
+      "notes": "Tensao/ameaca. Dark ambient, industrial."
+    },
+    {
+      "id": "tempo-slow-70",
+      "category": "tempo",
+      "label": "Lento ~70 BPM",
+      "fragment": "slow tempo 70 bpm",
+      "notes": "Use junto do campo bpm. BPM e aproximacao no Suno."
+    },
+    {
+      "id": "vocal-none",
+      "category": "vocal",
+      "label": "Sem vocal",
+      "fragment": "no vocals",
+      "notes": "Reforco redundante ao [Instrumental] no Lyrics. Sempre em faixa instrumental."
+    }
+  ],
   "albums": [
     {
       "id": "cinzeiro-ost",

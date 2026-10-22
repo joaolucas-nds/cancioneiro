@@ -227,3 +227,44 @@
 **Alternativas consideradas:** (a) adotar os templates e reinjetar o conteudo — descartada: seria regressao de forma, e o CEREBRO do proprio kit diz isso; (b) manter `meta/specs/` vazia «porque pode servir» — descartada: pasta vazia versionada com `.gitkeep` orfao e exatamente o estado que faz um assistente futuro procurar spec onde nao ha nenhuma, e foi o que aconteceu nesta semana.
 
 **Consequencias:** (+) O funil fica completo: exploracao → sonda → analise/spec → WO → DECISIONS, com modelo para cada peca. (+) O vocabulario novo do kit entra no glossario, que e onde se procura. (+) A arvore do repositorio no `CONTEXT` e no `README` para de mentir. (−) `meta/analises/` ainda nao existe e o modelo dela nao entra (natureza `modelo-em-espera`): quando a primeira analise nascer, ha de vir do pacote. (−) Duas pastas do projeto passam a ser «nascem no primeiro uso», o que so funciona se estiver escrito — por isso a nota no `meta/SPEC.md` e no glossario.
+
+---
+
+## FIX-004 — O app gravava estado de interface dentro da colecao, e o download o serializava
+
+**Data:** 2026-10-22
+**Sintoma:** Importar um acervo baixado pela propria ferramenta mostrava «Arquivo invalido: nao e um JSON valido», sobre um arquivo cujo JSON era impecavel. O `album-referencias.json` do dono ficou cinco dias inutilizavel.
+
+**Causa raiz:** `renderModules` gravava `song._activeModules = active` — um `Set` — dentro do objeto da cancao (linha 713). `JSON.stringify` nao serializa `Set`: grava `{}`. Na importacao seguinte, `recomposedStyle` lia `song._activeModules || new Set(...)` (linha 444); `{}` e truthy, o fallback nao rodava, e `{}.forEach` lancava `TypeError: active.forEach is not a function`. O ciclo era completo: o app sujava o arquivo que ele mesmo baixava e depois nao conseguia le-lo. Rodava no render de TODO cartao, nao so ao abrir o painel de modulos.
+
+**Solucao:** O estado efemero dos modulos ligados passa a viver em `App.activeModules[song.id]`, fora da colecao. Alinha o codigo com o DEC-004, que ja dizia que o arquivo e a fonte de verdade e o estado efemero mora a parte — o app fazia o contrario. Medido numa copia antes de aplicar: download sai sem chave interna, reimport do proprio download OK, e o arquivo ja sujo do dono importa (22 cartoes). Teste do falso positivo: 27 chips, recomposto 174 → 191 ao ligar e 191 ao desligar, identico ao original (desligar nao encolhe e intencional — a base manda).
+
+**Licao:** Dado de interface gravado no objeto canonico vaza na primeira serializacao. `Set` e `Map` agravam porque viram `{}` em vez de falhar: o defeito nao aparece onde nasce.
+
+---
+
+## FIX-005 — Um `catch` largo atribuia a qualquer falha a causa da primeira operacao
+
+**Data:** 2026-10-22
+**Sintoma:** Todo erro de importacao era relatado como «nao e um JSON valido», inclusive os que nada tinham a ver com parse. A mensagem mandou a investigacao de 2026-10-17 procurar defeito no arquivo durante cinco dias, enquanto o defeito estava no app.
+
+**Causa raiz:** `importFromFile` envolvia tres operacoes num unico `try` — `JSON.parse`, `setCollection` (que carrega E renderiza) e o `toast` de sucesso — com um `catch` que nomeava a causa da primeira. Qualquer excecao do render chegava ao usuario como JSON invalido. `setCollection` ate tinha a propria mensagem para quando falta `albums`, mas e `toast` + `return`, nao `throw`: por isso o unico caminho que o `catch` de fato cobria era o que ele descrevia errado.
+
+**Solucao:** Dois `try` separados. O do parse mantem a mensagem, que ali e verdadeira (medido: JSON realmente malformado continua dizendo «nao e um JSON valido»); o da carga reporta `e.message` e loga a excecao no console.
+
+**A mesma classe, achada em outro arquivo na auditoria desta WO:** `scripts/validate.py` imprimia «Tudo conforme ao esquema.» mesmo rodando sem o pacote `jsonschema`, isto e, sem ter conferido esquema nenhum — ele avisa na PRIMEIRA linha e afirma conformidade na ULTIMA, que e a que se le. Medido no disco do dono em 2026-10-22: o pacote nao esta instalado, entao todo «verde» do instrumento ate aqui foi verde de sintaxe. Corrigido na mesma entrega: a mensagem final declara o modo, e o aviso se repete no fim.
+
+**Licao:** mensagem que nomeia um resultado so pode ser escrita pela operacao que produz aquele resultado — vale para `catch` e para rodape de relatorio. Mesma familia do FIX-003: la um criterio de comparacao errado falhava em silencio; aqui uma mensagem erra sobre o que foi medido. Mensagem errada custa mais que erro mudo, porque desvia quem investiga: foram cinco dias no app e, no instrumento, um numero indeterminado de «OK» lidos como conformidade.
+
+---
+
+## DEC-016 — Acervo autossuficiente: cada colecao carrega os proprios modulos de estilo
+
+**Data:** 2026-10-22
+**Contexto:** `data/exemplo-cinzeiro.json` referenciava cinco modulos (`genre-dark-ambient`, `instr-solo-cello`, `mood-ominous`, `tempo-slow-70`, `vocal-none`) que nao existiam nele — medido: `refs=5 · indice=0`. Os cinco existem em `schema/style-modules.json`, mas `setCollection` monta `App.modulesById` so a partir da colecao carregada, entao os ids nao resolviam para fragmento nenhum, em silencio. O arquivo fora escrito supondo uma biblioteca compartilhada que o app nao carrega. Duas leituras com consertos opostos: biblioteca compartilhada (o arquivo esta certo, falta codigo) ou acervo autossuficiente (o arquivo esta incompleto, falta dado).
+
+**Decisao:** **Acervo autossuficiente.** Toda colecao traz em `styleModules[]` os modulos que suas faixas citam, como `data/demo.json` (27) e o `album-referencias.json` (50) ja faziam. `schema/style-modules.json` passa a ser **biblioteca de referencia para autoria** — de onde se copia ao montar um acervo —, nao indice carregado em tempo de execucao. Um `.json` sozinho basta para reproduzir o prompt.
+
+**Alternativas consideradas:** biblioteca compartilhada carregada pelo app — descartada: tornaria o acervo dependente de um segundo arquivo, contra o espirito do DEC-001 (o JSON e o dado canonico, completo em si).
+
+**Consequencias:** (+) Um acervo e reproduzivel sozinho, inclusive fora deste repositorio. (+) A checagem de integridade referencial ganha semantica definida e entra no `validate.py`. (−) A biblioteca se duplica em cada acervo; quando um fragmento for corrigido na biblioteca, os acervos ja montados nao mudam sozinhos. Mitigacao aceita: a biblioteca e de autoria, nao de runtime — divergencia e esperada e registrada no proprio acervo.
