@@ -5,6 +5,13 @@
 > **Decidida em:** 2026-10-22 pelo dono — **A + E aprovadas, nesta ordem (E antes de A)**; C3 resolvido
 > como **acervo autossuficiente (opcao 2)**. Aplicacao: `meta/workorders/261022-wo0006-roundtrip-e-refs.md`.
 > O desfecho vira FIX-004, FIX-005 e DEC-016 no `meta/DECISIONS.md`; esta analise guarda o raciocinio.
+> **REVISTA em 2026-10-23 — a recomendacao estava INCOMPLETA.** A conferencia na tela, depois de aplicada
+> a WO 0006, mostrou que A impede o app de CRIAR a chave mas nao remove a que ja existe no arquivo lido:
+> medido, entrada limpa → baixado com `0` ocorrencias; entrada ja suja → baixado com `7`. Logo o
+> `album-referencias.json` abre e funciona, mas propaga as 7 chaves de download em download, e seguiria
+> reprovando no esquema. O descarte da opcao C estava certo no argumento (saneamento silencioso apaga o
+> sinal) e errado na conclusao: o certo era **C que AVISA**. Ver «Revisao» no fim deste documento e
+> FIX-006 na WO `261023-wo0007-sanear-na-importacao.md`.
 
 > Origem: a pergunta do dono em `../261017-2231.txt` («o que tem de errado com
 > `album-referencias.json`, instrua corretamente para ensinar outro projeto, e veja o que podemos
@@ -250,3 +257,36 @@ colecao. Medida antes e depois numa copia, fora do repositorio:
 antes:  ERRO de referencia em data/exemplo-cinzeiro.json (5 id(s) de modulo sem indice)  -> exit 1
 depois: OK (refs)  data/exemplo-cinzeiro.json                                            -> exit 0
 ```
+
+---
+
+## Revisao — 2026-10-23: a lacuna que a conferencia na tela revelou
+
+**O que a recomendacao original nao previu.** A + E foram aplicadas e funcionam: o app nao grava mais
+`_activeModules`, o arquivo quebrado voltou a abrir (22 cartoes), o ciclo baixar→reimportar fecha, e o
+toggle de modulo continua igual. O que faltou perguntar foi o que acontece com a sujeira **que ja
+existia no arquivo**. Medido depois de aplicar, com o app corrigido:
+
+```
+demo.json              (entrada limpa)  ->  entrada: 0  |  baixado: 0
+album-referencias.json (entrada suja)   ->  entrada: 7  |  baixado: 7
+```
+
+O app le o JSON, nunca toca na chave, e a serializa de volta. Nao quebra mais — mas o arquivo carrega
+as 7 chaves indefinidamente, e `song.schema.json` tem `additionalProperties: false`, entao ele
+reprovaria no `validate.py` se fosse para `data/`.
+
+**Por que o erro aconteceu, para nao repetir:** a analise mediu as tres opcoes contra «o ciclo volta a
+funcionar?» e nenhuma contra «o dado existente fica limpo?». As duas perguntas parecem a mesma quando se
+olha so o sintoma. E a prova disso esta na propria tabela de medicao original: a coluna «importar o
+arquivo JA sujo do dono» marcava **C como a unica que passava** por um caminho que A nao cobria — o
+dado ficou certo, a leitura dele foi que juntou as duas colunas numa so.
+
+**Revisao da recomendacao:** acrescentar **C que avisa** — sanear as chaves com prefixo `_` na
+importacao, **dizendo quantas removeu**, nunca em silencio. O argumento original contra C continua de
+pe: saneamento mudo apaga o sinal que permitiu achar este defeito. O remedio nao era descartar C, era
+dar voz a ela. Vira **FIX-006**.
+
+**O que isto NAO muda:** FIX-004 e FIX-005 continuam corretos e necessarios. C sozinha nunca teria sido
+suficiente — ela conserta a entrada, nao a causa, e o app continuaria sujando todo arquivo que tocasse.
+A ordem A → C e a certa; invertida, so se trocaria um defeito pelo outro.

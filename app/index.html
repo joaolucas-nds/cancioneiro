@@ -327,9 +327,11 @@ function importFromFile(file) {
       toast("Arquivo inválido: não é um JSON válido");
       return;
     }
+    const removidas = stripInternalKeys(json);
     try {
       setCollection(json);
-      toast("Acervo importado: " + (json.title || file.name));
+      toast("Acervo importado: " + (json.title || file.name)
+            + (removidas ? " · " + removidas + " campo(s) interno(s) removido(s) — baixe de novo para gravar limpo" : ""));
     } catch (e) {
       toast("Não consegui carregar o acervo: " + e.message);
       console.error("[cancioneiro] falha em setCollection:", e);
@@ -337,6 +339,27 @@ function importFromFile(file) {
   };
   reader.onerror = () => toast("Não consegui ler o arquivo");
   reader.readAsText(file);
+}
+
+/* Remove as chaves internas (prefixo _) que versoes antigas da ferramenta
+   vazaram para dentro do JSON salvo, e devolve quantas removeu.
+
+   Por que CONTAR em vez de limpar calado: a chave `_activeModules` so foi
+   descoberta porque alguem viu o arquivo quebrar. Saneamento silencioso
+   conserta o sintoma e apaga o sinal — o proximo vazamento passaria
+   despercebido pelo resto da vida do projeto (ver FIX-006 e a revisao da
+   analise de 2026-10-21). O aviso e a metade que importa. */
+function stripInternalKeys(node) {
+  let n = 0;
+  if (Array.isArray(node)) {
+    node.forEach(item => { n += stripInternalKeys(item); });
+  } else if (node && typeof node === "object") {
+    Object.keys(node).forEach(k => {
+      if (k.startsWith("_")) { delete node[k]; n++; }
+      else n += stripInternalKeys(node[k]);
+    });
+  }
+  return n;
 }
 
 /** Valida minimamente e adota a colecao. */

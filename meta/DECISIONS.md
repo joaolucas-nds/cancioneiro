@@ -268,3 +268,16 @@
 **Alternativas consideradas:** biblioteca compartilhada carregada pelo app — descartada: tornaria o acervo dependente de um segundo arquivo, contra o espirito do DEC-001 (o JSON e o dado canonico, completo em si).
 
 **Consequencias:** (+) Um acervo e reproduzivel sozinho, inclusive fora deste repositorio. (+) A checagem de integridade referencial ganha semantica definida e entra no `validate.py`. (−) A biblioteca se duplica em cada acervo; quando um fragmento for corrigido na biblioteca, os acervos ja montados nao mudam sozinhos. Mitigacao aceita: a biblioteca e de autoria, nao de runtime — divergencia e esperada e registrada no proprio acervo.
+
+---
+
+## FIX-006 — A correcao do round-trip nao limpava a sujeira que ja estava nos arquivos
+
+**Data:** 2026-10-23
+**Sintoma:** Depois do FIX-004, o `album-referencias.json` voltou a abrir e o ciclo baixar→reimportar passou a fechar. Mas a conferencia na tela mediu o arquivo baixado e achou as 7 chaves `_activeModules` ainda la — entrada limpa produzia saida com 0, entrada ja suja produzia saida com 7.
+
+**Causa raiz:** O FIX-004 parou de GRAVAR a chave; nao removeu a que ja existia. O app lia o JSON, nunca tocava em `_activeModules`, e a serializava de volta no download. Arquivo contaminado por uma versao antiga da ferramenta propagava a chave indefinidamente — e seguiria reprovando em `song.schema.json`, que tem `additionalProperties: false`.
+
+**Solucao:** `stripInternalKeys(json)` na importacao, removendo recursivamente as chaves com prefixo `_` e **devolvendo quantas removeu**, informadas no proprio toast de sucesso. A contagem e metade da correcao: a `_activeModules` so foi descoberta porque um arquivo quebrou visivelmente, e saneamento mudo teria consertado o sintoma apagando o sinal — o proximo vazamento passaria despercebido. O saneamento roda FORA do `try` da carga, para o aviso nao ser engolido por uma mensagem de erro (seria o FIX-005 de novo, no mesmo arquivo).
+
+**Licao:** Corrigir a causa nao limpa os dados que a causa ja produziu, e as duas coisas parecem uma so quando se olha o sintoma. Ao fechar um defeito que escreveu dado errado, medir **duas** perguntas: «para de acontecer?» e «o que ja aconteceu fica limpo?». A analise de 2026-10-21 mediu as tres opcoes so contra a primeira — e a propria tabela dela mostrava a opcao C passando num caminho que a recomendada nao cobria, coluna que foi lida como redundante.
