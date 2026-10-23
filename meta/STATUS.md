@@ -7,6 +7,13 @@
 
 ---
 
+## Última conversa (2026-10-23, WO 0007 — sanear na importação)
+
+- FIX-006 aplicado (`131f900`): `stripInternalKeys` remove, na importação por arquivo, as chaves com prefixo `_` que versões antigas vazaram para o JSON, e o toast de sucesso diz quantas saíram. O saneamento roda FORA do `try` da carga. Corrige o que o FIX-004 deixou: parou de GRAVAR `_activeModules`, mas devolvia a que já estava no arquivo.
+- A pergunta de 2026-10-17 (`../261017-2231.txt`) está **fechada** nas duas metades: o que havia de errado com o arquivo (FIX-004 e FIX-006) e como evitar que erros assim continuem (FIX-005, nas duas pontas: o `catch` do app e o rodapé do `validate.py`).
+- **Pendência do dono:** conferência na tela — importar o `album-referencias.json` e ver o toast dizer 7 campos removidos; baixar de novo e conferir 0 `_activeModules`. Os 4 itens da WO 0006 seguem sem carimbo. `jsonschema` segue não instalado: conformidade de esquema NÃO CONFERIDA.
+- Limite conhecido: `tryAutoLoad` não sanea (só a importação por arquivo).
+
 ## Última conversa (2026-10-22, WO 0006 — round-trip do acervo)
 
 - Round-trip corrigido (FIX-004/005): o estado dos módulos ligados saiu de dentro da coleção (`App.activeModules[song.id]`) e o `importFromFile` separa o `try` do parse do `try` da carga. `data/exemplo-cinzeiro.json` completado com os 5 módulos que citava (DEC-016); `scripts/validate.py` ganha checagem de referência cruzada e passa a declarar quando o esquema NÃO foi conferido (sem `jsonschema`).
