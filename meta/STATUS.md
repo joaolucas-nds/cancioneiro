@@ -3,7 +3,7 @@
 > **O agora.** O que funciona, o que está em progresso, o que está quebrado, backlog curto.
 > Rolante: item resolvido sai daqui e vai para o CHANGELOG. Médio/longo prazo vive no ROADMAP.
 
-**Versão atual:** 0.4.1 · **Fase:** 2 concluída · Fase 3 (qualidade de prompt) a iniciar
+**Versão atual:** 0.4.1 · **Fase:** 2 concluída · Fase 3a (painel de qualidade) entregue no commit `2ff6fe3`, aguardando conferência na tela do dono
 
 ---
 
@@ -59,7 +59,7 @@ Auditoria completa do projeto contra a premissa original + pesquisa de refinamen
 
 ## Em progresso
 
-- (nada em execução — aguardando escolha da Fase 3)
+- Fase 3a entregue (WO 0009, `2ff6fe3`); falta só a conferência na tela do dono. Próxima fatia: 3a.2, sugestão do que cortar quando há tags demais.
 
 ## Quebrado / pendências que travam
 
@@ -67,7 +67,7 @@ Auditoria completa do projeto contra a premissa original + pesquisa de refinamen
 
 ## Backlog curto (próximas ações concretas)
 
-1. **Painel de qualidade do prompt** (Fase 3, recomendado): contador de caracteres do Style (limite ~1.000, o Suno trunca em silêncio), contador de tags com aviso acima de ~10, e detecção de "no X" no style sugerindo migrar para `excludeStyles`. Fundamentado no HISTORY §9-11.
+1. **Painel de qualidade do prompt** (Fase 3, **entregue na WO 0009 — falta a conferência na tela**; «migrar no X para excludeStyles» ficou fora, DEC-018): contador de caracteres do Style (limite ~1.000, o Suno trunca em silêncio), contador de tags com aviso acima de ~10, e detecção de "no X" no style sugerindo migrar para `excludeStyles`. Fundamentado no HISTORY §9-11.
 2. **Controle de BPM** (i-005) — pedido explícito na premissa original, ainda não feito.
 3. **Converter 1 álbum real** (i-008) — depende de subir um `.md` de origem.
 4. **Testar o prompt-modelo ponta a ponta:** colar num chat, gerar, importar.
