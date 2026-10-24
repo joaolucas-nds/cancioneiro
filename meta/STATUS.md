@@ -7,6 +7,12 @@
 
 ---
 
+## Última conversa (2026-10-24, WO 0008 — merge do kit v1.131.0)
+
+- Kit v1.131.0 aplicado numa fatia só (`db0e234`, DEC-017): CEREBRO no template novo (pasta vinculada como canal padrão, achatado como reserva) com as 3 especializações reinjetadas — «Técnicas específicas» agora com **8 itens** (medido: `sed ... | grep -c "^- \*\*"` = 8). `INSTRUCOES-DO-PROJETO.md` em 6.438 caracteres (teto 7.450). `CLAUDE.md` deliberadamente fora de sincronia (motivo na DEC-017). Modelo de WO e as 3 skills adotados, com a regra de idempotência pelo texto novo INTEIRO.
+- Medido pelo chat (não reconferido aqui): o `album-referencias (1).json` baixado pelo app corrigido tem 0 chaves `_`, 7 faixas, 50 módulos, idêntico ao antigo menos as 7 chaves (27.862 → 27.638 bytes). Primeira validação de esquema real do projeto, feita no ambiente do chat: 0 erros de esquema, 0 ids de módulo órfãos.
+- **Pendência:** na máquina do dono `jsonschema`/`referencing` continuam ausentes e o `validate.py` segue dizendo `ESQUEMA NAO CONFERIDO`. Pendências de tela da WO 0006/0007 seguem abertas.
+
 ## Última conversa (2026-10-23, WO 0007 — sanear na importação)
 
 - FIX-006 aplicado (`131f900`): `stripInternalKeys` remove, na importação por arquivo, as chaves com prefixo `_` que versões antigas vazaram para o JSON, e o toast de sucesso diz quantas saíram. O saneamento roda FORA do `try` da carga. Corrige o que o FIX-004 deixou: parou de GRAVAR `_activeModules`, mas devolvia a que já estava no arquivo.
