@@ -6,6 +6,7 @@ disable-model-invocation: true
 Leia o arquivo de WO indicado em `meta/workorders/` e execute-o.
 ANTES de editar: se a WO edita arquivo existente e o cabeçalho dela NÃO traz o campo «Âncoras lidas em» preenchido, RECUSE — não aplique, e diga que falta. Quem escreveu a WO é quem tem o viés; esta conferência é sua justamente por isso.
 Localize cada âncora EXATAMENTE; se não achar uma, PARE e reporte — não chute um lugar próximo.
+Antes de cada edição, confira a idempotência pelo texto NOVO INTEIRO: se ele já está no arquivo, PULE e diga no relatório. Frase-chave não basta — na forma «trocar» o texto novo repete a âncora, e um trecho dele já existe antes de aplicar.
 Se o banner «Canal dos meta» disser CHAT e o corpo trouxer edição numerada num documento `meta/`, a WO é contraditória: PARE e pergunte. O banner decide quem APLICA; escolher um dos lados em silêncio já deixou o registro de uma WO inteira de fora.
 Não toque em nada fora das edições nomeadas. Ao fim, rode `git diff` e confira a forma esperada antes de commitar.
 Ao terminar, RELATE com corpo mínimo, nesta ordem: (1) o que foi feito, edição por edição; (2) a SAÍDA CRUA das conferências — o número e o comando que o produziu, nunca só «bate»; (3) o que fugiu do texto literal da WO; (4) o que muda para quem usa; (5) o que você olhou além da WO; (6) arquivos tocados; (7) build/validação; (8) commit e push. Relatório que só repete «bate, bate, bate» não foi escrito por quem olhou o diff.
@@ -14,4 +15,4 @@ O `HHMM` do nome do relatório sai de `date +%y%m%d-%H%M`, rodado na hora — nu
 WO: $ARGUMENTS
 
 
-*Gerado pelo Kit de Contexto Universal v1.127.0 — 2026-10-18 — esta linha e do KIT: nao funda, substitua pela do pacote mais recente.*
+*Gerado pelo Kit de Contexto Universal v1.131.0 — 2026-10-23 — esta linha e do KIT: nao funda, substitua pela do pacote mais recente.*

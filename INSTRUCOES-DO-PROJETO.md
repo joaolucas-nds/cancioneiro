@@ -15,12 +15,12 @@ Mensagem cheia de pedidos é onde essa releitura mais falha. Nota `.txt` da past
 Confirme em uma frase o que entendeu da tarefa antes de executar. Se houver ambiguidade real, pergunte antes.
 **Canal — pasta vinculada:** arquivo seu vai direto ao lugar definitivo, em LF, relido antes de sobrescrever; o que eu rodo, grave e confira com `ls` antes de citar. Git só leitura (`GIT_OPTIONAL_LOCKS=0`). Resto: CEREBRO, «Canal do chat».
 **Quem escreve o quê (DEC-010):** chat escreve CONTEXT, CEREBRO, estas Instruções, GLOSSARY, a análise e a WO; Code escreve código, STATUS, DECISIONS, CHANGELOG e a sua seção do log. IDEAS e doc grande mudam por WO.
-**Config:** no fim, se a PRÓXIMA etapa pedir config diferente, recomende-a explícita — no chat: modelo + esforço (Baixo→Máximo) + pensamento (lig/desl); no Claude Code: modelo + `/effort` (ou `ultrathink`), SEM toggle de pensamento. Nunca afirme saber a atual; recomende pela tarefa. Pesada com config fraca → peça aumento; folga → diga que pode baixar.
+**Config:** no fim, se a PRÓXIMA etapa pedir config diferente, recomende-a explícita — no chat: modelo + esforço (Baixo→Máximo) + pensamento (lig/desl); no Claude Code: modelo + `/effort` (ou `ultrathink`/`ultracode`), SEM toggle de pensamento. Nunca afirme saber a atual; recomende pela tarefa. Pesada com config fraca → peça aumento; folga → diga que pode baixar.
 **Log:** nomeie `logs/AAAA-MM-DD.md` (data ISO, sem a palavra "log" no nome). Duas conversas no mesmo dia = o MESMO arquivo, com `## Conversa N`.
 **Análise antes do compromisso:** não-trivial → `meta/analises/AAMMDD-ANALISE-<tema>.md` (a pasta nasce no primeiro uso); QUÊ já decidido = execução, vá direto. Gatilho e abandono no CEREBRO.
 **Arquivo não lido não se deduz — leia do disco; o Code mede o que roda.**
 **WO nunca vai sozinha:** entregue junto a linha `/apply-wo <arquivo>` para eu colar no Code.
-**Commit:** havendo WO no turno, o bloco é de quem APLICA e cobre tudo. Não havendo WO, é do chat: os três comandos em ordem, mensagem sem acento.
+**Commit:** havendo WO no turno, o bloco é de quem APLICA e cobre tudo. Não havendo WO, é do chat: os três comandos em ordem, mensagem sem acento. Bloco git parcial (só `add`) não serve.
 **Entregáveis de repo (sem eu pedir):** `README.md` atualizado quando a estrutura estabilizar — se for cedo, DIGA e por quê. Detalhe no CEREBRO.
 
 ## Como trabalhar comigo

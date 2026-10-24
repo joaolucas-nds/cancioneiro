@@ -1,7 +1,7 @@
 # WO NNNN — [titulo curto e concreto, no que a WO ENTREGA]
 
 > **Este arquivo e o MODELO — nao o preencha aqui.** Copie para `meta/workorders/AAMMDD-woNNNN-desc.md`
-> e preencha a copia. Ele sobe sempre ao Projeto (o `.flatdropignore` ignora `meta/workorders/*` mas
+> e preencha a copia. No canal de reserva (FlatDrop) o modelo sobe ao Projeto mesmo assim (o `.flatdropignore` ignora `meta/workorders/*` mas
 > reinclui `!meta/workorders/_TEMPLATE.md`), para que a primeira conversa depois de uma transferencia
 > tenha o formato a mao sem precisar das WOs antigas.
 >
@@ -23,14 +23,15 @@
 > no arquivo depois do chat — **PARE e reporte**, nao commite por cima. Sem pasta vinculada, apague a linha.
 > **Ancora semantica:** se um trecho-ancora nao bater EXATAMENTE, **PARE e reporte** — nunca chute um
 > lugar proximo. Os arquivos podem ter mudado entre a escrita desta WO e a aplicacao.
-> **Idempotencia:** antes de cada insercao, procure a frase-chave do texto NOVO. Se ja existir, **PULE**
+> **Idempotencia:** antes de cada edicao, procure o texto NOVO INTEIRO no arquivo — frase-chave nao basta: na forma
+> «trocar» o texto novo repete a ancora, e um trecho dele ja existe antes de aplicar. Se o inteiro ja estiver, **PULE**
 > o item e diga no relatorio — nao duplique.
 > **Ancoras lidas em:** para CADA edicao, o arquivo e o trecho literal que voce leu NESTE turno para escrever a ancora.
 > Campo OBRIGATORIO em WO que edita arquivo existente. **Quem aplica RECUSA a WO se vier vazio** — a conferencia sai de
 > quem escreveu (que tem o vies) e vai para quem aplica (que nao tem), que e o mesmo desenho que faz o «PARE e reporte»
 > funcionar todas as vezes. O campo pede o TRECHO, nao uma marca de conferido: nao se escreve o trecho sem abrir o arquivo.
 > **Afirmacao sobre artefato legivel nao e opiniao, e leitura** — o que uma ferramenta faz, o que um simbolo contem, em que
-> estado esta o mount. Nao cite simbolo, caminho ou capacidade de ferramenta que voce nao leu neste turno; declarar «nao li»
+> estado esta a pasta (ou o mount, no canal de reserva). Nao cite simbolo, caminho ou capacidade de ferramenta que voce nao leu neste turno; declarar «nao li»
 > nao autoriza escrever a WO em cima.
 > **Numero de checklist e DERIVADO, nunca estimado.** Toda contagem prevista (`grep -c`, quantidade de bullets, de
 > arquivos) sai de simular o texto final DESTA WO, incluindo o que ela propria manda inserir — a WO costuma citar as
@@ -303,4 +304,4 @@ git commit -m "tipo(escopo): descricao no imperativo curto" -m "Corpo explicando
 git push
 ```
 
-*Gerado pelo Kit de Contexto Universal v1.127.0 — 2026-10-18 — esta linha e do KIT: nao funda, substitua pela do pacote mais recente.*
+*Gerado pelo Kit de Contexto Universal v1.131.0 — 2026-10-23 — esta linha e do KIT: nao funda, substitua pela do pacote mais recente.*

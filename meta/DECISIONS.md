@@ -281,3 +281,16 @@
 **Solucao:** `stripInternalKeys(json)` na importacao, removendo recursivamente as chaves com prefixo `_` e **devolvendo quantas removeu**, informadas no proprio toast de sucesso. A contagem e metade da correcao: a `_activeModules` so foi descoberta porque um arquivo quebrou visivelmente, e saneamento mudo teria consertado o sintoma apagando o sinal — o proximo vazamento passaria despercebido. O saneamento roda FORA do `try` da carga, para o aviso nao ser engolido por uma mensagem de erro (seria o FIX-005 de novo, no mesmo arquivo).
 
 **Licao:** Corrigir a causa nao limpa os dados que a causa ja produziu, e as duas coisas parecem uma so quando se olha o sintoma. Ao fechar um defeito que escreveu dado errado, medir **duas** perguntas: «para de acontecer?» e «o que ja aconteceu fica limpo?». A analise de 2026-10-21 mediu as tres opcoes so contra a primeira — e a propria tabela dela mostrava a opcao C passando num caminho que a recomendada nao cobria, coluna que foi lida como redundante.
+
+---
+
+## DEC-017 — Kit v1.131.0: a pasta vinculada passa a ser o canal declarado, e o achatado vira reserva
+
+**Data:** 2026-10-24
+**Contexto:** Quatro versoes menores depois do v1.127.0, com a tabela de linhas revogadas inalterada — nenhuma varredura nova. O que o pacote muda e a LINGUAGEM do canal: o v1.127.0 ainda descrevia o mount e o upload como caminho normal, com a pasta vinculada como novidade; o v1.131.0 inverte, e o FlatDrop passa a ser reserva declarada, inclusive no titulo da secao de transferencia. Na pratica isso reescreve ~15 pontos do CEREBRO: a abertura de turno vira `git log -3 --oneline` + `git status --short` + listar a pasta-pai; «peca que o usuario suba o arquivo» vira «verifique na pasta do projeto, na pasta-pai, ou ja colado»; «arquivo novo para baixar» vira «grava direto no lugar».
+
+**Decisao:** Merge aplicado numa fatia so. `meta/CEREBRO.md` adota o template v1.131.0 com as tres especializacoes deste projeto reinjetadas — a secao «Tecnicas especificas», agora com oito itens; a remissao a DEC-010; e a nota de que nao ha build. `INSTRUCOES-DO-PROJETO.md` permanece na forma deste projeto (DEC-014), com duas linhas adotadas do template. `CLAUDE.md` **nao e tocado**: as 34 linhas de diferenca sao placeholders contra conteudo real, e a unica frase com informacao nova ja esta no CEREBRO. Modelo de WO e as tres skills adotados inteiros. Os cinco carimbos passam a dizer `v1.131.0`.
+
+**Alternativas consideradas:** (a) fatiar como no merge anterior — descartada: quatro versoes de distancia nao justificam quatro fatias, e o custo de coordenar supera o risco; (b) adotar o `CLAUDE.md` do template e reinjetar — descartada pela regra do proprio manifesto: template generico nao e candidato a substituir arquivo vivo refinado.
+
+**Consequencias:** (+) O CEREBRO deixa de descrever como normal um canal que este projeto usa so por excecao. (+) A regra de idempotencia por «texto novo INTEIRO» entra no modelo de WO e na `apply-wo` — ela corrige um modo de falha real da forma «trocar». (+) As duas licoes do FIX-004/006 ficam gravadas na secao que nenhum update futuro sobrescreve. (−) `CLAUDE.md` passa a ser o unico arquivo do pacote deliberadamente fora de sincronia com o template; o motivo esta aqui, para a proxima leitura nao o tratar como esquecimento.
