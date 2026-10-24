@@ -67,6 +67,8 @@ O campo de exclusão dedicado é mais confiável e barato que negação dentro d
 ### i-020 💡 Aviso de ordem: gênero nas primeiras palavras
 O Suno pesa mais as tags iniciais; gênero primeiro, clima em seguida. A ferramenta pode sinalizar quando o primeiro fragmento não parece um gênero (comparando com a camada `genre` da biblioteca de módulos). Sugestão leve, não imposição.
 
+**Adiado em 2026-10-24 (Decisao 3 da spec do painel de qualidade).** Medido: dispara em **0 de 10** faixas reais (demo + album-referencias) — todas comecam com genero. Evidencia de dominio a mais fraca das quatro da Fase 3a (o Suno «parece» pesar mais as primeiras tags; um teste so), e a deteccao comparando com a camada `genre` e fragil: `dark ambient cinematic intro` so casou porque contem `dark ambient`. **Gatilho para reabrir:** a primeira faixa real cujo primeiro fragmento nao seja genero.
+
 ### i-021 💡 Campos de peso (styleWeight / desvio criativo)
 A API expõe pesos 0.00-1.00 para aderência ao estilo e desvio criativo (os Creative Sliders). Poderiam virar campos opcionais do esquema para registrar a configuração usada numa geração. Só vale se o fluxo passar a depender disso. Fase 4.
 

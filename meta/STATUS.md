@@ -7,6 +7,13 @@
 
 ---
 
+## Última conversa (2026-10-24, WO 0009 — painel de qualidade, Fase 3a)
+
+- Painel de qualidade entregue (i-017, i-018, i-019): linha `.quality` fora do bloco copiável, em Style (recomposto, atualiza a cada chip), Lyrics e Exclude; limites num só `QUALITY_LIMITS` com fonte e data; contagem de tags; «no X» por fronteira de palavra, só avisa e não dispara em faixa instrumental (DEC-018). Vermelho só para truncamento; passar de ~10 tags é âmbar.
+- **FIX-007:** o botão «copiar» entregava o Style de antes do clique no chip de módulo (closure capturada na criação do cartão). Passa a ler `pre.textContent` na hora do clique.
+- i-020 (aviso de ordem do gênero) adiado, com gatilho registrado no IDEAS: dispara em 0 de 10 faixas reais.
+- **Pendência:** a conferência na tela é do dono e **ainda não foi feita** no momento do commit. Fase 3a NÃO marcada como concluída no ROADMAP até lá.
+
 ## Última conversa (2026-10-24, WO 0008 — merge do kit v1.131.0)
 
 - Kit v1.131.0 aplicado numa fatia só (`db0e234`, DEC-017): CEREBRO no template novo (pasta vinculada como canal padrão, achatado como reserva) com as 3 especializações reinjetadas — «Técnicas específicas» agora com **8 itens** (medido: `sed ... | grep -c "^- \*\*"` = 8). `INSTRUCOES-DO-PROJETO.md` em 6.438 caracteres (teto 7.450). `CLAUDE.md` deliberadamente fora de sincronia (motivo na DEC-017). Modelo de WO e as 3 skills adotados, com a regra de idempotência pelo texto novo INTEIRO.

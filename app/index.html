@@ -32,6 +32,7 @@
     --ember:      #b8461e;   /* acento: brasa (copiar, ativo) */
     --ember-soft: #e5c9ba;   /* brasa clara (fundos de destaque) */
     --moss:       #4b6b4a;   /* estado "usei/aprovada" */
+    --amber:      #8a6100;   /* painel de qualidade: "vai funcionar, mas pior" */
     --radius:     10px;
     --mono: "SF Mono", "JetBrains Mono", "Fira Code", ui-monospace, Menlo, Consolas, monospace;
     --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
@@ -40,7 +41,7 @@
   @media (prefers-color-scheme: dark) {
     :root {
       --paper: #1c1a17; --paper-2: #26231e; --ink: #ece4d6; --ink-soft: #a89e8d;
-      --line: #38332b; --ember: #e0703f; --ember-soft: #4a2a1c; --moss: #8fb271;
+      --line: #38332b; --ember: #e0703f; --ember-soft: #4a2a1c; --moss: #8fb271; --amber: #d9a441;
     }
   }
   * { box-sizing: border-box; }
@@ -147,6 +148,15 @@
   .block.lyrics { color: var(--ink); }
 
   .exclude { font-size: 12px; color: var(--ink-soft); }
+
+  /* Painel de qualidade: le o que vai para o Suno, FORA do bloco copiavel.
+     Vermelho (ember) so para perda — o Suno vai cortar texto. Ambar para "pior".
+     Nada aqui entra na copia nem no export (regra de dominio inviolavel). */
+  .quality { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 4px; font-size: 11px; color: var(--ink-soft); }
+  .quality .q.ok      { color: var(--moss); }
+  .quality .q.neutral { color: var(--ink-soft); }
+  .quality .q.warn    { color: var(--amber); font-weight: 600; }
+  .quality .q.over    { color: var(--ember); font-weight: 700; }
   .exclude .tag {
     display: inline-block; background: var(--ember-soft); color: var(--ink);
     padding: 1px 7px; border-radius: 4px; margin: 2px 2px 0 0; font-family: var(--mono); font-size: 11px;
@@ -628,6 +638,88 @@ function render() {
     App.collection.title + " · " + shown + "/" + total + " faixas";
 }
 
+/* ===================================================================
+   Painel de qualidade (Fase 3a — spec meta/specs/261024-painel-de-qualidade.md)
+   Os LIMITES ficam num lugar so, com fonte e data: o Suno ja mudou esses
+   numeros uma vez (V4 -> V4.5) e lancou o v6 em 2026-09-09 sem documenta-los.
+   Quando mudarem de novo, muda-se aqui e se sabe de onde veio o anterior.
+   =================================================================== */
+const QUALITY_LIMITS = {
+  // Fonte: hookgenius.app/learn/suno-character-limits (atualizada 2026-09-08/09).
+  // A nota oficial do v6 (suno.com/release-notes/introducing-v6) NAO traz limites.
+  style:   { warn: 850,  max: 1000 },  // v4.5..v6
+  lyrics:  { warn: 3000, max: 5000 },  // 5.000 = consenso; ~3.000 = onde o Suno "corre"
+  exclude: { warn: 850,  max: 1000 },  // medido via maxlength, em v5.5
+  // Tags: HISTORY §10 + mesma fonte (testado em v5/v5.5). Acima de ~10 o ganho
+  // achata, nao quebra — por isso e ambar, nunca vermelho.
+  tags:    { vague: 4, sweet: 8, many: 10 },
+};
+
+/** Nivel de um comprimento contra um limite: ok | warn | over. */
+function lengthLevel(n, lim) {
+  if (n > lim.max) return "over";
+  if (n > lim.warn) return "warn";
+  return "ok";
+}
+
+/** Tags como o Suno as recebe: fragmentos nao vazios separados por virgula. */
+function countTags(style) {
+  return style.split(",").filter(t => t.trim()).length;
+}
+
+/** "no X" por FRONTEIRA de palavra. Substring casaria pia-no e sopra-no (FIX-003
+    de novo); "no-wave" e genero, nao negacao, e nao casa porque pede espaco. */
+const NEGATION_RE = /(?<![a-z])no\s+[a-z][a-z-]*(?:\s+[a-z][a-z-]*)?/gi;
+function findNegations(style, lyrics) {
+  // Decisao 2 da spec: "no vocals" em faixa INSTRUMENTAL e reforco deliberado
+  // (modulo vocal-none; HISTORY §11), nao erro. Instrumental = Lyrics sem
+  // nenhuma linha de letra: so tags entre colchetes. Cobre [Instrumental] e a
+  // faixa linear com [Intro]/[Build]/[Climax]/[Outro], que o dominio tambem aceita.
+  const linhas = (lyrics || "").split("\n").map(l => l.trim()).filter(Boolean);
+  const instrumental = linhas.length > 0 && linhas.every(l => /^\[[^\]]*\]$/.test(l));
+  const out = [];
+  style.split(",").forEach(frag => {
+    (frag.match(NEGATION_RE) || []).forEach(m => {
+      const t = m.trim().toLowerCase();
+      if (instrumental && /^no\s+vocals?$/.test(t)) return;
+      if (!out.includes(t)) out.push(t);
+    });
+  });
+  return out;
+}
+
+function qSpan(text, level) {
+  const s = document.createElement("span");
+  s.className = "q " + level; s.textContent = text;
+  return s;
+}
+function fmt(n) { return n.toLocaleString("pt-BR"); }
+
+/** Linha de qualidade de um campo de texto (Lyrics, Exclude). */
+function lengthQuality(text, lim, overMsg, warnMsg) {
+  const el = document.createElement("div"); el.className = "quality";
+  const n = text.length, lv = lengthLevel(n, lim);
+  el.appendChild(qSpan(fmt(n) + " / " + fmt(lim.max) + " caracteres", lv));
+  if (lv === "over") el.appendChild(qSpan(overMsg, "over"));
+  else if (lv === "warn") el.appendChild(qSpan(warnMsg, "warn"));
+  return el;
+}
+
+/** Linha de qualidade do Style recomposto: caracteres + tags + negacoes. */
+function styleQuality(style, lyrics) {
+  const el = lengthQuality(style, QUALITY_LIMITS.style,
+    "o Suno corta o que passar de 1.000 — sem aviso", "perto do limite de 1.000");
+  el.setAttribute("data-role", "style-quality");
+  const t = countTags(style), L = QUALITY_LIMITS.tags;
+  const tl = t < L.vague ? "warn" : t <= L.sweet ? "ok" : t <= L.many ? "neutral" : "warn";
+  el.appendChild(qSpan(t + " tags", tl));
+  if (t < L.vague) el.appendChild(qSpan("vago demais", "warn"));
+  if (t > L.many)  el.appendChild(qSpan("acima de ~10 o efeito das últimas tende a diluir", "warn"));
+  findNegations(style, lyrics).forEach(n =>
+    el.appendChild(qSpan("«" + n + "»: mais confiável no campo Exclude", "warn")));
+  return el;
+}
+
 function fieldBlock(label, content, extraClass) {
   const wrap = document.createElement("div");
   wrap.className = "field";
@@ -636,7 +728,10 @@ function fieldBlock(label, content, extraClass) {
   const lab = document.createElement("span"); lab.textContent = label;
   const btn = document.createElement("button");
   btn.className = "copy-btn"; btn.textContent = "copiar";
-  btn.addEventListener("click", () => copyText(content, btn));
+  // Le o bloco NA HORA do clique, nao o texto capturado ao criar o cartao: o Style
+  // muda quando um chip de modulo e ligado, e copiar o texto antigo fazia o que se
+  // via divergir do que se colava no Suno (FIX-007).
+  btn.addEventListener("click", () => copyText(pre.textContent, btn));
   head.appendChild(lab); head.appendChild(btn);
   const pre = document.createElement("pre");
   pre.className = "block" + (extraClass ? " " + extraClass : "");
@@ -671,8 +766,13 @@ function renderCard(song) {
   // Campos COPIAVEIS: rotulo fora, conteudo dentro
   const styleField = fieldBlock("Style of Music", recomposedStyle(song));
   styleField.querySelector(".block").setAttribute("data-role", "style-block");
+  styleField.appendChild(styleQuality(recomposedStyle(song), song.lyrics));
   card.appendChild(styleField);
-  card.appendChild(fieldBlock("Lyrics", song.lyrics, "lyrics"));
+  const lyricsField = fieldBlock("Lyrics", song.lyrics, "lyrics");
+  lyricsField.appendChild(lengthQuality(song.lyrics, QUALITY_LIMITS.lyrics,
+    "o Suno corta o que passar de 5.000 — sem aviso",
+    "acima de ~3.000 o Suno tende a correr e pular seções"));
+  card.appendChild(lyricsField);
 
   // exclude styles (copiavel para o campo Exclude do Suno)
   if (song.excludeStyles && song.excludeStyles.length) {
@@ -686,6 +786,8 @@ function renderCard(song) {
     btn.className = "copy-btn"; btn.textContent = "copiar exclude"; btn.style.marginTop = "6px";
     btn.addEventListener("click", () => copyText(song.excludeStyles.join(", "), btn));
     ex.appendChild(document.createElement("br")); ex.appendChild(btn);
+    ex.appendChild(lengthQuality(song.excludeStyles.join(", "), QUALITY_LIMITS.exclude,
+      "o Suno corta o que passar de 1.000 — sem aviso", "perto do limite de 1.000"));
     card.appendChild(ex);
   }
 
@@ -776,6 +878,8 @@ function renderModules(song, card) {
         // atualiza o bloco copiavel de Style do cartao (seletor explicito)
         const styleBlock = card.querySelector('[data-role="style-block"]');
         if (styleBlock) styleBlock.textContent = composed;
+        const oldQ = card.querySelector('[data-role="style-quality"]');
+        if (oldQ) oldQ.replaceWith(styleQuality(composed, song.lyrics));
       });
       ldiv.appendChild(chip);
     });

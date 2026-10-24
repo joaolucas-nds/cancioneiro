@@ -294,3 +294,29 @@
 **Alternativas consideradas:** (a) fatiar como no merge anterior — descartada: quatro versoes de distancia nao justificam quatro fatias, e o custo de coordenar supera o risco; (b) adotar o `CLAUDE.md` do template e reinjetar — descartada pela regra do proprio manifesto: template generico nao e candidato a substituir arquivo vivo refinado.
 
 **Consequencias:** (+) O CEREBRO deixa de descrever como normal um canal que este projeto usa so por excecao. (+) A regra de idempotencia por «texto novo INTEIRO» entra no modelo de WO e na `apply-wo` — ela corrige um modo de falha real da forma «trocar». (+) As duas licoes do FIX-004/006 ficam gravadas na secao que nenhum update futuro sobrescreve. (−) `CLAUDE.md` passa a ser o unico arquivo do pacote deliberadamente fora de sincronia com o template; o motivo esta aqui, para a proxima leitura nao o tratar como esquecimento.
+
+---
+
+## FIX-007 — O botao copiar entregava o Style de antes do clique no modulo
+
+**Data:** 2026-10-24
+**Sintoma:** Ligar ou desligar um chip de modulo mudava o Style mostrado no cartao, mas o botao «copiar» do Style continuava entregando o texto anterior. Medido em headless em ar-01: bloco de 298 para 322 caracteres ao ligar um chip, e o botao entregando os 298 antigos. O que se via nao era o que se colava no Suno.
+
+**Causa raiz:** `fieldBlock` registrava `copyText(content, btn)`, com `content` capturado por closure no momento em que o cartao era montado. O clique no chip atualizava `pre.textContent` do bloco, mas nunca o `content` da closure. O export MD nao era afetado porque recompoe na hora — e por isso a divergencia nunca apareceu em nenhuma conferencia de arquivo.
+
+**Solucao:** O botao le `pre.textContent` no momento do clique. Para todo campo que nao muda depois de criado (Lyrics, variantes), o texto e identico ao de antes — conferido byte a byte nos 27 botoes do album e nos 11 do demo.
+
+**Licao:** Estado que a interface atualiza depois de criada nao pode ser lido de uma copia feita na criacao. O defeito era invisivel a qualquer instrumento que le arquivo, e so apareceu porque o painel de qualidade precisava que o numero mostrado e o texto copiado fossem o mesmo — o painel foi o primeiro codigo deste projeto a exigir isso, e por isso o primeiro a revela-lo. A funcao central dos modulos (i-004) estava quebrada no caminho mais usado desde o v0.
+
+---
+
+## DEC-018 — Painel de qualidade: mede o recomposto, so avisa, e o vermelho e reservado a perda
+
+**Data:** 2026-10-24
+**Contexto:** Fase 3a (i-017 a i-019). A spec `meta/specs/261024-painel-de-qualidade.md` mediu o acervo real contra os limites do Suno — reconferidos na web, porque o Suno lancou o v6 em 2026-09-09 e a nota oficial nao documenta limite nenhum; os numeros vem de fonte secundaria, com a forca de cada um declarada na spec.
+
+**Decisao:** O painel mede o **Style recomposto** (o mesmo texto que o botao copia), atualiza a cada clique em chip, e mede tambem Lyrics e Exclude Styles. Os limites vivem num unico objeto `QUALITY_LIMITS`, com fonte e data em comentario. Tres niveis: verde, ambar («vai funcionar, mas pior») e vermelho **so para truncamento**, o unico caso que perde informacao — passar de 10 tags e ambar, nunca vermelho, porque dilui sem perder, e um vermelho em 7 de 7 faixas viraria ruido que leva junto o vermelho que importa. «no X» detectado por **fronteira de palavra** (substring casaria pia-no e sopra-no) e **so avisa**: a ferramenta continua so-leitura, como o DEC-004 manda. `no vocals` nao dispara em faixa **instrumental**, definida como Lyrics sem nenhuma linha de letra — o que cobre `[Instrumental]` e a faixa linear com tags de arco. O painel nunca bloqueia a copia.
+
+**Alternativas consideradas:** (a) migrar o «no X» para o Exclude num clique — descartada pelo dono: seria a primeira vez que a ferramenta escreve no acervo, e pede analise propria; (b) definir instrumental como «Lyrics contem `[Instrumental]`» — descartada na implementacao: era a redacao literal da opcao aprovada, mas mais estreita que a intencao («nao dispara no instrumental»), e faria cinzeiro-01, que e instrumental, avisar `no vocals`; (c) alerta modal na hora de copiar — descartada: interrompe o gesto e se aprende a fechar sem ler; (d) i-020, aviso de ordem — adiado pelo dono: dispara em 0 de 10 faixas reais, com a evidencia mais fraca das quatro.
+
+**Consequencias:** (+) O truncamento silencioso passa a ser visivel no unico ponto em que ainda se pode evitar. (+) A funcao central dos modulos volta a funcionar no botao (FIX-007). (+) Mudar um limite e mudar uma linha, sabendo de onde veio a anterior. (−) Os limites dependem de uma fonte que vende produto concorrente; reconferir quando a nota oficial do Suno os documentar. (−) O aviso de tags vai acender ambar em quase todas as faixas do album — e informacao verdadeira, mas e a que mais rapido vira paisagem; se isso acontecer, o sinal e o dono deixar de ler a linha, e o remedio e a sugestao de corte (3a.2), nao baixar o aviso.
