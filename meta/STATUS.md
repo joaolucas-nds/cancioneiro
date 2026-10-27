@@ -3,81 +3,54 @@
 > **O agora.** O que funciona, o que está em progresso, o que está quebrado, backlog curto.
 > Rolante: item resolvido sai daqui e vai para o CHANGELOG. Médio/longo prazo vive no ROADMAP.
 
-**Versão atual:** 0.4.1 · **Fase:** 2 concluída · Fase 3a (painel de qualidade) entregue no commit `2ff6fe3`, aguardando conferência na tela do dono
+**Versão atual:** 0.5.0 · **Fase:** 3a (painel de qualidade) concluída e conferida na tela · Fase 2 com i-008 em aberto · próxima: 3a.2 ou BPM
 
 ---
 
-## Última conversa (2026-10-24, WO 0009 — painel de qualidade, Fase 3a)
+## Última conversa (2026-10-27, fecho da Fase 3a e da 0.5.0)
 
-- Painel de qualidade entregue (i-017, i-018, i-019): linha `.quality` fora do bloco copiável, em Style (recomposto, atualiza a cada chip), Lyrics e Exclude; limites num só `QUALITY_LIMITS` com fonte e data; contagem de tags; «no X» por fronteira de palavra, só avisa e não dispara em faixa instrumental (DEC-018). Vermelho só para truncamento; passar de ~10 tags é âmbar.
-- **FIX-007:** o botão «copiar» entregava o Style de antes do clique no chip de módulo (closure capturada na criação do cartão). Passa a ler `pre.textContent` na hora do clique.
-- i-020 (aviso de ordem do gênero) adiado, com gatilho registrado no IDEAS: dispara em 0 de 10 faixas reais.
-- **Pendência:** a conferência na tela é do dono e **ainda não foi feita** no momento do commit. Fase 3a NÃO marcada como concluída no ROADMAP até lá.
-
-## Última conversa (2026-10-24, WO 0008 — merge do kit v1.131.0)
-
-- Kit v1.131.0 aplicado numa fatia só (`db0e234`, DEC-017): CEREBRO no template novo (pasta vinculada como canal padrão, achatado como reserva) com as 3 especializações reinjetadas — «Técnicas específicas» agora com **8 itens** (medido: `sed ... | grep -c "^- \*\*"` = 8). `INSTRUCOES-DO-PROJETO.md` em 6.438 caracteres (teto 7.450). `CLAUDE.md` deliberadamente fora de sincronia (motivo na DEC-017). Modelo de WO e as 3 skills adotados, com a regra de idempotência pelo texto novo INTEIRO.
-- Medido pelo chat (não reconferido aqui): o `album-referencias (1).json` baixado pelo app corrigido tem 0 chaves `_`, 7 faixas, 50 módulos, idêntico ao antigo menos as 7 chaves (27.862 → 27.638 bytes). Primeira validação de esquema real do projeto, feita no ambiente do chat: 0 erros de esquema, 0 ids de módulo órfãos.
-- **Pendência:** na máquina do dono `jsonschema`/`referencing` continuam ausentes e o `validate.py` segue dizendo `ESQUEMA NAO CONFERIDO`. Pendências de tela da WO 0006/0007 seguem abertas.
-
-## Última conversa (2026-10-23, WO 0007 — sanear na importação)
-
-- FIX-006 aplicado (`131f900`): `stripInternalKeys` remove, na importação por arquivo, as chaves com prefixo `_` que versões antigas vazaram para o JSON, e o toast de sucesso diz quantas saíram. O saneamento roda FORA do `try` da carga. Corrige o que o FIX-004 deixou: parou de GRAVAR `_activeModules`, mas devolvia a que já estava no arquivo.
-- A pergunta de 2026-10-17 (`../261017-2231.txt`) está **fechada** nas duas metades: o que havia de errado com o arquivo (FIX-004 e FIX-006) e como evitar que erros assim continuem (FIX-005, nas duas pontas: o `catch` do app e o rodapé do `validate.py`).
-- **Pendência do dono:** conferência na tela — importar o `album-referencias.json` e ver o toast dizer 7 campos removidos; baixar de novo e conferir 0 `_activeModules`. Os 4 itens da WO 0006 seguem sem carimbo. `jsonschema` segue não instalado: conformidade de esquema NÃO CONFERIDA.
-- Limite conhecido: `tryAutoLoad` não sanea (só a importação por arquivo).
-
-## Última conversa (2026-10-22, WO 0006 — round-trip do acervo)
-
-- Round-trip corrigido (FIX-004/005): o estado dos módulos ligados saiu de dentro da coleção (`App.activeModules[song.id]`) e o `importFromFile` separa o `try` do parse do `try` da carga. `data/exemplo-cinzeiro.json` completado com os 5 módulos que citava (DEC-016); `scripts/validate.py` ganha checagem de referência cruzada e passa a declarar quando o esquema NÃO foi conferido (sem `jsonschema`).
-- A pergunta de 2026-10-17 sobre o `album-referencias.json` está **fechada**. A resposta ao «como evitar que erros como esse continuem» é o FIX-005 (mensagem que nomeia causa só pode vir da operação que a produz), não o FIX-004.
-- **Pendência do dono:** os 4 itens do roteiro de conferência na tela da WO 0006 (importar, baixar, reimportar, chip) — não carimbados como feitos.
-
-## Última conversa (2026-10-20, kit v1.127.0 — fatias 1 a 4)
-
-- Kit: as quatro fatias do v1.127.0 aplicadas (WOs 0002-0005). Skills `apply-wo`, `wrap`, `sondar` instaladas e `apply-spec` removida; `.claude/settings.json` com `Write` e `additionalDirectories`; `CLAUDE.md`, `.gitignore` e `.flatdropignore` atualizados. `meta/CEREBRO.md` adotado do template com três especializações (DEC-013); `INSTRUCOES-DO-PROJETO.md` fundido preservando o domínio (DEC-014); `meta/LOG-TEMPLATE.md` alinhado à cadência de turno e à DEC-010. Fatia 4: os demais `meta/` ficam na forma do projeto, entra `meta/SPEC.md`, a pasta morta `meta/specs/` sai (DEC-015); ideias i-022 a i-024 capturadas.
-- **Pendência do dono:** o painel do Projeto no claude.ai ainda manda as três linhas revogadas — colar nele o conteúdo novo de `INSTRUCOES-DO-PROJETO.md`.
-- Varredura de cadência «sessão→turno»: **ENCERRADA na primeira classe** («manda» = zero ocorrências em arquivo que dirige comportamento). O total medido continua alto porque as outras quatro classes são legítimas: relato histórico datado, domínio (sessão do navegador/Suno), contraste deliberado do kit e meta-documentação da própria correção. Números do fecho no relatório da WO 0005.
-- Pendente de produto: a pergunta de 2026-10-17 sobre o `album-referencias.json` (pasta-pai) continua aberta.
-
-## Última conversa (2026-07-21, auditoria)
-
-Auditoria completa do projeto contra a premissa original + pesquisa de refinamento. Resultado: **7 divergências de documentação** corrigidas (README dizia "v0.1.0, ferramenta a construir"; i-009 já implementado mas marcado aberto; backlog com item já feito) e **1 bug real corrigido** (FIX-003: dedup por substring barrava "female vocals" quando a base tinha "male vocals"). Pesquisa trouxe constraints verificáveis e acionáveis: limite de ~1.000 caracteres no Style com **truncamento silencioso**, teto prático de ~10 tags, e campo de exclusão mais confiável que negação no texto. Consolidado no HISTORY (seções 9-13) e vira a Fase 3.
-
+- **Fase 3a conferida na tela pelo dono:** os cinco itens do roteiro da WO 0009 ok `[relatado pelo dono, 2026-10-27]` — o painel mede o Style recomposto (298 em ar-01, não os 164 do base), acompanha o clique no chip, o botão copia o que se vê (FIX-007), o vermelho aparece em 1.271 com todos os módulos ligados, e a faixa instrumental avisa «no drums» sem avisar «no vocals».
+- **0.5.0 fechada no CHANGELOG:** tudo o que entrou no app desde a 0.4.1 — painel de qualidade (DEC-018), FIX-004 a FIX-007, acervo autossuficiente (DEC-016).
+- **Este STATUS foi reescrito, não acrescido.** Saíram os seis blocos «Última conversa» de 2026-07-21 a 2026-10-24: o que foi entregue está no CHANGELOG (0.4.1 e 0.5.0), as decisões no DECISIONS (DEC-010 a DEC-018, FIX-003 a FIX-007), e o detalhe de cada dia em `logs/`. As pendências de tela que eles declaravam abertas foram **todas fechadas pelo dono** (WO 0006 item 1; WO 0007 itens 1-3; WO 0009 itens 1-5), e a pergunta de 2026-10-17 está fechada desde a WO 0007. Nada único se perdeu: o que só existia aqui foi para «Notas de estado».
 
 ## Funciona (pronto)
 
-- **Ferramenta `app/index.html` v0:** importa/carrega JSON, renderiza álbuns→canções como cartões, copia Style/Lyrics/Exclude por botão, marca "usei" (auto ao copiar + toggle manual), filtra por álbum/estado/uso, busca por texto, painel de módulos de estilo que liga/desliga e recompõe o Style ao vivo, variantes e notas recolhíveis, export/import e "Baixar .json".
-- **Esquema JSON canônico** (`schema/`) + biblioteca de 27 módulos nas cinco camadas.
-- **Datasets:** `data/exemplo-cinzeiro.json` (1 faixa) e `data/demo.json` (2 álbuns, 3 faixas, módulos embutidos — instrumental + vocal + variantes).
-- **Hospedagem:** `index.html` raiz redireciona para o app; pronto para GitHub Pages.
-- **Prompt-modelo** (`schema/PROMPT-PARA-CHATS.md`): texto colável que faz um chat gerar JSON no esquema (cinco camadas + regra copiável/referência + saída JSON pura).
-- **Validação** (`scripts/validate.py`): valida `data/*.json` contra o schema; código 1 se falhar. Comando no CLAUDE.md.
-- **Export MD** (i-006): exportar faixa / álbum / acervo em `.md` legível (rótulo fora do bloco). Faixa usa o Style recomposto.
-- **Publicado no GitHub Pages** em `https://joaolucas-nds.github.io/cancioneiro/app/index.html` — validado de olho pelo dono, funcionando `[relatado pelo dono, com print da interface em 2026-07-21]`.
-- **0.4.1 aplicada no repo do dono** `[verificado no mount em 2026-07-21: app com FIX-003, STATUS/CHANGELOG em 0.4.1]`.
+- **Ferramenta `app/index.html`:** importa/carrega JSON, cartões por álbum, copiar Style/Lyrics/Exclude por botão (o botão entrega o texto que está na tela — FIX-007), marca «usei», filtros por álbum/estado/uso, busca, módulos de estilo que recompõem o Style ao vivo, variantes e notas recolhíveis, «Baixar .json» limpo e «Importar .json» que saneia chaves internas e diz quantas removeu (FIX-004/006).
+- **Painel de qualidade (0.5.0, DEC-018):** linha abaixo de Style, Lyrics e Exclude com caracteres contra o limite do campo, tags do Style e negações «no X». Vermelho só para truncamento.
+- **Esquema JSON canônico** (`schema/`). Biblioteca de referência para autoria em `schema/style-modules.json` (27 módulos, sete camadas); cada acervo traz os seus (DEC-016).
+- **Datasets:** `data/exemplo-cinzeiro.json` (1 faixa, com os 5 módulos que cita) e `data/demo.json` (2 álbuns, 3 faixas). O álbum de referências do dono mora fora do repo, em `../album-referencias (1).json` (7 faixas, 50 módulos).
+- **Validação** (`scripts/validate.py`): sintaxe, esquema (com `jsonschema`) e integridade referencial dos módulos; código 1 se falhar; a última linha diz se o esquema foi de fato conferido.
+- **Export MD** (faixa / álbum / acervo), com o Style recomposto e o rótulo fora do bloco.
+- **Prompt-modelo** (`schema/PROMPT-PARA-CHATS.md`) para chats gerarem JSON no esquema.
+- **Publicado no GitHub Pages** em `https://joaolucas-nds.github.io/cancioneiro/app/index.html` — o push em `main` publica.
 
 ## Em progresso
 
-- Fase 3a entregue (WO 0009, `2ff6fe3`); falta só a conferência na tela do dono. Próxima fatia: 3a.2, sugestão do que cortar quando há tags demais.
+- (nada)
 
 ## Quebrado / pendências que travam
 
-- (nada quebrado — lógica testada, fetch validado nos dois layouts)
+- (nada quebrado)
+
+## Pendências do dono
+
+- **Instalar o validador de esquema nesta máquina.** Sem `jsonschema` e `referencing`, o `validate.py` só confere sintaxe e diz `ESQUEMA NAO CONFERIDO` na última linha. Uma vez, no Git Bash ou no CMD: `pip install jsonschema referencing --break-system-packages`. Depois, `python3 scripts/validate.py` deve terminar em `Tudo conforme ao esquema.` — o arquivo do álbum já foi validado fora daqui com 0 erros.
+- **Colar as Instruções no painel do Projeto.** O painel ainda tem a versão anterior à WO 0008 e diverge do `INSTRUCOES-DO-PROJETO.md` em duas linhas: `**Config:**` (falta `/ultracode`) e `**Commit:**` (falta «Bloco git parcial (só `add`) não serve.»). Abrir o arquivo, copiar tudo, colar no painel.
 
 ## Backlog curto (próximas ações concretas)
 
-1. **Painel de qualidade do prompt** (Fase 3, **entregue na WO 0009 — falta a conferência na tela**; «migrar no X para excludeStyles» ficou fora, DEC-018): contador de caracteres do Style (limite ~1.000, o Suno trunca em silêncio), contador de tags com aviso acima de ~10, e detecção de "no X" no style sugerindo migrar para `excludeStyles`. Fundamentado no HISTORY §9-11.
+1. **3a.2 — sugerir o que cortar quando há tags demais** (i-026). 7 de 7 faixas do álbum já acendem âmbar; aviso que sempre acende vira paisagem.
 2. **Controle de BPM** (i-005) — pedido explícito na premissa original, ainda não feito.
-3. **Converter 1 álbum real** (i-008) — depende de subir um `.md` de origem.
-4. **Testar o prompt-modelo ponta a ponta:** colar num chat, gerar, importar.
-
+3. **O app declarar a própria versão** (i-027) — pequeno; torna todo print datável.
+4. **Testar o prompt-modelo ponta a ponta:** colar num chat, gerar uma faixa, importar.
+5. **Converter 1 álbum real** (i-008) — depende de o dono trazer um `.md` de origem para a pasta-pai.
 
 ## Notas de estado
 
-- **Repo local do dono:** `C:\Users\alexk\Tools\cancioneiro` (Windows). O repositório é a fonte de verdade; o ambiente do assistente é descartável e NÃO sincroniza sozinho — ver DEC-008.
-- **Fluxo de upload:** o dono usa FlatDrop para achatar a árvore ao subir no Projeto de chat (`_MANIFEST_cancioneiro.md` e `_TREE_cancioneiro.md` são artefatos dessa ferramenta, não fazem parte do repo). Por isso os arquivos chegam achatados no mount com nomes como `index__app.html`.
-- **Pendência de contexto — ASU:** o dono perguntou se o "modo ASU" do KCM seria melhor que o modo Code para este projeto. O assistente NÃO tem a definição de ASU (o CEREBRO só o cita de passagem em nomenclatura de specs, `AAMMDD-asuNNNN.yaml`). Recomendação ficou pendente até o dono colar a descrição do ASU `[relatado pelo dono, sem material de apoio]`.
-- Os álbuns antigos NÃO estão mais no mount desta sessão (o Projeto foi atualizado com os arquivos do cancioneiro). Para converter um álbum real, subir o `.md` de origem de novo.
-- Nota de design: na recomposição de style, se um fragmento já está no style base, desligar o módulo não o remove — a base é a fonte, módulos só aumentam. Correto e intencional.
-- O dedup compara **sequências de palavras** (não substring), após FIX-003. Plural simples é normalizado.
+- **Repo local do dono:** `C:\Users\alexk\Tools\cancioneiro\cancioneiro` (Windows). O chat lê e grava na pasta vinculada; commit e push são do Code (DEC-010). A pasta-pai guarda relatórios, notas e o acervo do dono, fora do Git; o lido vai para `../notas-arquivadas/`.
+- **Canal:** pasta vinculada é o padrão; a cópia achatada (FlatDrop) é reserva (DEC-017).
+- **Limites do Suno:** o v6 saiu em 2026-09-09 e a nota oficial não documenta limite de campo; os números do painel vêm de fonte secundária, com fonte e data no `QUALITY_LIMITS` (DEC-018). Reconferir quando houver documentação oficial. O `meta/HISTORY.md` ainda descreve o v5.5 e precisa de uma atualização sobre o v6.
+- **Limite conhecido:** `tryAutoLoad` (carregamento automático pelo Pages) não saneia chaves internas — só a importação por arquivo faz isso. Inócuo enquanto nenhum acervo contaminado for para `data/`.
+- **Pendência de contexto — ASU:** o dono perguntou se o «modo ASU» do KCM seria melhor que o modo Code para este projeto; ficou pendente até ele trazer a descrição do ASU `[relatado pelo dono, sem material de apoio]`.
+- Os álbuns antigos de julho não estão na pasta. Para converter um (i-008), trazer o `.md` de origem para a pasta-pai.
+- Design: na recomposição do Style a base manda — desligar um módulo não remove o que já está no style base; módulos só somam. O dedup compara sequências de palavras (FIX-003).

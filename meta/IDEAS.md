@@ -55,14 +55,20 @@ Bônus: botão que exporta as marcações de sessão (hoje em localStorage) para
 ### i-016 💡 Rodar validate.py em pre-commit / CI
 Já que `scripts/validate.py` existe e retorna código 1 em erro, plugá-lo num hook de pre-commit (ou GitHub Action) garante que nenhum dataset quebrado entre no repo. Baixo esforço, alta rede de segurança. Fase 2/3.
 
-### i-017 💡 Contador de caracteres do Style e do Lyrics
+### i-017 ✅ Contador de caracteres do Style e do Lyrics
 O Suno **trunca em silêncio** ao passar de ~1.000 caracteres no Style (5.000 no Lyrics, com ~3.000 como ponto doce). Sem aviso, sem erro — o excedente só não chega ao modelo. É um problema invisível que só uma ferramenta resolve. Mostrar contador ao vivo, com aviso ao aproximar do limite. Ver HISTORY §9. **Alta prioridade** — é exatamente o "consumir espaço desnecessário" da premissa original.
 
-### i-018 💡 Contador de tags com aviso de excesso
+**Entregue em 0.5.0 (DEC-018), conferido na tela em 2026-10-27.** Mede tambem o Exclude (1.000) e mede o Style **recomposto** — a medicao mostrou que o risco mora nos modulos: nenhum style base passa de 174 caracteres, e todas as faixas do album passam de 1.000 com a biblioteca inteira ligada.
+
+### i-018 ✅ Contador de tags com aviso de excesso
 Acima de ~10 tags o Suno começa a ignorar as finais e a média dos sinais vira resultado genérico; o ponto doce fica entre 5 e 8. A ferramenta pode contar as vírgulas do Style e avisar quando passar, sugerindo o que cortar pela ordem de prioridade (gênero > clima > instrumento > vocal > BPM). Ver HISTORY §10.
 
-### i-019 💡 Detectar "no X" no style e sugerir migrar para excludeStyles
+**Entregue em 0.5.0 (DEC-018), sem a sugestao de corte** — que virou i-026. Ambar acima de ~10, nunca vermelho: diluir nao perde texto, e a fonte do v6 diz que acima de 10 «o ganho achata, nao quebra».
+
+### i-019 ✅ Detectar "no X" no style e sugerir migrar para excludeStyles
 O campo de exclusão dedicado é mais confiável e barato que negação dentro do texto. Quando houver "no alguma-coisa" no `style`, a ferramenta destaca e oferece mover para `excludeStyles` num clique. Ver HISTORY §11.
+
+**Entregue em 0.5.0 (DEC-018), so avisando** — mover num clique seria a primeira escrita da ferramenta no acervo e ficou fora por decisao do dono. Deteccao por fronteira de palavra (substring casava pia-no e sopra-no); `no vocals` nao dispara em faixa instrumental (Lyrics sem nenhuma linha de letra).
 
 ### i-020 💡 Aviso de ordem: gênero nas primeiras palavras
 O Suno pesa mais as tags iniciais; gênero primeiro, clima em seguida. A ferramenta pode sinalizar quando o primeiro fragmento não parece um gênero (comparando com a camada `genre` da biblioteca de módulos). Sugestão leve, não imposição.
@@ -83,6 +89,12 @@ A API expõe pesos 0.00-1.00 para aderência ao estilo e desvio criativo (os Cre
 
 ### i-025 💡 Teste de round-trip automatizado (baixar → reimportar)
 `[nascido do FIX-004, 2026-10-22]` O ciclo baixar→reimportar quebrou por meses sem ninguem notar, e so apareceu porque alguem abriu o app num navegador de verdade. Uma checagem que carregue um acervo, serialize como o `downloadCollection` serializa e reimporte, afirmando igualdade, capturaria a classe inteira — nao so o `_activeModules`. Hoje o `validate.py` valida arquivos parados; isto e o primeiro teste de COMPORTAMENTO do projeto, e exige decidir se entra um harness de navegador (headless) ou se a serializacao e extraida para uma funcao testavel sem DOM. Candidata a analise antes de spec.
+
+### i-026 💡 Sugerir o que cortar quando ha tags demais (Fase 3a.2)
+`[nascido da spec do painel, 2026-10-24]` O painel ja avisa quando o Style passa de ~10 tags, mas nao diz QUAIS cortar. O HISTORY §10 traz a ordem de prioridade (genero > clima > instrumento principal > vocal > BPM). Medido: 7 de 7 faixas do album de referencias passam de 10 tags so com os modulos da propria faixa (11 a 18) — o aviso ambar vai acender quase sempre, e aviso que sempre acende vira paisagem. A sugestao e o que transforma o aviso em acao. Exige classificar cada fragmento por camada, o que o recomposto nao carrega hoje: o fragmento do modulo sabe a camada, o do style base nao.
+
+### i-027 💡 O app declarar a propria versao na tela
+`[nascido da exploracao de 2026-10-21, candidato C4]` STATUS, CHANGELOG e README dizem a versao; o `app/index.html` publicado nao a declara em lugar nenhum. Consequencia observada: a captura de tela de 2026-10-17 nao permitia saber qual versao estava no ar. Uma linha discreta no rodape (ou no `title`) torna todo print do dono datavel, e um teste pode afirmar que ela bate com o topo do CHANGELOG. Pequeno; candidato a ir junto da proxima WO de codigo.
 
 ## Feedback para o Kit
 

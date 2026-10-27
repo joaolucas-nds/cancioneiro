@@ -2,7 +2,7 @@
 
 Ferramenta local para **organizar, copiar e variar** prompts de música gerados por IA (Suno hoje; agnóstica por design), a partir de um **acervo de canções em JSON canônico**.
 
-> **Estado:** v0.4.1 — ferramenta em uso. Lê o acervo, copia por campo, troca módulos de estilo e exporta Markdown. Publicada no GitHub Pages. Ver `meta/ROADMAP.md`.
+> **Estado:** v0.5.0 — ferramenta em uso. Lê o acervo, copia por campo, troca módulos de estilo, **mede cada prompt contra os limites do Suno** e exporta Markdown. Publicada no GitHub Pages. Ver `meta/ROADMAP.md`.
 
 ## O problema
 
@@ -11,7 +11,7 @@ Canções geradas por chats vivem espalhadas em `.md` de álbum, cada um com con
 ## A solução
 
 - **Um esquema JSON canônico** (`schema/`) que todos os chats seguem — campos separados para o que é copiável (`style`, `lyrics`) e o que é referência humana (`title`, `context`). Fim da bagunça de convenções.
-- **Uma ferramenta** (`app/index.html`) que lê o acervo, mostra cada canção como um cartão dentro do seu álbum, com botão de copiar por campo, marcação de "já usei", troca modular de estilo/BPM, e export para `.md`.
+- **Uma ferramenta** (`app/index.html`) que lê o acervo, mostra cada canção como um cartão dentro do seu álbum, com botão de copiar por campo, marcação de "já usei", troca modular de estilo, **aviso quando o prompt vai ser truncado ou diluído**, e export para `.md`.
 
 ## Estrutura
 
@@ -34,7 +34,8 @@ cancioneiro/
 2. Escolha um acervo de `data/` (ex.: `demo.json`).
 3. Navegue por álbuns, copie style/lyrics por botão, marque o que usou.
 4. Ligue/desligue **módulos de estilo** por camada para gerar variações — o Style recompõe ao vivo.
-5. Exporte em `.md` (faixa, álbum ou acervo inteiro) se precisar do formato legível.
+5. Leia a linha embaixo de cada campo antes de copiar: **vermelho** = o Suno vai cortar o texto (passou do limite, ele trunca sem avisar); **âmbar** = vai funcionar, mas pior (tags demais, ou negação «no X» que rende mais no campo Exclude).
+6. Exporte em `.md` (faixa, álbum ou acervo inteiro) se precisar do formato legível.
 
 ## Validar o acervo
 

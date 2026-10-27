@@ -24,14 +24,17 @@ O mínimo que já é útil: ler o acervo e copiar sem procurar.
 - ⬜ Converter `album_guia_suno.md` inteiro como segundo dataset (i-008).
 **Marco:** conseguir usar a ferramenta de verdade numa rodada de geração no Suno.
 
-## ⬜ Fase 3 — Qualidade de prompt e modularidade
+## 🔨 Fase 3 — Qualidade de prompt e modularidade
 O diferencial real sobre os builders genéricos: a ferramenta não só organiza, ela **impede prompt ruim**. Fundamentado em constraints verificados (HISTORY §9-11). Núcleo modular já entregue no v0.
 
-**3a — Painel de qualidade (recomendado primeiro):**
-- ⬜ Contador de caracteres do Style (~1.000) e Lyrics (5.000 / doce em 3.000) — o Suno trunca em silêncio (i-017).
-- ⬜ Contador de tags com aviso acima de ~10 (i-018).
-- ⬜ Detectar "no X" no style e sugerir migrar para `excludeStyles` (i-019).
-- ⬜ Aviso leve de ordem: gênero nas primeiras palavras (i-020).
+**3a — Painel de qualidade — ✅ concluída em 0.5.0 (DEC-018), conferida na tela pelo dono em 2026-10-27:**
+- ✅ Contador de caracteres do Style e do Exclude (1.000) e do Lyrics (5.000, aviso a partir de ~3.000), medindo o Style **recomposto** e atualizando a cada chip (i-017).
+- ✅ Contador de tags: âmbar acima de ~10, nunca vermelho (i-018).
+- ✅ «no X» no style detectado por fronteira de palavra; **só avisa** — migrar num clique ficou fora (DEC-018); `no vocals` não dispara em faixa instrumental (i-019).
+- ⏸ Aviso de ordem: gênero nas primeiras palavras (i-020) — **adiado**: dispara em 0 de 10 faixas reais; gatilho no IDEAS.
+
+**3a.2 — próxima fatia:**
+- ⬜ Sugerir o que cortar quando há tags demais (i-026) — 7 de 7 faixas do álbum de referências já acendem âmbar.
 
 **3b — Modularidade (continuação):**
 - ✅ Módulos de estilo ligáveis/desligáveis por menu, recompondo o style (i-004) — v0 entregue, refinar UX na iteração.

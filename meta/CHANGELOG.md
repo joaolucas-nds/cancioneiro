@@ -4,6 +4,27 @@
 
 ---
 
+## [0.5.0] — 2026-10-27
+
+Painel de qualidade do prompt (Fase 3a) e quatro correcoes que o tornaram confiavel. Tudo o que entrou no app desde a 0.4.1.
+
+### Added
+- **Painel de qualidade (DEC-018):** abaixo de Style, Lyrics e Exclude, uma linha que mede o que vai para o Suno — caracteres contra o limite do campo (Style e Exclude 1.000; Lyrics 5.000, com aviso a partir de ~3.000), tags do Style (ambar acima de ~10, nunca vermelho) e negacoes «no X» (por fronteira de palavra; so avisa; `no vocals` nao dispara em faixa instrumental). Mede o Style **recomposto** e se atualiza a cada clique num chip de modulo. Vermelho reservado ao truncamento, o unico caso que perde texto. Limites num objeto unico, com fonte e data.
+- **`scripts/validate.py`:** checagem de integridade referencial (todo id em `songs[].styleModules` existe no `styleModules[]` da propria colecao — DEC-016), e a ultima linha passa a declarar se o esquema foi de fato conferido.
+- `meta/specs/` (primeira spec: o painel) e `meta/analises/` (primeira analise: o round-trip do acervo).
+
+### Fixed
+- **FIX-004:** o «Baixar .json» gravava um `Set` serializado como `{}` em cada faixa, e o «Importar .json» quebrava nele — o app estragava o proprio arquivo. O estado dos modulos ligados saiu de dentro da colecao.
+- **FIX-005:** a importacao relatava qualquer falha como «nao e um JSON valido», e o `validate.py` dizia «Tudo conforme ao esquema» sem ter conferido esquema nenhum. Mensagem que nomeia um resultado so pode vir da operacao que o produz.
+- **FIX-006:** arquivos ja contaminados continuavam propagando a chave interna. A importacao saneia as chaves com prefixo `_` e **diz quantas removeu**.
+- **FIX-007:** o botao «copiar» do Style entregava o texto de antes do clique no chip de modulo. O que se via nao era o que se colava no Suno; a troca de estilo por modulo so chegava ao Suno pelo export MD.
+
+### Changed
+- **DEC-016 — acervo autossuficiente:** cada colecao traz os modulos que suas faixas citam; `schema/style-modules.json` e biblioteca de referencia para autoria. `data/exemplo-cinzeiro.json` recebeu os 5 modulos que citava sem ter.
+- Kit de contexto atualizado de v1.74.0 para v1.131.0 (DEC-010 a DEC-015, DEC-017) — processo e documentacao, nenhuma mudanca de produto.
+
+---
+
 ## [0.4.1] — 2026-07-21
 
 Auditoria: correção de bug no dedup e alinhamento da documentação.
