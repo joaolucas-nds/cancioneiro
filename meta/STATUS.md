@@ -13,6 +13,8 @@
 - **0.5.0 fechada no CHANGELOG:** tudo o que entrou no app desde a 0.4.1 — painel de qualidade (DEC-018), FIX-004 a FIX-007, acervo autossuficiente (DEC-016).
 - **Este STATUS foi reescrito, não acrescido.** Saíram os seis blocos «Última conversa» de 2026-07-21 a 2026-10-24: o que foi entregue está no CHANGELOG (0.4.1 e 0.5.0), as decisões no DECISIONS (DEC-010 a DEC-018, FIX-003 a FIX-007), e o detalhe de cada dia em `logs/`. As pendências de tela que eles declaravam abertas foram **todas fechadas pelo dono** (WO 0006 item 1; WO 0007 itens 1-3; WO 0009 itens 1-5), e a pergunta de 2026-10-17 está fechada desde a WO 0007. Nada único se perdeu: o que só existia aqui foi para «Notas de estado».
 - **Aplicada pela WO 0010** (commit `95e6239`, empurrado): CHANGELOG, ROADMAP, IDEAS, README e este STATUS conferidos por hash de chegada; nenhum arquivo de produto tocado.
+- **Painel do Projeto atualizado pelo dono** `[relatado pelo dono, 2026-10-27; conferido pelo chat via leitura do painel]` — as Instruções do painel batem com o `INSTRUCOES-DO-PROJETO.md`.
+- **3a.2 decidida e aplicada:** o dono escolheu a opção (b) da spec `meta/specs/261027-custo-dos-modulos.md` — custo no chip, sem sugestão de corte (DEC-019).
 
 ## Funciona (pronto)
 
@@ -27,7 +29,7 @@
 
 ## Em progresso
 
-- (nada)
+- **3a.2 — custo de cada módulo no chip** (DEC-019, WO 0011): aplicada; falta a conferência na tela do dono.
 
 ## Quebrado / pendências que travam
 
@@ -36,11 +38,10 @@
 ## Pendências do dono
 
 - **Instalar o validador de esquema nesta máquina.** Sem `jsonschema` e `referencing`, o `validate.py` só confere sintaxe e diz `ESQUEMA NAO CONFERIDO` na última linha. Uma vez, no Git Bash ou no CMD: `pip install jsonschema referencing --break-system-packages`. Depois, `python3 scripts/validate.py` deve terminar em `Tudo conforme ao esquema.` — o arquivo do álbum já foi validado fora daqui com 0 erros.
-- **Colar as Instruções no painel do Projeto.** O painel ainda tem a versão anterior à WO 0008 e diverge do `INSTRUCOES-DO-PROJETO.md` em duas linhas: `**Config:**` (falta `/ultracode`) e `**Commit:**` (falta «Bloco git parcial (só `add`) não serve.»). Abrir o arquivo, copiar tudo, colar no painel.
 
 ## Backlog curto (próximas ações concretas)
 
-1. **3a.2 — sugerir o que cortar quando há tags demais** (i-026). 7 de 7 faixas do álbum já acendem âmbar; aviso que sempre acende vira paisagem.
+1. **3a.2 — custo de cada módulo no chip** (i-026, DEC-019): aplicada na WO 0011, aguarda a conferência na tela. A lista de corte automática foi descartada pela medição.
 2. **Controle de BPM** (i-005) — pedido explícito na premissa original, ainda não feito.
 3. **O app declarar a própria versão** (i-027) — pequeno; torna todo print datável.
 4. **Testar o prompt-modelo ponta a ponta:** colar num chat, gerar uma faixa, importar.

@@ -189,6 +189,9 @@
     * { transition: none !important; animation: none !important; }
   }
   .chip.on { background: var(--ember); color: #fff; border-color: var(--ember); }
+  /* Custo do modulo em tags (3a.2): quanto o chip muda o Style DESTE cartao.
+     Herda a cor do chip (le tanto apagado quanto aceso); so a opacidade separa. */
+  .chip .cost { margin-left: 6px; opacity: .75; font-variant-numeric: tabular-nums; }
   .recomposed {
     margin-top: 8px; font-family: var(--mono); font-size: 11.5px;
     background: var(--paper); border: 1px dashed var(--ember); border-radius: 6px; padding: 8px;
@@ -485,8 +488,10 @@ function exportCollectionMd() {
    entram como fragmentos adicionais (dedup simples por texto). A ferramenta
    MOSTRA o resultado e deixa copiar — nao reescreve o JSON.
    =================================================================== */
-function recomposedStyle(song) {
-  const active = App.activeModules[song.id] || new Set(song.styleModules || []);
+function recomposedStyle(song, activeOverride) {
+  // activeOverride: conjunto hipotetico de modulos ligados, para medir o custo de
+  // um chip sem tocar no estado da tela (3a.2). Sem ele, vale o estado atual.
+  const active = activeOverride || App.activeModules[song.id] || new Set(song.styleModules || []);
   const frags = [];
 
   /* Um fragmento e redundante quando sua sequencia de PALAVRAS ja aparece
@@ -688,6 +693,28 @@ function findNegations(style, lyrics) {
   return out;
 }
 
+/** Tags do style base sozinho, depois do dedup (nenhum modulo ligado). */
+function baseTagCount(song) {
+  return countTags(recomposedStyle(song, new Set()));
+}
+
+/** Custo marginal de cada modulo da biblioteca para ESTE cartao, em tags:
+    quanto o recomposto muda se aquele chip for clicado agora (ligado: quanto
+    sai; desligado: quanto entra). Medido, nunca deduzido da camada: os modulos
+    de genero e de andamento costumam custar 0 porque o fragmento ja esta no
+    base ("a base manda"), e uma regra por camada mandaria desliga-los a toa.
+    Spec meta/specs/261027-custo-dos-modulos.md. ~10-13 ms para 50 modulos. */
+function moduleCosts(song, active) {
+  const now = countTags(recomposedStyle(song, active));
+  const out = {};
+  Object.keys(App.modulesById).forEach(id => {
+    const w = new Set(active);
+    if (w.has(id)) w.delete(id); else w.add(id);
+    out[id] = Math.abs(countTags(recomposedStyle(song, w)) - now);
+  });
+  return out;
+}
+
 function qSpan(text, level) {
   const s = document.createElement("span");
   s.className = "q " + level; s.textContent = text;
@@ -706,7 +733,7 @@ function lengthQuality(text, lim, overMsg, warnMsg) {
 }
 
 /** Linha de qualidade do Style recomposto: caracteres + tags + negacoes. */
-function styleQuality(style, lyrics) {
+function styleQuality(style, lyrics, baseTags) {
   const el = lengthQuality(style, QUALITY_LIMITS.style,
     "o Suno corta o que passar de 1.000 — sem aviso", "perto do limite de 1.000");
   el.setAttribute("data-role", "style-quality");
@@ -715,6 +742,13 @@ function styleQuality(style, lyrics) {
   el.appendChild(qSpan(t + " tags", tl));
   if (t < L.vague) el.appendChild(qSpan("vago demais", "warn"));
   if (t > L.many)  el.appendChild(qSpan("acima de ~10 o efeito das últimas tende a diluir", "warn"));
+  // Folga do base (3a.2): diz de onde vem o excesso. Medido no acervo real, o
+  // base nunca passa de 10 sozinho — quando passa, o problema e o base, nao os chips.
+  if (t > L.many && typeof baseTags === "number") {
+    el.appendChild(qSpan(baseTags >= L.many
+      ? "o style base sozinho já usa " + baseTags + " de " + L.many + " tags — nenhum módulo cabe sem cortar o base"
+      : "o style base usa " + baseTags + " de " + L.many + "; os módulos somam +" + (t - baseTags), "neutral"));
+  }
   findNegations(style, lyrics).forEach(n =>
     el.appendChild(qSpan("«" + n + "»: mais confiável no campo Exclude", "warn")));
   return el;
@@ -766,7 +800,7 @@ function renderCard(song) {
   // Campos COPIAVEIS: rotulo fora, conteudo dentro
   const styleField = fieldBlock("Style of Music", recomposedStyle(song));
   styleField.querySelector(".block").setAttribute("data-role", "style-block");
-  styleField.appendChild(styleQuality(recomposedStyle(song), song.lyrics));
+  styleField.appendChild(styleQuality(recomposedStyle(song), song.lyrics, baseTagCount(song)));
   card.appendChild(styleField);
   const lyricsField = fieldBlock("Lyrics", song.lyrics, "lyrics");
   lyricsField.appendChild(lengthQuality(song.lyrics, QUALITY_LIMITS.lyrics,
@@ -865,7 +899,10 @@ function renderModules(song, card) {
       const chip = document.createElement("button");
       chip.type = "button";
       chip.className = "chip" + (active.has(m.id) ? " on" : "");
-      chip.textContent = m.label;
+      chip.dataset.mid = m.id;
+      const chipLabel = document.createElement("span"); chipLabel.textContent = m.label;
+      const chipCost = document.createElement("span"); chipCost.className = "cost";
+      chip.appendChild(chipLabel); chip.appendChild(chipCost);
       chip.title = m.fragment + (m.notes ? " — " + m.notes : "");
       chip.setAttribute("aria-pressed", active.has(m.id) ? "true" : "false");
       chip.addEventListener("click", () => {
@@ -879,7 +916,10 @@ function renderModules(song, card) {
         const styleBlock = card.querySelector('[data-role="style-block"]');
         if (styleBlock) styleBlock.textContent = composed;
         const oldQ = card.querySelector('[data-role="style-quality"]');
-        if (oldQ) oldQ.replaceWith(styleQuality(composed, song.lyrics));
+        if (oldQ) oldQ.replaceWith(styleQuality(composed, song.lyrics, baseTagCount(song)));
+        // as contribuicoes interagem pelo dedup: um numero velho num chip vizinho
+        // seria o FIX-007 de novo. Recalcula todos.
+        refreshCosts();
       });
       ldiv.appendChild(chip);
     });
@@ -892,6 +932,20 @@ function renderModules(song, card) {
   box.appendChild(recompUI);
 
   wrap.appendChild(box);
+
+  /* Escreve em cada chip o custo dele em tags. So roda com o painel ABERTO:
+     cartao fechado nao gasta nada. Ligado: "−N" (o que sai); desligado: "+N"
+     (o que entra); "0" quando o chip nao muda o prompt — o caso que hoje engana. */
+  function refreshCosts() {
+    if (!wrap.open) return;
+    const costs = moduleCosts(song, active);
+    box.querySelectorAll("button.chip").forEach(c => {
+      const n = costs[c.dataset.mid] || 0;
+      const el = c.querySelector(".cost");
+      el.textContent = n === 0 ? "0" : (active.has(c.dataset.mid) ? "\u2212" : "+") + n;
+    });
+  }
+  wrap.addEventListener("toggle", refreshCosts);
   return wrap;
 }
 

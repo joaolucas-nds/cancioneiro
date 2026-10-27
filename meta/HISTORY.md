@@ -98,6 +98,10 @@ estao copiando a linha do V4. Nao vale para os modelos atuais.
 - **Ordem importa:** o Suno pesa mais as tags iniciais. Genero primeiro, clima em seguida.
   Mover o genero da 5a para a 1a posicao melhora a aderencia sem mudar mais nada.
 - Prioridade quando precisar cortar: genero > clima > instrumento principal > estilo vocal > BPM.
+  **Nuance medida em 2026-10-27 (DEC-019):** a ordem e generica. Em generos centrados na voz (rap,
+  rap-pop) o estilo vocal E o genero, e corta-lo primeiro desmonta a faixa — aplicada ao album de
+  referencias, a ordem mandou cortar a voz de rap em 2 de 7 faixas. Por isso a ferramenta mostra o
+  custo de cada modulo e nao sugere o corte.
 
 ## 11 · Exclusao > negacao no texto — CONFIRMADO (relevante para o esquema)
 
