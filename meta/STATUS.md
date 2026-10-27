@@ -15,6 +15,7 @@
 - **Aplicada pela WO 0010** (commit `95e6239`, empurrado): CHANGELOG, ROADMAP, IDEAS, README e este STATUS conferidos por hash de chegada; nenhum arquivo de produto tocado.
 - **Painel do Projeto atualizado pelo dono** `[relatado pelo dono, 2026-10-27; conferido pelo chat via leitura do painel]` — as Instruções do painel batem com o `INSTRUCOES-DO-PROJETO.md`.
 - **3a.2 decidida e aplicada:** o dono escolheu a opção (b) da spec `meta/specs/261027-custo-dos-modulos.md` — custo no chip, sem sugestão de corte (DEC-019).
+- **Aplicada pela WO 0011** (commit `377b601`, empurrado): 17 edições, cinco hashes de chegada batem; `validate.py` exit=0 só de sintaxe (`jsonschema` ausente). Falta a conferência na tela do dono.
 
 ## Funciona (pronto)
 
