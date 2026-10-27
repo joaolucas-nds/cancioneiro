@@ -33,8 +33,8 @@ O diferencial real sobre os builders genéricos: a ferramenta não só organiza,
 - ✅ «no X» no style detectado por fronteira de palavra; **só avisa** — migrar num clique ficou fora (DEC-018); `no vocals` não dispara em faixa instrumental (i-019).
 - ⏸ Aviso de ordem: gênero nas primeiras palavras (i-020) — **adiado**: dispara em 0 de 10 faixas reais; gatilho no IDEAS.
 
-**3a.2 — próxima fatia:**
-- ⬜ Sugerir o que cortar quando há tags demais (i-026) — 7 de 7 faixas do álbum de referências já acendem âmbar.
+**3a.2 — ✅ concluída em 0.6.0 (DEC-019), conferida na tela pelo dono em 2026-10-27:**
+- ✅ O custo de cada módulo em tags, no próprio chip, e a folga do style base na linha de qualidade (i-026). A lista de corte automática foi descartada pela medição: mandaria cortar a voz de rap em faixas de rap-pop.
 
 **3b — Modularidade (continuação):**
 - ✅ Módulos de estilo ligáveis/desligáveis por menu, recompondo o style (i-004) — v0 entregue, refinar UX na iteração.

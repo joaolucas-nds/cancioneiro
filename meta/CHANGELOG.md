@@ -4,6 +4,20 @@
 
 ---
 
+## [0.6.0] — 2026-10-27
+
+Fase 3a.2: o custo de cada modulo no chip, conferido na tela. E a versao passa a aparecer no app.
+
+### Added
+- **Custo de cada modulo no chip (DEC-019):** com o painel de modulos aberto, cada chip mostra quantas tags ele muda no Style daquele cartao — `−N` ligado, `+N` desligado, `0` quando nao muda o prompt (o chip que antes acendia sem efeito nenhum). Recalculado em todos os chips a cada clique, so com o painel aberto. A linha de qualidade passa a dizer quanto o style base usa sozinho quando o recomposto passa de 10 tags. A lista de corte automatica foi descartada: medida, ela mandaria cortar a voz de rap em faixas de rap-pop.
+- **A versao na tela (i-027):** o cabecalho do app mostra `v0.6.0`. Todo print passa a ser datavel.
+- **`scripts/validate.py` confere a versao:** o topo do CHANGELOG, o app, o README e o STATUS tem de dizer a mesma; senao, codigo 1.
+
+### Fixed
+- O cabecalho do `scripts/validate.py` dizia «checa duas coisas» desde a WO 0006, que acrescentou a terceira; agora lista as quatro.
+
+---
+
 ## [0.5.0] — 2026-10-27
 
 Painel de qualidade do prompt (Fase 3a) e quatro correcoes que o tornaram confiavel. Tudo o que entrou no app desde a 0.4.1.
