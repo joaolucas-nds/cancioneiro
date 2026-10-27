@@ -12,6 +12,7 @@
 - **Fase 3a conferida na tela pelo dono:** os cinco itens do roteiro da WO 0009 ok `[relatado pelo dono, 2026-10-27]` — o painel mede o Style recomposto (298 em ar-01, não os 164 do base), acompanha o clique no chip, o botão copia o que se vê (FIX-007), o vermelho aparece em 1.271 com todos os módulos ligados, e a faixa instrumental avisa «no drums» sem avisar «no vocals».
 - **0.5.0 fechada no CHANGELOG:** tudo o que entrou no app desde a 0.4.1 — painel de qualidade (DEC-018), FIX-004 a FIX-007, acervo autossuficiente (DEC-016).
 - **Este STATUS foi reescrito, não acrescido.** Saíram os seis blocos «Última conversa» de 2026-07-21 a 2026-10-24: o que foi entregue está no CHANGELOG (0.4.1 e 0.5.0), as decisões no DECISIONS (DEC-010 a DEC-018, FIX-003 a FIX-007), e o detalhe de cada dia em `logs/`. As pendências de tela que eles declaravam abertas foram **todas fechadas pelo dono** (WO 0006 item 1; WO 0007 itens 1-3; WO 0009 itens 1-5), e a pergunta de 2026-10-17 está fechada desde a WO 0007. Nada único se perdeu: o que só existia aqui foi para «Notas de estado».
+- **Aplicada pela WO 0010** (commit `95e6239`, empurrado): CHANGELOG, ROADMAP, IDEAS, README e este STATUS conferidos por hash de chegada; nenhum arquivo de produto tocado.
 
 ## Funciona (pronto)
 
