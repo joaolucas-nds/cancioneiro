@@ -11,6 +11,7 @@
 
 - **Teste base do prompt-modelo** `[relatado pelo dono]`: três chats Sonnet 5.5 fora de Projeto. O que o prompt ensinava saiu certo em 9 de 9 faixas (JSON puro, zero rótulos, BPM coerente); o que ele calava, não — os três inventaram um formato de módulo e o aninharam na faixa, e 5 de 9 bases saíram com 10 tags ou mais `[medido por instrumento]`. Os três JSONs ficam na pasta-pai como linha de base do reteste.
 - **Spec `meta/specs/261028-prompt-modelo-e-modulos.md` decidida** (1a, 2a, 3a, 4a, e a 5 da nota do dono) e aplicada pela WO 0015: DEC-021 e FIX-009.
+- **WO 0015 aplicada e empurrada (`8bbe6c1`, 2026-10-28):** nove hashes de chegada conferidos; `validate.py` verde em modo sintaxe (`jsonschema` ausente).
 - **Este bloco substitui o anterior, de 2026-10-28, que fechava a 0.7.0.** O que ele dizia está no CHANGELOG [0.7.0], no DECISIONS (DEC-020, FIX-008) e em `logs/2026-10-28.md`.
 
 ## Funciona (pronto)
