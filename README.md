@@ -2,7 +2,7 @@
 
 Ferramenta local para **organizar, copiar e variar** prompts de música gerados por IA (Suno hoje; agnóstica por design), a partir de um **acervo de canções em JSON canônico**.
 
-> **Estado:** v0.6.0 — ferramenta em uso. Lê o acervo, copia por campo, troca módulos de estilo, **mede cada prompt contra os limites do Suno** e exporta Markdown. Publicada no GitHub Pages. Ver `meta/ROADMAP.md`.
+> **Estado:** v0.7.0 — ferramenta em uso. Lê o acervo, copia por campo, troca módulos de estilo, ajusta o BPM, **mede cada prompt contra os limites do Suno** e exporta Markdown. Publicada no GitHub Pages. Ver `meta/ROADMAP.md`.
 
 ## O problema
 
@@ -33,7 +33,7 @@ cancioneiro/
    **Ou local:** duplo-clique em `app/index.html` (modo `file://`) e clique em *Importar .json*.
 2. Escolha um acervo de `data/` (ex.: `demo.json`).
 3. Navegue por álbuns, copie style/lyrics por botão, marque o que usou.
-4. Ligue/desligue **módulos de estilo** por camada para gerar variações — o Style recompõe ao vivo.
+4. Ligue/desligue **módulos de estilo** por camada para gerar variações — o Style recompõe ao vivo. Para mudar o andamento, use o campo de **BPM** do cartão (ou um chip da camada Andamento, que é atalho para ele): o número muda em todo o Style, nunca aparecem dois. O Suno trata BPM como aproximação.
 5. Leia a linha embaixo de cada campo antes de copiar: **vermelho** = o Suno vai cortar o texto (passou do limite, ele trunca sem avisar); **âmbar** = vai funcionar, mas pior (tags demais, ou negação «no X» que rende mais no campo Exclude). Com os módulos abertos, cada chip mostra quantas tags ele põe ou tira (`+2`, `−2`, ou `0` quando não muda nada) — use isso para decidir o que desligar.
 6. Exporte em `.md` (faixa, álbum ou acervo inteiro) se precisar do formato legível.
 

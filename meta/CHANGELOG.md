@@ -4,6 +4,20 @@
 
 ---
 
+## [0.7.0] — 2026-10-28
+
+Fase 3b: o controle de BPM no cartao, conferido na tela pelo dono.
+
+### Added
+- **Controle de BPM (DEC-020, i-005):** o «128 BPM» da linha de metadados virou um campo (20 a 300, `−5`/`+5`, «voltar a N») que governa todo «NN bpm» do Style principal — base e modulos —, reescrito no lugar, antes da dedup. Botao copiar, linha de qualidade, recomposto e export MD («BPM: N» e o bloco) usam o valor do controle. Variantes e o «Baixar .json» nao mudam; o valor e so da sessao, como os modulos. Valor invalido nao chega ao Style.
+- **Chip de andamento como atalho:** ligar um chip da camada Andamento move o controle para o numero dele e desliga o outro; no maximo um ligado. Antes, 49 de 49 cliques punham um segundo BPM no prompt.
+- **`scripts/validate.py` confere o BPM (quinta checagem):** reprova faixa com dois BPM diferentes no style, ou com campo `bpm` diferente do numero do style (ou sem numero nele).
+
+### Fixed
+- **FIX-008:** filtro, busca e «marcar usei» religavam os chips do acervo enquanto o bloco de Style seguia com o clique — o botao copiar entregava um texto que os chips nao explicavam. O estado de sessao sobrevive ao re-render e so volta ao acervo ao importar de novo.
+
+---
+
 ## [0.6.0] — 2026-10-27
 
 Fase 3a.2: o custo de cada modulo no chip, conferido na tela. E a versao passa a aparecer no app.
