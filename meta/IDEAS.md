@@ -21,6 +21,7 @@ Fragmentos de estilo nomeados (`melancholic`, `taiko-drums`, `female-soprano`, f
 
 ### i-005 💡 Controle de BPM por slider/roll
 BPM como valor manipulável na ferramenta (slider ou stepper), refletindo no style copiado. Cuidado registrado no HISTORY: Suno trata BPM como aproximação, não comando exato — a ferramenta ajuda a *escrever* o BPM, não garante que o Suno obedeça. Fase 3.
+**Implementada em 2026-10-28 (DEC-020)** — campo numérico no cartão, não slider (spec `meta/specs/261028-controle-de-bpm.md`, Decisão 3). Vira ✅ depois da conferência na tela.
 
 ### i-006 ✅ Export MD seletivo (1 canção / 1 álbum / tudo)
 Gerar `.md` legível sob demanda a partir do JSON, com o formato limpo (rótulo FORA do bloco copiável). Serve para colar num chat ou subir num Projeto. Fase 2/3.
@@ -104,6 +105,9 @@ A API expõe pesos 0.00-1.00 para aderência ao estilo e desvio criativo (os Cre
 
 ### i-028 💡 O prompt-modelo pedir folga para os modulos
 `[nascido da spec da 3a.2, 2026-10-27]` Em ar-01 e ar-04 o style base que o chat escreveu ja usa 10 de 10 tags: nenhum modulo cabe sem estourar. O painel agora diz isso, mas so depois. A regra que o evitaria mora em quem escreve o base — o `schema/PROMPT-PARA-CHATS.md` poderia pedir «style base com 6 a 8 tags, deixando folga para os modulos». Pesar contra: o base mais curto pode ficar vago (abaixo de 4 tags o painel ja avisa).
+
+### i-029 💡 Avisar quando a palavra de andamento contradiz o BPM
+`[nascido da spec do BPM, 2026-10-28]` Com o controle, ar-04 vai a 140 e continua dizendo «downtempo» e «slow build». A linha de qualidade poderia avisar, em ambar, quando uma palavra de andamento do Style («downtempo», «slow», «uptempo», «fast») briga com o numero. Pesar contra: exige uma tabela palavra → faixa de BPM, conhecimento de dominio que muda com o Suno — o mesmo motivo que tirou a tabela de generos vocais da DEC-019. Se entrar, a tabela mora num objeto unico com fonte e data, como o `QUALITY_LIMITS`.
 
 ## Feedback para o Kit
 

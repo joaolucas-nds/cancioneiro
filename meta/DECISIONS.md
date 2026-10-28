@@ -333,3 +333,29 @@
 **Alternativas consideradas:** (a) lista de corte automatica — descartada pela medicao acima; (c) a (b) com uma sugestao destacada pelo maior custo — descartada: esse criterio empata em 6 das 7 faixas, e um desempate arbitrario num destaque e lido como conselho; (d) corrigir a prioridade com uma tabela de generos centrados na voz — descartada: congelaria em codigo um conhecimento que muda com o Suno.
 
 **Consequencias:** (+) O chip que acende sem mudar nada passa a dizer `0` — o defeito silencioso mais antigo do painel de modulos. (+) Em ar-01 e ar-04 a folga diz que o problema e o base, nao os chips. (+) 7-15 ms por cartao aberto. (−) A informacao e mais densa: 50 chips com numero. (−) O style base escrito no limite continua sendo gerado assim; a regra que o evitaria mora no prompt-modelo (i-028).
+
+---
+
+## FIX-008 — O re-render religava os chips, mas o Style continuava com o clique
+
+**Data:** 2026-10-28
+**Sintoma:** Depois de clicar num chip de modulo, qualquer re-render — mudar um filtro, digitar na busca, «marcar usei» — mostrava os chips de volta ao estado do acervo, enquanto o bloco de Style seguia com o clique. O botao copiar entregava um texto que os chips nao explicavam. Medido na 0.6.0, em ar-01: um chip desligado e uma letra na busca deixavam o bloco com 298 caracteres e os 7 chips acesos.
+
+**Causa raiz:** `renderCard` monta o bloco de Style ANTES do painel de modulos, lendo `App.activeModules[song.id]` (o estado do clique); depois, `renderModules` substituia esse conjunto por um novo, criado do acervo. Duas leituras do mesmo estado em momentos diferentes do mesmo render.
+
+**Solucao:** `renderModules` reaproveita o conjunto que ja existe para a faixa; so cria um do acervo quando nao ha nenhum. `setCollection` zera `App.activeModules` (e o novo `App.bpm`), entao importar de novo volta ao acervo. Achado ao implementar o controle de BPM, que teria o mesmo defeito.
+
+**Licao:** E o FIX-007 com outra roupa: estado que a interface muda depois de criada tem de ter uma fonte so, lida do mesmo jeito por tudo o que a mostra. Re-render e o teste que pega isso — faltava na bateria.
+
+---
+
+## DEC-020 — Fase 3b: o controle de BPM governa todo «NN bpm» do Style; o chip de andamento vira atalho
+
+**Data:** 2026-10-28
+**Contexto:** A i-005 pedia BPM manipulavel no cartao. A spec `meta/specs/261028-controle-de-bpm.md` mediu: as tres fontes de BPM (campo `bpm`, numero no `style`, modulo de andamento) concordam em 10 de 10 faixas; mas a camada Andamento do painel nunca muda o BPM — em 49 de 49 cliques poe um segundo numero no prompt, porque a dedup ve «128 bpm» e «70 bpm» como coisas diferentes, e desligar o modulo da faixa nao tira o numero do style base. Um prototipo que reescreve todo «NN bpm» para um valor so, antes da dedup, deu um BPM so em 56 de 56 combinacoes, sem mudar a contagem de tags.
+
+**Decisao:** (1) Um controle na linha de metadados do cartao (campo numerico 20-300, −5/+5, «voltar a N») governa todo «NN bpm» do Style principal — base e fragmentos dos modulos —, reescrito no lugar, antes da dedup. Valor inicial: o numero do `style`; sem ele, o campo `bpm`; sem os dois, vazio (e, preenchido, o numero entra no fim). Variantes ficam de fora. O export MD leva o valor do controle no bloco e na linha de metadados. (2) O valor e so da sessao, como os modulos: nao vai para o «Baixar .json» nem para o navegador. (3) O chip de andamento vira atalho: ligar move o controle para o numero dele e desliga o outro chip de andamento; mudar o controle para outro numero desliga o chip; voltar ao numero dele nao o religa. (4) O `validate.py` reprova faixa com dois BPM diferentes no `style`, ou com campo `bpm` diferente do numero do `style` (ou sem numero no `style`).
+
+**Alternativas consideradas:** guardar o valor no navegador ou no .json — descartadas: o primeiro faria o Style copiado depois de recarregar misturar BPM novo com modulos originais; o segundo faria o app editar o acervo, papel que o FIX-004 tirou dele. Chips de andamento intocados (custo 0 quase sempre: um botao que nao faz nada) ou escondidos (perde os atalhos). Slider: ~1 BPM por pixel no celular. Validador so avisando, ou sem checagem: o erro de autoria ficaria escondido pelo controle, que escolhe o numero do `style`.
+
+**Consequencias:** (+) O prompt nunca leva dois andamentos — o defeito silencioso da camada Andamento some. (+) No valor original, tudo o que se copia e exporta e byte a byte o da 0.6.0. (+) Os 8 andamentos do album viram pontos de salto. (−) O controle nao sabe se a palavra combina com o numero: a 140, ar-04 ainda diz «downtempo» (i-029). (−) O fragmento de um modulo de andamento que traz palavras alem do numero («slow tempo 70 bpm») perde as palavras pela dedup quando o base ja tem um BPM — o que o chip entrega e o numero.

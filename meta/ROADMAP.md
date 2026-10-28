@@ -38,7 +38,7 @@ O diferencial real sobre os builders genéricos: a ferramenta não só organiza,
 
 **3b — Modularidade (continuação):**
 - ✅ Módulos de estilo ligáveis/desligáveis por menu, recompondo o style (i-004) — v0 entregue, refinar UX na iteração.
-- ⬜ Controle de BPM por slider/stepper (i-005).
+- 🔨 Controle de BPM no cartão (i-005, DEC-020) — aplicado, aguarda a conferência na tela; campo numérico, não slider.
 - ✅ Campo de exclusão de estilos (i-009) — no esquema e com botão de copiar na ferramenta.
 - ✅ Export MD completo (i-006).
 - ⬜ Importar prompts prontos dos álbuns como módulos.

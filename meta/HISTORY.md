@@ -51,6 +51,7 @@ Instrumental "puro" tende a ganhar voz cantarolando após ~15–20s, mesmo com "
 - **Três aditivos oficiais do v5.5** (checados contra anúncio oficial por uma fonte cética): **Voices** (clonar/usar voz própria), **Custom Models** (Pro/Premier, treinar até 3 variantes) e **My Taste** (grátis, aprende preferências).
 - **Creative Sliders:** terceiro sistema de controle além de style + meta-tags. Disponibilidade/nome variam.
 - **CUIDADO — mito de blog:** muito do que blogs afirmam sobre v5.5 (ex.: "BPM agora é respeitado com precisão", "'instrumental' precisa vir no fim da lista") **não está no material oficial**. Uma fonte confiável checou e desmentiu. Trate esses "truques de versão" como relato de comunidade, não como fato. **BPM continua sendo aproximação**, não comando exato — relevante para o controle de BPM planejado na ferramenta (i-005): a ferramenta ajuda a *escrever* o BPM, não garante obediência.
+- **BPM no v6 (conferido em 2026-10-28):** a nota oficial do v6 (2026-09-09) não fala de tempo, e o help center oficial só documenta BPM no **Studio** («Transport controls»: Tempo padrão 120, «Follow Track» ou «Manual Tempo»). Na criação, o BPM continua indo como **texto no Style**. Não confirmado: um guia secundário de 2026 diz que o slider **Variety** acima de 0 pode reescrever as tags do Style (testado no v5) — se valer para o BPM, Variety 0 é a condição para o número do controle chegar intacto. Fontes na spec `meta/specs/261028-controle-de-bpm.md`.
 
 ## 6 · Recursos avançados — relevância para o Cancioneiro
 

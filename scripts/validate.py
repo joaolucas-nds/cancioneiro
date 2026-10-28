@@ -14,6 +14,8 @@ Checa quatro coisas:
      styleModules[] da propria colecao (DEC-016). O schema nao alcanca isto.
   4. A versao e a mesma no topo do meta/CHANGELOG.md, no app, no README e no
      STATUS (i-027).
+  5. O BPM de cada faixa e um so: o style nao tem dois numeros diferentes, e o
+     campo bpm, quando existe, e o numero do style (DEC-020).
 
 Rode antes de commitar mudanca em data/ ou schema/ (ver CLAUDE.md).
 Saida: codigo 0 se tudo passou, 1 se houve erro.
@@ -50,6 +52,36 @@ def check_module_refs(data, rel):
         print(f"ERRO de referencia em {rel} ({len(orphans)} id(s) de modulo sem indice):")
         for a, s, mid in orphans[:8]:
             print(f"   [{a} > {s}] styleModules: '{mid}' nao existe em styleModules[]")
+        return 1
+    return 0
+
+
+BPM_RE = re.compile(r"\b(\d{2,3})\s*-?\s*bpm\b", re.I)  # a mesma regra do app
+
+
+def check_bpm(data, rel):
+    """O BPM de cada faixa e um so (DEC-020).
+
+    O app governa todo "NN bpm" do style a partir de um valor inicial; style com
+    dois numeros, ou campo bpm que nao e o do style, e erro de autoria que o
+    controle esconderia. Variantes ficam de fora: cada uma tem o andamento dela.
+    """
+    bad = []
+    for album in data.get("albums", []):
+        for song in album.get("songs", []):
+            nums = sorted({int(n) for n in BPM_RE.findall(song.get("style", "") or "")})
+            field = song.get("bpm")
+            where = f"[{album.get('id', '?')} > {song.get('id', '?')}]"
+            if len(nums) > 1:
+                bad.append(f"{where} o style tem {len(nums)} BPM diferentes: {', '.join(map(str, nums))}")
+            elif field is not None and not nums:
+                bad.append(f"{where} campo bpm {field}, mas o style nao tem BPM")
+            elif field is not None and nums[0] != field:
+                bad.append(f"{where} campo bpm {field}, mas o style diz {nums[0]}")
+    if bad:
+        print(f"ERRO de BPM em {rel} ({len(bad)} faixa(s)):")
+        for b in bad[:8]:
+            print(f"   {b}")
         return 1
     return 0
 
@@ -139,6 +171,7 @@ def main(argv):
             print(f"OK (sintaxe)  {rel}")
             # o modo degradado tambem confere referencias (nao depende do pacote)
             errors += check_module_refs(data, rel)
+            errors += check_bpm(data, rel)
             continue
 
         errs = sorted(validator.iter_errors(data), key=lambda e: list(e.path))
@@ -152,8 +185,9 @@ def main(argv):
             n_songs = sum(len(a.get("songs", [])) for a in data.get("albums", []))
             print(f"OK  {rel}  ({len(data.get('albums', []))} álbuns, {n_songs} faixas)")
 
-        # referencia cruzada: o schema nao alcanca isto
+        # referencia cruzada e BPM: o schema nao alcanca isto
         errors += check_module_refs(data, rel)
+        errors += check_bpm(data, rel)
 
     # versao: a mesma nos quatro lugares (i-027)
     errors += check_version()
