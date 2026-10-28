@@ -13,6 +13,9 @@
    - Aberto como file:// (duplo-clique): fetch e bloqueado pelo navegador, entao
      mostra o botao de importar. O usuario escolhe o .json do disco.
    - Em qualquer modo: botoes "Importar .json" e "Baixar .json" sempre disponiveis.
+   - "Prompt para chats" e "Baixar exemplo" buscam schema/PROMPT-PARA-CHATS.md e
+     data/demo.json do repositorio no clique (fonte unica, DEC-021); no file://,
+     tentam o endereco publicado.
 
   Fonte de verdade = o arquivo JSON (DEC-004). O localStorage guarda SO estado
   efemero (marcacoes "usei", filtros). Se o localStorage falhar, a ferramenta
@@ -216,6 +219,29 @@
   .toast.show { opacity: 1; }
   .note { font-size: 12px; color: var(--ink-soft); }
   a { color: var(--ember); }
+
+  /* ---- Janela do prompt para chats (DEC-021) ----
+     <dialog> nativo: foco preso, Esc fecha, fica na camada de topo. Por estar no
+     topo, o toast (z-index comum) ficaria ATRAS dele — por isso a janela tem a
+     propria linha de status em vez de usar o toast. */
+  dialog.prompt-dialog {
+    border: 1px solid var(--line); border-radius: var(--radius);
+    background: var(--paper); color: var(--ink);
+    padding: 20px; width: min(640px, calc(100vw - 32px));
+  }
+  dialog.prompt-dialog::backdrop { background: rgba(35, 32, 27, .45); }
+  .prompt-dialog h2 { font-family: var(--serif); font-weight: 600; font-size: 20px; margin: 0 0 6px; }
+  .prompt-dialog p { margin: 0 0 12px; font-size: 13px; color: var(--ink-soft); }
+  .prompt-dialog label { display: block; font-size: 13px; margin-bottom: 4px; }
+  .prompt-dialog textarea {
+    width: 100%; box-sizing: border-box; min-height: 120px; resize: vertical;
+    font-family: var(--sans); font-size: 14px; padding: 10px;
+    border: 1px solid var(--line); border-radius: 8px; background: var(--paper-2); color: var(--ink);
+  }
+  .prompt-dialog textarea:focus-visible { outline: 2px solid var(--ember); outline-offset: 2px; }
+  .prompt-dialog .dialog-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; align-items: center; }
+  .prompt-dialog .dialog-actions .spacer { margin-left: auto; }
+  .prompt-dialog [data-role="prompt-status"] { min-height: 1.4em; margin: 10px 0 0; }
 </style>
 </head>
 <body>
@@ -230,6 +256,8 @@
     <button id="import-btn">Importar .json</button>
     <button id="download-btn">Baixar .json</button>
     <button id="export-md-btn">Exportar .md</button>
+    <button id="prompt-btn">Prompt para chats</button>
+    <button id="example-btn">Baixar exemplo</button>
     <input type="file" id="file-input" accept=".json,application/json" hidden>
   </div>
 </header>
@@ -265,6 +293,19 @@
 </main>
 
 <div class="toast" id="toast"></div>
+
+<dialog class="prompt-dialog" id="prompt-dialog" aria-labelledby="prompt-dialog-title">
+  <h2 id="prompt-dialog-title">Prompt para chats</h2>
+  <p>Escreva o que você quer; o botão copia o prompt-modelo inteiro com o seu pedido no lugar.
+  Cole num chat novo e importe aqui o JSON que ele devolver.</p>
+  <label for="prompt-request">Meu pedido</label>
+  <textarea id="prompt-request" placeholder="ex.: 3 faixas de synth-pop melancólico em pt-BR, uma instrumental…"></textarea>
+  <div class="dialog-actions">
+    <button type="button" class="btn-primary" id="prompt-copy-btn">Copiar prompt</button>
+    <button type="button" id="prompt-close-btn" class="spacer">Fechar</button>
+  </div>
+  <p class="note" data-role="prompt-status" role="status"></p>
+</dialog>
 
 <script>
 "use strict";
@@ -334,7 +375,7 @@ async function tryAutoLoad() {
       if (!res.ok) continue;
       const json = await res.json();
       setCollection(json);
-      toast("Acervo carregado de " + path);
+      toast("Acervo carregado de " + path + moduleRefsNotice(json));
       return;
     } catch (e) { /* tenta o proximo */ }
   }
@@ -357,7 +398,8 @@ function importFromFile(file) {
     try {
       setCollection(json);
       toast("Acervo importado: " + (json.title || file.name)
-            + (removidas ? " · " + removidas + " campo(s) interno(s) removido(s) — baixe de novo para gravar limpo" : ""));
+            + (removidas ? " · " + removidas + " campo(s) interno(s) removido(s) — baixe de novo para gravar limpo" : "")
+            + moduleRefsNotice(json));
     } catch (e) {
       toast("Não consegui carregar o acervo: " + e.message);
       console.error("[cancioneiro] falha em setCollection:", e);
@@ -365,6 +407,26 @@ function importFromFile(file) {
   };
   reader.onerror = () => toast("Não consegui ler o arquivo");
   reader.readAsText(file);
+}
+
+/** Quantos itens de songs[].styleModules nao resolvem num modulo da colecao:
+    objeto no lugar do id (o chat declarou o modulo dentro da faixa) ou id que
+    nao existe em styleModules[]. Devolve o trecho do toast, ou "" se nenhum.
+
+    Por que avisar e nao recusar: o resto da faixa (Style, Lyrics) continua util.
+    Por que avisar e nao calar: sem isto o painel abria com 0 chips e o modulo
+    marcado como ligado sumia do Style sem nenhum sinal (FIX-009) — o mesmo
+    principio do FIX-006, que conta as chaves internas que remove. */
+function moduleRefsNotice(json) {
+  const index = new Set((json.styleModules || []).map(m => m && m.id));
+  let bad = 0;
+  (json.albums || []).forEach(a => (a.songs || []).forEach(s =>
+    (s.styleModules || []).forEach(id => {
+      if (typeof id !== "string" || !index.has(id)) bad++;
+    })));
+  return bad
+    ? " · " + bad + " módulo(s) citado(s) nas faixas não existe(m) na coleção — não vão aparecer"
+    : "";
 }
 
 /* Remove as chaves internas (prefixo _) que versoes antigas da ferramenta
@@ -1124,7 +1186,95 @@ function toast(msg) {
   const t = document.getElementById("toast");
   t.textContent = msg; t.classList.add("show");
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove("show"), 2200);
+  // Aviso longo (chaves removidas, modulos que nao resolvem) precisa de tempo
+  // de leitura: ~45 ms por caractere, entre 2,2 s e 6 s.
+  const ms = Math.min(6000, Math.max(2200, msg.length * 45));
+  toastTimer = setTimeout(() => t.classList.remove("show"), ms);
+}
+
+/* ===================================================================
+   Prompt para chats e exemplo (DEC-021)
+   Fonte unica: o app NAO guarda copia do prompt nem do exemplo. Busca os
+   arquivos do repositorio no clique — relativo quando servido pelo Pages,
+   depois o endereco publicado (caso do file://, se o navegador permitir).
+   Cada push que muda o prompt muda o que este botao entrega.
+   =================================================================== */
+const PUBLISHED_BASE = "https://joaolucas-nds.github.io/cancioneiro/";
+const PUBLISHED_APP = PUBLISHED_BASE + "app/index.html";
+
+/** Busca o primeiro caminho que responder; devolve a Response ou null. */
+async function fetchFirst(relPath) {
+  const candidates = location.protocol === "file:"
+    ? [PUBLISHED_BASE + relPath]
+    : ["../" + relPath, relPath, PUBLISHED_BASE + relPath];
+  for (const url of candidates) {
+    try {
+      const res = await fetch(url, { cache: "no-store" });
+      if (res.ok) return res;
+    } catch (e) { /* tenta o proximo */ }
+  }
+  return null;
+}
+
+/** Recorta o prompt entre as linhas de marcacao e poe o pedido no lugar da
+    linha entre parenteses abaixo de "## Meu pedido". A mesma regra e conferida
+    pelo scripts/validate.py (check_prompt): linha exata. Devolve null se as
+    marcacoes nao estiverem la — melhor recusar que copiar o arquivo errado. */
+function extractPrompt(md, request) {
+  const lines = md.replace(/\r\n/g, "\n").split("\n");
+  const start = lines.indexOf("--- INÍCIO ---");
+  const end = lines.indexOf("--- FIM ---");
+  if (start < 0 || end < start) return null;
+  const body = lines.slice(start + 1, end);
+  const head = body.indexOf("## Meu pedido");
+  if (head < 0) return null;
+  let ph = head + 1;
+  while (ph < body.length && !body[ph].trim()) ph++;
+  if (ph >= body.length || !/^\(.*\)$/.test(body[ph])) return null;
+  const req = (request || "").trim();
+  if (req) body.splice(ph, 1, req);   // vazio: fica o texto-guia, para completar no chat
+  return body.join("\n").trim() + "\n";
+}
+
+function promptStatus(msg, html) {
+  const el = document.querySelector('[data-role="prompt-status"]');
+  if (html) el.innerHTML = msg; else el.textContent = msg;
+}
+
+async function copyPrompt() {
+  promptStatus("Buscando o prompt…");
+  const res = await fetchFirst("schema/PROMPT-PARA-CHATS.md");
+  if (!res) {
+    promptStatus('Não consegui buscar o prompt. Abra a <a href="' + PUBLISHED_APP
+      + '" target="_blank" rel="noopener">versão publicada</a> e tente lá.', true);
+    return;
+  }
+  const text = extractPrompt(await res.text(), document.getElementById("prompt-request").value);
+  if (text === null) {
+    promptStatus("O arquivo do prompt veio sem as marcações esperadas — nada foi copiado.");
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch (e) {
+    // Mesmo fallback do copiar dos cartoes (file:// / sem Clipboard API)
+    const ta = document.createElement("textarea");
+    ta.value = text; document.getElementById("prompt-dialog").appendChild(ta); ta.select();
+    try { document.execCommand("copy"); } catch (_) {}
+    ta.remove();
+  }
+  promptStatus("Prompt copiado (" + text.length.toLocaleString("pt-BR")
+    + " caracteres). Cole num chat novo, fora de qualquer Projeto.");
+}
+
+async function downloadExample() {
+  const res = await fetchFirst("data/demo.json");
+  if (!res) {
+    toast("Não consegui buscar o exemplo — abra a versão publicada do app");
+    return;
+  }
+  downloadFile("cancioneiro-exemplo.json", await res.text(), "application/json");
+  toast("Exemplo baixado: cancioneiro-exemplo.json");
 }
 
 /* ===================================================================
@@ -1138,6 +1288,14 @@ document.getElementById("file-input").addEventListener("change", e => {
 });
 document.getElementById("download-btn").addEventListener("click", downloadCollection);
 document.getElementById("export-md-btn").addEventListener("click", exportCollectionMd);
+document.getElementById("prompt-btn").addEventListener("click", () => {
+  promptStatus("");
+  document.getElementById("prompt-dialog").showModal();
+});
+document.getElementById("prompt-copy-btn").addEventListener("click", copyPrompt);
+document.getElementById("prompt-close-btn").addEventListener("click", () =>
+  document.getElementById("prompt-dialog").close());
+document.getElementById("example-btn").addEventListener("click", downloadExample);
 ["filter-album", "filter-state", "filter-used"].forEach(id =>
   document.getElementById(id).addEventListener("change", render));
 document.getElementById("search").addEventListener("input", render);

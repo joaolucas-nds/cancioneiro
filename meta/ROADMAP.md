@@ -20,6 +20,7 @@ O mínimo que já é útil: ler o acervo e copiar sem procurar.
 - ✅ Filtro por estado da canção + álbum + uso + busca textual (i-007).
 - ✅ Export MD de faixa / álbum / acervo (i-006).
 - ✅ Prompt-modelo para chats gerarem no esquema (i-002).
+- 🔨 Prompt-modelo com contrato de modulos e orcamento de tags; prompt e exemplo pelos botoes do app (DEC-021, i-028, i-031) — falta o reteste do dono.
 - ✅ Script de validação de acervo `scripts/validate.py`.
 - ⬜ Converter `album_guia_suno.md` inteiro como segundo dataset (i-008).
 **Marco:** conseguir usar a ferramenta de verdade numa rodada de geração no Suno.

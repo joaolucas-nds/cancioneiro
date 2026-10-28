@@ -5,7 +5,7 @@ Uso:
     python3 scripts/validate.py              # valida todos os data/*.json
     python3 scripts/validate.py data/foo.json  # valida um arquivo
 
-Checa quatro coisas:
+Checa seis coisas:
   1. Sintaxe JSON de todos os schemas e datasets.
   2. Conformidade estrutural de cada dataset contra collection.schema.json
      (requer o pacote 'jsonschema'; se ausente, faz so a checagem de sintaxe
@@ -16,6 +16,9 @@ Checa quatro coisas:
      STATUS (i-027).
   5. O BPM de cada faixa e um so: o style nao tem dois numeros diferentes, e o
      campo bpm, quando existe, e o numero do style (DEC-020).
+  6. O schema/PROMPT-PARA-CHATS.md tem as marcacoes que o botao «Prompt para
+     chats» do app le: as linhas de INICIO e FIM e a linha entre parenteses
+     abaixo de «## Meu pedido» (DEC-021).
 
 Rode antes de commitar mudanca em data/ ou schema/ (ver CLAUDE.md).
 Saida: codigo 0 se tudo passou, 1 se houve erro.
@@ -42,18 +45,28 @@ def check_module_refs(data, rel):
     e vira fragmento silenciosamente ausente na ferramenta (ver DEC-016).
     """
     index = {m.get("id") for m in data.get("styleModules", []) if isinstance(m, dict)}
-    orphans = []
+    orphans, not_ids = [], []
     for album in data.get("albums", []):
         for song in album.get("songs", []):
             for mid in song.get("styleModules", []) or []:
-                if mid not in index:
-                    orphans.append((album.get("id", "?"), song.get("id", "?"), mid))
+                where = (album.get("id", "?"), song.get("id", "?"))
+                # Objeto no lugar do id: o chat declarou o modulo DENTRO da faixa.
+                # Testado antes do `in`, porque dict nao e hashable e o `in` num set
+                # quebrava o validador com traceback em vez de reprovar (FIX-009).
+                if not isinstance(mid, str):
+                    not_ids.append(where + (mid,))
+                elif mid not in index:
+                    orphans.append(where + (mid,))
+    if not_ids:
+        print(f"ERRO de referencia em {rel} ({len(not_ids)} item(ns) de styleModules nao sao id):")
+        for a, s, mid in not_ids[:8]:
+            print(f"   [{a} > {s}] styleModules: {type(mid).__name__} no lugar de um id — "
+                  "declare o modulo em styleModules[] da colecao e cite so o id na faixa")
     if orphans:
         print(f"ERRO de referencia em {rel} ({len(orphans)} id(s) de modulo sem indice):")
         for a, s, mid in orphans[:8]:
             print(f"   [{a} > {s}] styleModules: '{mid}' nao existe em styleModules[]")
-        return 1
-    return 0
+    return 1 if (orphans or not_ids) else 0
 
 
 BPM_RE = re.compile(r"\b(\d{2,3})\s*-?\s*bpm\b", re.I)  # a mesma regra do app
@@ -114,6 +127,47 @@ def check_version():
             print(f"   {k}: {v or 'versao nao encontrada'}")
         return 1
     print(f"OK  versao {ref} igual em CHANGELOG, app, README e STATUS")
+    return 0
+
+
+PROMPT_START = "--- INÍCIO ---"
+PROMPT_END = "--- FIM ---"
+
+
+def check_prompt():
+    """O prompt-modelo tem o que o botao «Prompt para chats» le (DEC-021).
+
+    O app nao guarda copia do prompt: busca este arquivo no Pages e recorta entre
+    as duas linhas de marcacao, trocando a linha entre parenteses abaixo de
+    «## Meu pedido» pelo pedido digitado. Marcacao que some quebra o botao em
+    producao sem nada falhar aqui — por isso a checagem. Mesma regra do app
+    (`extractPrompt` em app/index.html): linha exata, sem espacos em volta.
+    """
+    path = "schema/PROMPT-PARA-CHATS.md"
+    try:
+        with open(os.path.join(ROOT, path), encoding="utf-8") as f:
+            lines = [l.rstrip("\r\n") for l in f]
+    except OSError as e:
+        print(f"ERRO no prompt: nao consegui ler {path}: {e}")
+        return 1
+    bad = []
+    starts = [i for i, l in enumerate(lines) if l == PROMPT_START]
+    ends = [i for i, l in enumerate(lines) if l == PROMPT_END]
+    if len(starts) != 1 or len(ends) != 1 or ends[0] < starts[0]:
+        bad.append(f"precisa de uma linha '{PROMPT_START}' e depois uma '{PROMPT_END}' "
+                   f"(achei {len(starts)} e {len(ends)})")
+    else:
+        body = lines[starts[0] + 1:ends[0]]
+        heads = [i for i, l in enumerate(body) if l == "## Meu pedido"]
+        nxt = [l for l in body[heads[0] + 1:] if l.strip()][:1] if len(heads) == 1 else []
+        if not (nxt and nxt[0].startswith("(") and nxt[0].endswith(")")):
+            bad.append("entre as marcacoes, '## Meu pedido' (uma vez) seguido de uma linha entre parenteses")
+    if bad:
+        print(f"ERRO no prompt {path}:")
+        for b in bad:
+            print(f"   {b}")
+        return 1
+    print(f"OK  prompt com as marcacoes que o app le ({path})")
     return 0
 
 
@@ -191,6 +245,8 @@ def main(argv):
 
     # versao: a mesma nos quatro lugares (i-027)
     errors += check_version()
+    # prompt-modelo: as marcacoes que o botao do app le (DEC-021)
+    errors += check_prompt()
 
     print()
     if errors:
