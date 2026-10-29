@@ -57,7 +57,9 @@ cancioneiro/
 │   ├── style-modules.json     # biblioteca de módulos de estilo reutilizáveis
 │   └── PROMPT-PARA-CHATS.md   # prompt colável p/ chats gerarem no esquema
 ├── scripts/
-│   └── validate.py            # valida data/ contra o schema
+│   ├── validate.py            # valida data/ contra o schema
+│   ├── convert_br.py          # guias BR antigos -> colecao no esquema (DEC-026)
+│   └── test_convert_br.py     # teste do conversor, com guia sintetico
 ├── data/                      # o acervo real, no esquema
 │   └── exemplo-cinzeiro.json  # 1 faixa convertida como prova do esquema
 ├── index.html                 # redireciona para app/ (URL limpa no Pages)

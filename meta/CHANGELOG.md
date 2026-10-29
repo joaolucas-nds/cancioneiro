@@ -4,9 +4,12 @@
 
 ---
 
-## [Unreleased]
+## [0.9.1] — 2026-10-29
 
-Ajustes de tela pedidos pelo dono depois de conferir a 0.9.0 (nota `261029-1618.txt`, DEC-025). Viram 0.9.1 depois de vistos na tela.
+Ajustes de tela pedidos pelo dono depois de conferir a 0.9.0 (nota `261029-1618.txt`, DEC-025), vistos na tela. E o primeiro conversor dos guias antigos (i-008, DEC-026).
+
+### Added
+- **Conversor da familia BR (`scripts/convert_br.py`, DEC-026):** le os guias `..._VOL<n>_GUIA.md` da «Rainha da Preguiça» e grava uma colecao no esquema, um album por volume. Tira os rotulos `[ESTILO SUNO]` e `[LETRA]` do que e copiavel, leva as variantes `VAR A/B` e os campos de referencia (Conceito, Voz, Instrumentos, conversa de origem). Conversao fiel: letra longa e style com tags demais nao sao cortados, o relatorio conta. Teste com guia sintetico em `scripts/test_convert_br.py` (8 casos, sem letra real no repo). Medido no acervo do dono: 151 de 151 faixas, 10 albuns; o arquivo gerado fica fora do repo.
 
 ### Changed
 - **Cabecalho:** a versao fica pequena abaixo do nome, sem o subtitulo; «Prompt», «Exemplo» (icone de baixar) e «Estrutura» (icone de camadas) ficam ao lado do nome; importar, baixar e exportar ficam na ponta direita.

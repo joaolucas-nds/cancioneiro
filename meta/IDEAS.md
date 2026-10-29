@@ -32,6 +32,7 @@ Adotar o ciclo de estados que o FAIXAS.md do Cinzeiro já usa, como campo `state
 ### i-008 💡 Importar acervo existente convertendo por álbum
 Converter os `ALBUM_*.md` e `album_guia_suno.md` para o esquema, um álbum por vez (semi-assistido por chat), populando `data/`. Começar pelo `album_guia_suno.md` (mais limpo). Backlog do STATUS.
 **Desbloqueada em 2026-10-29:** o dono trouxe os álbuns para a pasta-pai — `../Album Rainha da Preguiça/` (11 arquivos: índice-mestre e 10 volumes) e `../Albuns/` (8 guias, entre eles o `album_guia_suno.md`), cerca de 44 mil linhas `[medido por instrumento: wc -l]`. Ainda não lidos: frente própria.
+**Em trabalho (2026-10-29):** sonda e análise `meta/analises/261029-ANALISE-conversao-dos-albuns.md`, decidida 1A a 4A (DEC-026): conversor determinístico por família, acervo fora do repo. A família BR está convertida (0.9.1, `scripts/convert_br.py`, 151 faixas). `Albuns/` espera os grupos da i-038.
 
 ### i-009 ✅ Campo de exclusão de estilos ("exclude styles")
 A pesquisa apontou que o Suno tem um campo de estilos a excluir que funciona melhor que "no X" no texto (reconfirmado em jul/2026: o campo dedicado é mais barato e confiável que negação no style). Implementado: `excludeStyles[]` no esquema + exibição e botão de copiar na ferramenta.
@@ -141,6 +142,21 @@ Achado em 2026-10-29 nos `.md` que o dono exportou: o export de **faixa** sai co
 **Em trabalho (2026-10-29, WO 0017):** as i-030, i-033 a i-037 viraram uma frente so, `meta/specs/261029-conveniencias-de-uso.md` (DEC-022, DEC-023). Decisoes do dono: acervo guardado no navegador (D1), estrutura completa (D2), aviso de negacao some com o Exclude oculto (D3), prompt pede arquivo e, sem arquivo, o JSON em bloco de codigo (D4), export segue a tela (D5). Fecha na 0.9.0, depois da tela e do reteste curto do prompt.
 **Entregues em 0.9.0** (2026-10-29), conferidas na tela e retestadas pelo dono. Ajustes pedidos em seguida (nota `261029-1618.txt`, DEC-025): o titulo copia ao clicar (sai o botao, que quebrava a linha), as linhas da estrutura se arrastam, o Exclude vem oculto por padrao e o cabecalho fica mais enxuto — em [Unreleased] ate o dono ver.
 
+### i-038 💡 Reagrupar as faixas de `Albuns/` em álbuns por cena de uso
+`[relatado pelo dono, 2026-10-29]` Os oito guias de `Albuns/` misturam gêneros, idiomas e propósitos num arquivo só. O dono quer as faixas em álbuns mais relacionados, para depois ampliar cada um num projeto próprio. Proposta do chat em `../261029-PROPOSTA-grupos-albuns.md` (fora do repo: traz os títulos): 172 faixas em 12 álbuns (épico vocal, trilhas de jogo, romântico multilíngue, Brasil popular, pop asiático, latino, contagem e ritmo, matemática e física, código, foco e estudo, eletrônico instrumental, treino e ação). Um mapa faixa → álbum aplica a escolha por script. Espera a aprovação do dono; depois, conversores dos formatos de `Albuns/` (i-008).
+
+### i-039 💡 Kit de música para os projetos do KCM
+`[relatado pelo dono, 2026-10-29]` Criar projetos de música para o Suno já «profissionais» e adaptados ao Cancioneiro: levar ao nicho de música do KCM o que este projeto sabe. Junta i-022, i-023 e o feedback ao kit de 2026-10-28. Análise `meta/analises/261029-ANALISE-kit-de-musica.md`, em discussão: Instruções-modelo de projeto de música, skill de macetes do Suno, skill de revisão de faixa. A medida que motiva: nos guias antigos, 72 de 151 letras passam do limite em que o Suno corta.
+
+### i-040 💡 Curadoria no app: excluir, exportar e importar faixas
+`[relatado pelo dono, 2026-10-29, nota 261029-1825.txt]` Exportar uma faixa como `.json` (além do `.md`); excluir uma faixa; importar faixas para o acervo aberto — todas ou as escolhidas de outro `.json` de álbum, ou uma faixa exportada solta; mudar a ordem e levar faixas de um álbum a outro. Leva o app de leitor a editor leve: pede análise antes de spec, porque mexe na fonte de verdade (DEC-004, DEC-022 — hoje a cópia no navegador é cache do arquivo; editar nela cria um acervo que só existe ali até «Baixar .json»). Ids repetidos e módulos citados na importação também. Faria o reagrupamento da i-038 pela tela.
+
+### i-041 💡 Mais de um acervo guardado no navegador
+`[relatado pelo dono, 2026-10-29, nota 261029-1825.txt]` Hoje a DEC-022 guarda só o último importado. Com os acervos convertidos (Rainha da Preguiça, os álbuns de `Albuns/`), trocar de acervo obriga a importar de novo. Medida: a Rainha da Preguiça ocupa ~955 mil caracteres na cópia; o `localStorage` costuma dar ~5 MB por site — dois ou três acervos grandes cabem, mais que isso pede IndexedDB. Anda junto com a i-040.
+
+### i-042 💡 Rampa de BPM no style («95 BPM to 118 BPM»)
+Achado na conversão BR: três faixas mudam de andamento de propósito. A DEC-020 reprova dois BPM no `validate.py`, e o controle de BPM do cartão igualaria os dois números. Decidir: o controle não aparecer (ou avisar) quando o style tem uma rampa, e o `validate.py` aceitar o par ligado por «to»/«building to», sem perder o erro de autoria que a DEC-020 pega.
+
 ## Feedback para o Kit
 
 - **[2026-07-19] Nicho pediria uma variante "ferramenta+conteúdo".** Este projeto é dev, mas o "produto" é metade código (app) e metade dado curado (acervo JSON). O template de Desenvolvimento cobre bem a parte código; a parte "acervo de dados como entregável" ficou por conta do CONTEXT. Não faltou nada crítico, mas um nicho híbrido "ferramenta que consome conteúdo estruturado" seria útil.
@@ -172,6 +188,7 @@ Decidido na fundação. Ver DEC-003.
 
 ### x-001 ❌ Parser universal de Markdown dos álbuns antigos
 Descartado na fundação: as convenções divergentes entre álbuns tornariam o parser um poço de exceções. Conversão semi-assistida por chat é mais confiável. Ver DEC-001.
+**Revista em 2026-10-29 (DEC-026):** o universal segue descartado; um conversor **por família**, medida como regular, entrou — a família BR, 151 de 151. A conversão por chat ficou para formatos pequenos e irregulares: copiar letra longa sem alterar é onde chat corta.
 
 ### x-002 ❌ localStorage como fonte de verdade do acervo
 Descartado na fundação: frágil e não versionável. localStorage fica só para estado efêmero. Ver DEC-004.
