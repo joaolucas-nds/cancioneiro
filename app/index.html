@@ -242,6 +242,32 @@
   .prompt-dialog .dialog-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; align-items: center; }
   .prompt-dialog .dialog-actions .spacer { margin-left: auto; }
   .prompt-dialog [data-role="prompt-status"] { min-height: 1.4em; margin: 10px 0 0; }
+
+  /* ---- Conveniencias de uso (spec 261029-conveniencias-de-uso) ---- */
+  /* Copiar o titulo: o v6 tem campo de titulo (o ultimo do formulario). */
+  .card-title .title-copy { margin-left: auto; padding: 3px 10px; font-size: 12px; }
+  .card-title .title-copy.copied { background: var(--moss); color: #fff; border-color: var(--moss); }
+  /* Estrutura do cartao: uma linha por bloco, com mostrar e mover */
+  .layout-list { list-style: none; padding: 0; margin: 8px 0 0; display: flex; flex-direction: column; gap: 6px; }
+  .layout-list li {
+    display: flex; align-items: center; gap: 8px; padding: 6px 10px;
+    border: 1px solid var(--line); border-radius: 8px; background: var(--paper-2); font-size: 13px;
+  }
+  .layout-list li.off span { color: var(--ink-soft); text-decoration: line-through; }
+  .layout-list li .move { margin-left: auto; display: flex; gap: 4px; }
+  .layout-list li .move button { padding: 2px 8px; }
+  /* Origem do acervo (DEC-022): de onde veio o que esta na tela */
+  .origin { font-size: 12px; color: var(--ink-soft); display: flex; gap: 8px; align-items: center; }
+  .origin button { font-size: 12px; padding: 3px 8px; }
+  /* Arrastar o .json para a tela (i-034) */
+  .drop-hint {
+    position: fixed; inset: 12px; z-index: 50; display: none;
+    border: 3px dashed var(--ember); border-radius: var(--radius);
+    background: rgba(244, 239, 230, .92); color: var(--ember);
+    font-family: var(--serif); font-size: 24px; align-items: center; justify-content: center;
+    pointer-events: none;
+  }
+  body.dragging .drop-hint { display: flex; }
 </style>
 </head>
 <body>
@@ -258,6 +284,7 @@
     <button id="export-md-btn">Exportar .md</button>
     <button id="prompt-btn">Prompt para chats</button>
     <button id="example-btn">Baixar exemplo</button>
+    <button id="layout-btn">Estrutura do cartão</button>
     <input type="file" id="file-input" accept=".json,application/json" hidden>
   </div>
 </header>
@@ -282,13 +309,14 @@
     </select></div>
   <input type="search" id="search" placeholder="buscar título, estilo, tag…">
   <span class="note" id="stats"></span>
+  <span class="origin" id="origin"></span>
 </div>
 
 <main id="main">
   <div class="empty" id="empty">
     <p><strong>Nenhum acervo carregado.</strong></p>
-    <p>Clique em <strong>Importar .json</strong> e escolha um arquivo do seu acervo<br>
-    (ex.: <code>data/demo.json</code>), ou publique no GitHub Pages para carregar sozinho.</p>
+    <p>Clique em <strong>Importar .json</strong> ou <strong>arraste o arquivo para esta tela</strong><br>
+    (ex.: <code>data/demo.json</code>). O último acervo importado fica guardado neste navegador.</p>
   </div>
 </main>
 
@@ -306,6 +334,19 @@
   </div>
   <p class="note" data-role="prompt-status" role="status"></p>
 </dialog>
+
+<dialog class="prompt-dialog" id="layout-dialog" aria-labelledby="layout-dialog-title">
+  <h2 id="layout-dialog-title">Estrutura do cartão</h2>
+  <p>A ordem dos blocos em todos os cartões, e quais aparecem. Fica guardada neste navegador.
+  O título fica sempre no topo; o export .md segue a ordem do arquivo.</p>
+  <ul class="layout-list" id="layout-list"></ul>
+  <div class="dialog-actions">
+    <button type="button" id="layout-reset-btn">Restaurar padrão</button>
+    <button type="button" id="layout-close-btn" class="spacer">Fechar</button>
+  </div>
+</dialog>
+
+<div class="drop-hint" aria-hidden="true">Solte o .json para importar</div>
 
 <script>
 "use strict";
@@ -375,6 +416,7 @@ async function tryAutoLoad() {
       if (!res.ok) continue;
       const json = await res.json();
       setCollection(json);
+      setOrigin("carregado de " + path.replace(/^\.\.\//, "") + " (GitHub Pages)", false);
       toast("Acervo carregado de " + path + moduleRefsNotice(json));
       return;
     } catch (e) { /* tenta o proximo */ }
@@ -382,14 +424,27 @@ async function tryAutoLoad() {
   // Nenhum encontrado: fica no estado vazio, aguardando import manual.
 }
 
+/** Le o texto de um .json. Aceita tambem a resposta de chat colada inteira: se
+    o texto nao for JSON, procura um bloco de codigo (```json ... ```) e, sem ele,
+    o trecho do primeiro "{" ao ultimo "}". Devolve {json, extracted} ou lanca.
+    `extracted` vira aviso no toast — limpar calado apagaria o sinal (FIX-006). */
+function parseCollectionText(text) {
+  try { return { json: JSON.parse(text), extracted: false }; } catch (e) { /* tenta extrair */ }
+  const fence = text.match(/```(?:json)?[ \t]*\r?\n([\s\S]*?)\r?\n```/);
+  if (fence) return { json: JSON.parse(fence[1]), extracted: true };
+  const a = text.indexOf("{"), z = text.lastIndexOf("}");
+  if (a >= 0 && z > a) return { json: JSON.parse(text.slice(a, z + 1)), extracted: true };
+  throw new Error("sem JSON");
+}
+
 function importFromFile(file) {
   const reader = new FileReader();
   reader.onload = () => {
     // Dois try separados de proposito: um catch que nomeia uma causa especifica
     // so pode envolver a operacao que produz aquela causa (ver FIX-005).
-    let json;
+    let json, extracted;
     try {
-      json = JSON.parse(reader.result);
+      ({ json, extracted } = parseCollectionText(reader.result));
     } catch (e) {
       toast("Arquivo inválido: não é um JSON válido");
       return;
@@ -397,9 +452,12 @@ function importFromFile(file) {
     const removidas = stripInternalKeys(json);
     try {
       setCollection(json);
+      const guardado = saveCollectionCache(json, file.name);
       toast("Acervo importado: " + (json.title || file.name)
+            + (extracted ? " · JSON extraído de um bloco de código" : "")
             + (removidas ? " · " + removidas + " campo(s) interno(s) removido(s) — baixe de novo para gravar limpo" : "")
-            + moduleRefsNotice(json));
+            + moduleRefsNotice(json)
+            + (guardado ? "" : " · não coube no navegador: ao fechar, ele não volta"));
     } catch (e) {
       toast("Não consegui carregar o acervo: " + e.message);
       console.error("[cancioneiro] falha em setCollection:", e);
@@ -543,7 +601,9 @@ function albumToMarkdown(album) {
   const L = ["## " + album.title];
   if (album.description) L.push("_" + album.description + "_");
   L.push("");
-  (album.songs || []).forEach(s => L.push(songToMarkdown(s, false)));
+  // D5: album e acervo saem como a faixa — o Style da tela (modulos ligados e
+  // BPM do controle). Antes saiam com o style base, sem estar escrito (i-037).
+  (album.songs || []).forEach(s => L.push(songToMarkdown(s, true)));
   return L.join("\n");
 }
 
@@ -966,7 +1026,9 @@ function styleQuality(style, lyrics, baseTags) {
       ? "o style base sozinho já usa " + baseTags + " de " + L.many + " tags — nenhum módulo cabe sem cortar o base"
       : "o style base usa " + baseTags + " de " + L.many + "; os módulos somam +" + (t - baseTags), "neutral"));
   }
-  findNegations(style, lyrics).forEach(n =>
+  // D3: com o bloco Exclude oculto (o formulario do v6-mini nao tem o campo),
+  // o aviso nao manda o usuario para um campo que ele escondeu.
+  if (!isHidden("exclude")) findNegations(style, lyrics).forEach(n =>
     el.appendChild(qSpan("«" + n + "»: mais confiável no campo Exclude", "warn")));
   return el;
 }
@@ -1004,6 +1066,12 @@ function renderCard(song) {
   title.appendChild(st);
   const lang = document.createElement("span"); lang.className = "badge"; lang.textContent = song.language;
   title.appendChild(lang);
+  // i-033: o titulo tambem vai para o Suno (campo de titulo do v6). O rotulo e o
+  // proprio h3; o botao copia so o texto.
+  const tcopy = document.createElement("button");
+  tcopy.type = "button"; tcopy.className = "title-copy"; tcopy.textContent = "copiar título";
+  tcopy.addEventListener("click", () => copyText(song.title, tcopy));
+  title.appendChild(tcopy);
   card.appendChild(title);
 
   // Metadados de referencia
@@ -1015,16 +1083,21 @@ function renderCard(song) {
   if (song.context) { const c = document.createElement("span"); c.className = "ctx"; c.textContent = song.context; meta.appendChild(c); }
   if (meta.children.length) card.appendChild(meta);
 
+  // Os blocos do cartao sao montados num mapa e anexados na ordem da
+  // «Estrutura do cartao» (i-030), pulando os ocultos. A ordem padrao e a de antes.
+  const blocks = {};
+  const put = (key, el) => { (blocks[key] = blocks[key] || []).push(el); };
+
   // Campos COPIAVEIS: rotulo fora, conteudo dentro
   const styleField = fieldBlock("Style of Music", recomposedStyle(song));
   styleField.querySelector(".block").setAttribute("data-role", "style-block");
   styleField.appendChild(styleQuality(recomposedStyle(song), song.lyrics, baseTagCount(song)));
-  card.appendChild(styleField);
+  put("style", styleField);
   const lyricsField = fieldBlock("Lyrics", song.lyrics, "lyrics");
   lyricsField.appendChild(lengthQuality(song.lyrics, QUALITY_LIMITS.lyrics,
     "o Suno corta o que passar de 5.000 — sem aviso",
     "acima de ~3.000 o Suno tende a correr e pular seções"));
-  card.appendChild(lyricsField);
+  put("lyrics", lyricsField);
 
   // exclude styles (copiavel para o campo Exclude do Suno)
   if (song.excludeStyles && song.excludeStyles.length) {
@@ -1040,12 +1113,12 @@ function renderCard(song) {
     ex.appendChild(document.createElement("br")); ex.appendChild(btn);
     ex.appendChild(lengthQuality(song.excludeStyles.join(", "), QUALITY_LIMITS.exclude,
       "o Suno corta o que passar de 1.000 — sem aviso", "perto do limite de 1.000"));
-    card.appendChild(ex);
+    put("exclude", ex);
   }
 
   // Painel de modulos de estilo (liga/desliga -> recompoe o style acima)
   if ((song.styleModules && song.styleModules.length) || Object.keys(App.modulesById).length) {
-    card.appendChild(renderModules(song, card));
+    put("modules", renderModules(song, card));
   }
 
   // Variantes (mesma letra, style alternativo)
@@ -1059,7 +1132,7 @@ function renderCard(song) {
       vd.appendChild(fieldBlock("Style (variante)", v.style));
       det.appendChild(vd);
     });
-    card.appendChild(det);
+    put("variants", det);
   }
 
   // Notas de producao (referencia humana)
@@ -1069,8 +1142,12 @@ function renderCard(song) {
     const p = document.createElement("p"); p.className = "note"; p.style.marginTop = "8px";
     p.textContent = song.notes;
     det.appendChild(p);
-    card.appendChild(det);
+    put("notes", det);
   }
+
+  currentLayout().order.forEach(key => {
+    if (!isHidden(key)) (blocks[key] || []).forEach(el => card.appendChild(el));
+  });
 
   // Rodape: marcar "usei" manualmente
   const foot = document.createElement("div");
@@ -1278,8 +1355,140 @@ async function downloadExample() {
 }
 
 /* ===================================================================
+   Estrutura do cartao (i-030, DEC-023)
+   Ordem e visibilidade dos blocos, por navegador, em App.ui.layout (estado de
+   interface, DEC-004). A ordem padrao e exatamente a de antes desta funcao.
+   O export .md nao segue a estrutura: e documento do acervo, ordem fixa.
+   =================================================================== */
+const CARD_BLOCKS = [
+  { key: "style",    label: "Style of Music" },
+  { key: "lyrics",   label: "Lyrics" },
+  { key: "exclude",  label: "Exclude styles" },
+  { key: "modules",  label: "Módulos de estilo" },
+  { key: "variants", label: "Variantes de estilo" },
+  { key: "notes",    label: "Notas de produção" },
+];
+
+/** A estrutura em uso: a salva, completada com blocos que ela nao conheca
+    (versao nova do app) e limpa de chaves que nao existem mais. */
+function currentLayout() {
+  const known = CARD_BLOCKS.map(b => b.key);
+  const saved = (App.ui && App.ui.layout) || {};
+  const order = (saved.order || []).filter(k => known.includes(k));
+  known.forEach(k => { if (!order.includes(k)) order.push(k); });
+  const hidden = (saved.hidden || []).filter(k => known.includes(k));
+  return { order, hidden };
+}
+function isHidden(key) { return currentLayout().hidden.includes(key); }
+function saveLayout(layout) { App.ui.layout = layout; saveUiState(); render(); renderLayoutDialog(); }
+
+function renderLayoutDialog() {
+  const list = document.getElementById("layout-list");
+  const lay = currentLayout();
+  list.innerHTML = "";
+  lay.order.forEach((key, i) => {
+    const def = CARD_BLOCKS.find(b => b.key === key);
+    const li = document.createElement("li");
+    li.className = lay.hidden.includes(key) ? "off" : "";
+    const cb = document.createElement("input");
+    cb.type = "checkbox"; cb.checked = !lay.hidden.includes(key);
+    cb.setAttribute("aria-label", "mostrar " + def.label);
+    cb.addEventListener("change", () => {
+      const hidden = lay.hidden.filter(k => k !== key);
+      if (!cb.checked) hidden.push(key);
+      saveLayout({ order: lay.order, hidden });
+    });
+    const name = document.createElement("span"); name.textContent = def.label;
+    const mv = document.createElement("span"); mv.className = "move";
+    const mk = (txt, delta, label) => {
+      const b = document.createElement("button"); b.type = "button"; b.textContent = txt;
+      b.setAttribute("aria-label", label + " " + def.label);
+      const j = i + delta;
+      b.disabled = j < 0 || j >= lay.order.length;
+      b.addEventListener("click", () => {
+        const order = lay.order.slice(); [order[i], order[j]] = [order[j], order[i]];
+        saveLayout({ order, hidden: lay.hidden });
+      });
+      return b;
+    };
+    mv.appendChild(mk("↑", -1, "subir")); mv.appendChild(mk("↓", 1, "descer"));
+    li.appendChild(cb); li.appendChild(name); li.appendChild(mv);
+    list.appendChild(li);
+  });
+}
+
+/* ===================================================================
+   Acervo guardado no navegador (i-035, DEC-022)
+   Cache, nao fonte: guarda a copia do ULTIMO arquivo importado, que o app nunca
+   edita (FIX-004) — por isso a copia e igual ao arquivo. O risco e o arquivo
+   mudar fora e a copia ficar velha sem ninguem ver: a linha de origem diz de
+   onde veio e quando, e «esquecer» apaga a copia.
+   =================================================================== */
+const CACHE_KEY = "cancioneiro:acervo";
+
+/** Guarda a colecao; devolve false se o navegador recusar (cota, modo privado). */
+function saveCollectionCache(json, source) {
+  try {
+    const savedAt = new Date().toISOString();
+    localStorage.setItem(CACHE_KEY, JSON.stringify({ savedAt, source, json }));
+    setOrigin("importado de " + source + " em " + fmtDate(savedAt) + " · guardado neste navegador", true);
+    return true;
+  } catch (e) {
+    setOrigin("importado de " + source + " · não guardado no navegador", false);
+    return false;
+  }
+}
+function loadCollectionCache() {
+  try {
+    const c = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
+    return c && c.json && Array.isArray(c.json.albums) ? c : null;
+  } catch (e) { return null; }
+}
+function fmtDate(iso) {
+  const d = new Date(iso);
+  return isNaN(d) ? "?" : d.toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" });
+}
+
+/** A linha de origem na barra de controles; com `forgettable`, o botao «esquecer». */
+function setOrigin(text, forgettable) {
+  const el = document.getElementById("origin");
+  el.textContent = "";
+  const t = document.createElement("span"); t.textContent = "Acervo " + text; el.appendChild(t);
+  if (forgettable) {
+    const b = document.createElement("button"); b.type = "button"; b.textContent = "esquecer";
+    b.title = "Apaga a cópia guardada neste navegador. O arquivo no seu computador não é tocado.";
+    b.addEventListener("click", forgetCollection);
+    el.appendChild(b);
+  }
+}
+
+/** Apaga a copia e volta ao estado inicial (no Pages, o demo carrega de novo). */
+function forgetCollection() {
+  try { localStorage.removeItem(CACHE_KEY); } catch (e) { /* nada a apagar */ }
+  App.collection = null; App.activeModules = {}; App.bpm = {}; App.modulesById = {};
+  document.getElementById("main").innerHTML = EMPTY_HTML;
+  document.getElementById("origin").textContent = "";
+  document.getElementById("stats").textContent = "";
+  render();
+  toast("Cópia esquecida. O arquivo no seu computador não foi tocado.");
+  tryAutoLoad();
+}
+
+/** Abertura: a copia guardada, se houver; senao, a carga automatica do Pages. */
+function boot() {
+  const c = loadCollectionCache();
+  if (!c) { tryAutoLoad(); return; }
+  stripInternalKeys(c.json);
+  setCollection(c.json);
+  setOrigin("importado de " + (c.source || "arquivo") + " em " + fmtDate(c.savedAt) + " · guardado neste navegador", true);
+  toast("Acervo do navegador: " + (c.json.title || c.source) + " · importado em " + fmtDate(c.savedAt)
+        + moduleRefsNotice(c.json));
+}
+
+/* ===================================================================
    Ligacao de eventos + boot
    =================================================================== */
+const EMPTY_HTML = document.getElementById("main").innerHTML;
 document.getElementById("import-btn").addEventListener("click", () =>
   document.getElementById("file-input").click());
 document.getElementById("file-input").addEventListener("change", e => {
@@ -1296,11 +1505,40 @@ document.getElementById("prompt-copy-btn").addEventListener("click", copyPrompt)
 document.getElementById("prompt-close-btn").addEventListener("click", () =>
   document.getElementById("prompt-dialog").close());
 document.getElementById("example-btn").addEventListener("click", downloadExample);
+document.getElementById("layout-btn").addEventListener("click", () => {
+  renderLayoutDialog();
+  document.getElementById("layout-dialog").showModal();
+});
+document.getElementById("layout-close-btn").addEventListener("click", () =>
+  document.getElementById("layout-dialog").close());
+document.getElementById("layout-reset-btn").addEventListener("click", () =>
+  saveLayout({ order: CARD_BLOCKS.map(b => b.key), hidden: [] }));
+
+// i-034: soltar um arquivo em qualquer lugar = importar, pelo mesmo caminho do
+// botao. So reage a arraste de ARQUIVO (texto arrastado segue o normal).
+let dragDepth = 0;
+const hasFiles = e => e.dataTransfer && Array.from(e.dataTransfer.types || []).includes("Files");
+document.addEventListener("dragenter", e => {
+  if (!hasFiles(e)) return;
+  e.preventDefault(); dragDepth++; document.body.classList.add("dragging");
+});
+document.addEventListener("dragover", e => { if (hasFiles(e)) e.preventDefault(); });
+document.addEventListener("dragleave", e => {
+  if (!hasFiles(e)) return;
+  dragDepth = Math.max(0, dragDepth - 1);
+  if (!dragDepth) document.body.classList.remove("dragging");
+});
+document.addEventListener("drop", e => {
+  if (!hasFiles(e)) return;
+  e.preventDefault(); dragDepth = 0; document.body.classList.remove("dragging");
+  const f = e.dataTransfer.files[0];
+  if (f) importFromFile(f);
+});
 ["filter-album", "filter-state", "filter-used"].forEach(id =>
   document.getElementById(id).addEventListener("change", render));
 document.getElementById("search").addEventListener("input", render);
 
-tryAutoLoad();
+boot();
 </script>
 </body>
 </html>

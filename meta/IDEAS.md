@@ -31,6 +31,7 @@ Adotar o ciclo de estados que o FAIXAS.md do Cinzeiro já usa, como campo `state
 
 ### i-008 💡 Importar acervo existente convertendo por álbum
 Converter os `ALBUM_*.md` e `album_guia_suno.md` para o esquema, um álbum por vez (semi-assistido por chat), populando `data/`. Começar pelo `album_guia_suno.md` (mais limpo). Backlog do STATUS.
+**Desbloqueada em 2026-10-29:** o dono trouxe os álbuns para a pasta-pai — `../Album Rainha da Preguiça/` (11 arquivos: índice-mestre e 10 volumes) e `../Albuns/` (8 guias, entre eles o `album_guia_suno.md`), cerca de 44 mil linhas `[medido por instrumento: wc -l]`. Ainda não lidos: frente própria.
 
 ### i-009 ✅ Campo de exclusão de estilos ("exclude styles")
 A pesquisa apontou que o Suno tem um campo de estilos a excluir que funciona melhor que "no X" no texto (reconfirmado em jul/2026: o campo dedicado é mais barato e confiável que negação no style). Implementado: `excludeStyles[]` no esquema + exibição e botão de copiar na ferramenta.
@@ -111,7 +112,7 @@ A API expõe pesos 0.00-1.00 para aderência ao estilo e desvio criativo (os Cre
 ### i-029 💡 Avisar quando a palavra de andamento contradiz o BPM
 `[nascido da spec do BPM, 2026-10-28]` Com o controle, ar-04 vai a 140 e continua dizendo «downtempo» e «slow build». A linha de qualidade poderia avisar, em ambar, quando uma palavra de andamento do Style («downtempo», «slow», «uptempo», «fast») briga com o numero. Pesar contra: exige uma tabela palavra → faixa de BPM, conhecimento de dominio que muda com o Suno — o mesmo motivo que tirou a tabela de generos vocais da DEC-019. Se entrar, a tabela mora num objeto unico com fonte e data, como o `QUALITY_LIMITS`.
 
-### i-030 💡 Ordem dos campos no cartao: Lyrics acima do Style, como no Suno
+### i-030 🔨 Ordem dos campos no cartao: Lyrics acima do Style, como no Suno
 `[relatado pelo dono, 2026-10-28]` O cartao mostra Style em cima e Lyrics embaixo; no Suno e o contrario, e copiar na ordem da tela agilizaria. O dono prefere que seja **configuravel**. A preferencia e estado de interface e pode morar no navegador (DEC-004). A decidir na spec: se o export MD segue a ordem escolhida, e onde fica o controle (cabecalho ou cartao).
 `[relatado pelo dono, 2026-10-29, nota 1106]` **Refinado:** a ordem atual (titulo, Style, Lyrics) faz sentido para quem preenche o Suno de baixo para cima — o dono faz assim. O pedido e **controlar a estrutura na interface e salvar no navegador**, com a ordem atual como padrao. Medido nas capturas do dono (2026-10-29): o formulario do v6 e, de cima para baixo, Lyrics → Styles → opcoes → titulo, e **nao tem campo de Exclude** no v6-mini gratuito — o bloco Exclude do cartao fica sem destino para ele hoje. Candidato: mostrar/ocultar cada campo, alem da ordem.
 
@@ -122,20 +123,22 @@ A API expõe pesos 0.00-1.00 para aderência ao estilo e desvio criativo (os Cre
 ### i-032 💡 Outras plataformas de musica por IA
 `[relatado pelo dono, 2026-10-28]` Existem outros sites e apps de celular com estrutura parecida com a do Suno e diferente dela; o dono quer sugestoes para testar e, se valer, ampliar a estrutura do projeto para comporta-los. O esquema ja e agnostico no nome (`targetTool`), mas `style`/`lyrics`/`excludeStyles` espelham os campos do Suno. Proximo passo: um turno de pesquisa atual (plano gratuito, campos equivalentes, limites, API, app mobile) antes de qualquer mudanca de esquema. Pesar contra: generalizar o esquema antes de usar uma segunda plataforma de verdade e especular.
 
-### i-033 💡 Copiar o titulo da faixa com um clique
+### i-033 🔨 Copiar o titulo da faixa com um clique
 `[relatado pelo dono, 2026-10-29, nota 1106]` Faltou copiar facil o nome da musica. O formulario do v6 tem campo de titulo (o ultimo, antes de «Save to»). Um botao «copiar» ao lado do titulo do cartao, com a mesma marcacao de copiado dos outros campos.
 
-### i-034 💡 Arrastar o .json para a tela e carregar
+### i-034 🔨 Arrastar o .json para a tela e carregar
 `[relatado pelo dono, 2026-10-29, nota 1106]` Soltar o arquivo em qualquer lugar da pagina = importar, pelo mesmo caminho do botao (saneamento e avisos iguais: FIX-006, FIX-009). Combina com o prompt que entrega arquivo (i-036): baixar do chat e arrastar para o app.
 
-### i-035 💡 O acervo continuar carregado depois de fechar o navegador
+### i-035 🔨 O acervo continuar carregado depois de fechar o navegador
 `[relatado pelo dono, 2026-10-29, nota 1106]` Hoje so as marcas «usei» sobrevivem; o acervo some ao fechar. Guardar uma copia do ultimo acervo importado no navegador e recarrega-la ao abrir. **Toca a DEC-004** (o navegador e cache, nunca fonte): uma copia do ultimo arquivo importado e cache legitimo, porque o app nao edita o acervo (FIX-004) — a copia e igual ao arquivo. Risco a tratar: o arquivo mudar fora (um chat gerou versao nova) e o app seguir mostrando a copia velha sem aviso; mitigacao: dizer na tela de onde veio o acervo e quando foi importado, e um botao para esquecer a copia. A carga automatica do Pages (`demo.json`) passa a valer so quando nao houver copia. Pede DEC propria.
 
-### i-036 💡 O prompt pedir o JSON como arquivo para baixar
+### i-036 🔨 O prompt pedir o JSON como arquivo para baixar
 `[relatado pelo dono, 2026-10-29, nota 1106]` Em vez de texto para copiar, o chat entregar um `.json` para download. Ganha: sem colar no Bloco de notas, sem erro de codificacao, nome de arquivo pronto — e casa com a i-034. Custa: depende de o chat conseguir criar arquivo (varia por produto e por recurso ligado), e o texto atual do prompt foi o que passou no reteste de 2026-10-29 — mudar exige retestar. Forma candidata: pedir arquivo **se o chat puder criar arquivos**, e manter «so o JSON, sem texto» como alternativa.
 
-### i-037 💡 Export de album e de acervo com o Style da tela
+### i-037 🔨 Export de album e de acervo com o Style da tela
 Achado em 2026-10-29 nos `.md` que o dono exportou: o export de **faixa** sai com o Style recomposto (modulos ligados, controle de BPM), o de **album** e o de **acervo** saem com o `style` base (`albumToMarkdown` chama `songToMarkdown(s, false)`), desde a 0.4.0. Em ar-01, 18 tags na faixa e 10 no album. Pode ser o certo — o album como documento do acervo, a faixa como «o que vou colar agora» —, mas a diferenca nao aparece na tela nem estava escrita. Decidir: os tres seguem a tela, ou o album/acervo continua base e o botao diz isso.
+
+**Em trabalho (2026-10-29, WO 0017):** as i-030, i-033 a i-037 viraram uma frente so, `meta/specs/261029-conveniencias-de-uso.md` (DEC-022, DEC-023). Decisoes do dono: acervo guardado no navegador (D1), estrutura completa (D2), aviso de negacao some com o Exclude oculto (D3), prompt pede arquivo e, sem arquivo, o JSON em bloco de codigo (D4), export segue a tela (D5). Fecha na 0.9.0, depois da tela e do reteste curto do prompt.
 
 ## Feedback para o Kit
 
@@ -151,6 +154,7 @@ Achado em 2026-10-29 nos `.md` que o dono exportou: o export de **faixa** sai co
 - **[2026-10-24] A forma do roteiro de tela chegou no v1.131.0, e a regra que ela formaliza ja era violavel no v1.127.0.** O modelo de WO novo prescreve cinco linhas de cabecalho, tres secoes e contrato de retorno — e diz com todas as letras que o roteiro «vai INTEIRO no corpo da resposta do chat, nunca "ver o fim da WO"». Neste projeto o roteiro foi parar dentro da WO uma vez, com a regra «quem tem a TELA ve» ja presente no CEREBRO vivo. O que faltava nao era a regra, era a FORMA: regra sem forma nao se cumpre sozinha, e a licao vale para o kit inteiro — todo principio que ja falhou em campo merece o molde junto, nao so o enunciado.
 - **[2026-10-28] Bloco literal da WO com linha de titulo dentro quebra o aplicador por script.** Duas WOs seguidas (0012 e 0013) pararam no meio: o Code aplica lendo os blocos por expressao regular, e um texto novo que contem `## Desfecho` (ou o STATUS inteiro, cheio de `## `) foi lido como o inicio da secao seguinte. As duas se recuperaram so porque a idempotencia pelo texto novo inteiro deixou reexecutar sem duplicar — a regra da idempotencia pagou ali o seu custo. Sugestao ao kit: o modelo de WO dizer que o bloco literal termina na linha de quatro crases e nunca num titulo, e o `apply-wo` delimitar por crases, nao por cabecalho.
 - **[2026-10-28] O nicho de musica do KCM ainda nao carrega o que este projeto aprendeu sobre o Suno** `[relatado pelo dono]`. Os projetos de musica que o KCM monta nascem sem o conhecimento destilado aqui: `meta/HISTORY.md` §1-13 (o que tem efeito no Suno, com fonte e confianca), a regra de dominio (rotulo fora do copiavel) e o contrato prompt -> JSON. E o teste base de 2026-10-28 mostra o custo de calar: pedido o que o prompt nao ensinava (modulos), tres chats inventaram tres formatos. Sugestao ao kit: o nicho de musica trazer um resumo desse material como ponto de partida — candidato natural e a i-023 (skill com os macetes do Suno), que ja tem o conteudo pronto.
+- **[2026-10-29] O fecho de turno nao tem lugar para o comando que o dono cola, e o rodape e o pior lugar.** O esqueleto do CEREBRO tem Proximo, Estado, Arquivar/Manter, Config e Handoff; a linha `/apply-wo` ficou sem endereco, e uma regra escrita so num brief a mandou para o fim da mensagem — o dono rolava ate o fundo a cada WO `[relatado pelo dono]`. Sugestao ao kit: o esqueleto trazer um item «Aplicar» (o comando a colar, num bloco de codigo) **antes** do divisor e do Proximo, e dizer que todo comando que o dono copia vai em bloco de codigo, inclusive a resposta que um chat externo devolve (aqui: o JSON do prompt-modelo, DEC-023). Adotado neste projeto na DEC-024.
 
 ## Concluídas
 

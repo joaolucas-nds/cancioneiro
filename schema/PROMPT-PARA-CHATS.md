@@ -93,7 +93,8 @@ Devolva um objeto de **coleção** com esta estrutura (campos obrigatórios marc
 ```
 
 ## Saída
-- Responda **APENAS com o JSON válido**, sem texto antes ou depois, sem cercas de ``` markdown.
+- **Se você consegue criar arquivos para download**, entregue um arquivo `.json` com o nome do `id` do álbum (ex.: `album-slug.json`), contendo só o JSON.
+- **Se não consegue**, responda com o JSON inteiro dentro de **um único bloco de código** marcado como `json`, sem texto antes ou depois do bloco.
 - JSON válido: aspas duplas, sem vírgula sobrando, sem comentários.
 - Se eu pedir uma única faixa, ainda assim embrulhe em coleção→álbum→[faixa].
 
@@ -111,4 +112,5 @@ Devolva um objeto de **coleção** com esta estrutura (campos obrigatórios marc
 - **Módulos (DEC-016, DEC-021):** a coleção carrega os próprios módulos; a faixa cita ids. O teste de 2026-10-28 (`meta/specs/261028-prompt-modelo-e-modulos.md`) mostrou que, sem a seção de módulos, três chats inventaram três formatos e aninharam o módulo na faixa — o app abria o painel com 0 chips. As sete `category` são as camadas do app (`LAYERS` em `app/index.html`); a de `tempo` vira atalho do controle de BPM (DEC-020).
 - **Orçamento de tags (6 a 8 no style; até 10 com os módulos ligados):** mesma faixa do painel de qualidade (`QUALITY_LIMITS` em `app/index.html`, com fonte e data). Se o painel mudar, mude aqui.
 - O prompt ensina as cinco camadas e a regra copiável/referência — é o principal contra a bagunça dos álbuns antigos.
-- Teste ponta a ponta: copie o prompt pelo app, peça algo num chat novo fora de Projeto, salve a resposta e importe na ferramenta; depois `python3 scripts/validate.py <arquivo>`.
+- **Saída em arquivo ou em bloco de código (DEC-023):** o arquivo baixa pronto para arrastar no app; o bloco de código tem botão de copiar que entrega só o JSON. Se a resposta for colada inteira (com as cercas ou texto em volta), a importação extrai o JSON e avisa no toast — não é para depender disso, é rede de segurança.
+- Teste ponta a ponta: copie o prompt pelo app, peça algo num chat novo fora de Projeto, baixe o arquivo (ou copie o bloco) e arraste/importe na ferramenta; depois `python3 scripts/validate.py <arquivo>`.

@@ -382,3 +382,36 @@
 **Alternativas consideradas:** aceitar modulo dentro da faixa no esquema — desfaz a DEC-016 e repete o modulo em cada faixa; um importador que normaliza os formatos inventados — tres formatos em tres amostras, alvo movel; so «base com 6 a 8» — o excesso medido vem dos modulos ligados (+2 a +8); embutir o prompt no app — duas fontes que divergem em silencio; um JSON separado «para ensinar a estrutura» — o prompt ja traz o exemplo, e o `data/demo.json` e o exemplo real.
 
 **Consequencias:** (+) Quem gera o acervo recebe o contrato que o app le; quem usa o app pega o prompt atual sem abrir pasta, e cada push o atualiza. (+) O acoplamento entre o botao e o arquivo do prompt tem checagem. (−) O botao depende de rede e do Pages; no `file://`, de o Pages aceitar o `fetch` de uma pagina local, nao conferido (sem isso, cai no link). (−) O prompt cresceu de 5.829 para 8.954 bytes (6.500 caracteres copiados); o reteste mede se a adesao caiu. (−) Os numeros de tags vem de fonte secundaria e divergem entre si (ate 8, contra 4 a 7).
+
+---
+
+## DEC-022 — O último acervo importado fica guardado no navegador, como cache (amplia a DEC-004)
+
+**Data:** 2026-10-29
+**Status:** aceita
+**Contexto:** O dono fecha o navegador e o acervo some; só as marcas «usei» voltam (nota `261029-1106.txt`, i-035). A DEC-004 diz que o navegador é cache/rascunho e o JSON versionado é a verdade — e até aqui o app não guardava o acervo nem como cache.
+**Decisão:** O último acervo **importado** (botão ou arrastar) é guardado em `localStorage` (`cancioneiro:acervo`: a coleção, o nome do arquivo e a hora) e volta ao abrir, antes da carga automática do Pages. A barra de controles mostra a **origem** («Acervo importado de X em dd/mm/aaaa hh:mm · guardado neste navegador») com o botão **«esquecer»**, que apaga a cópia. Se o navegador recusar, o app importa assim mesmo e avisa. A DEC-004 continua: a fonte é o arquivo; a cópia é cache.
+**Alternativas consideradas:** não guardar (o atrito do dono fica); guardar vários acervos (sem pedido e com mais estado para ficar velho); IndexedDB (o acervo de 27 KB cabe com folga no `localStorage`, e a API síncrona simplifica a abertura).
+**Consequências:** (+) Abrir o app volta ao último acervo, também no `file://`. (+) O app nunca edita o acervo (FIX-004), então a cópia é igual ao arquivo importado. (−) Se o arquivo mudar fora, a cópia fica velha até importar de novo — a linha de origem com data é o que avisa. (−) Outro navegador ou perfil não vê a cópia.
+
+---
+
+## DEC-023 — Estrutura do cartão configurável; export de álbum segue a tela; o prompt pede arquivo, com bloco de código como alternativa
+
+**Data:** 2026-10-29
+**Status:** aceita
+**Contexto:** Nota do dono de 2026-10-29 e capturas da conta dele: o v6-mini não tem campo de Exclude; o dono preenche o Suno de baixo para cima e quer controlar a estrutura do cartão; copiar o JSON do chat para o Bloco de notas é atrito. Achado no mesmo dia: o export de álbum saía com o `style` base, o de faixa com o recomposto (i-037). Decisões do dono: D2 completa, D3 some, D4 sim (com o JSON em bloco de código como alternativa), D5 segue a tela.
+**Decisão:** (1) «Estrutura do cartão»: ordem (↑/↓) e visibilidade de seis blocos — Style, Lyrics, Exclude, Módulos, Variantes, Notas —, em `App.ui.layout` no navegador; a ordem padrão é a de antes; título e metadados ficam no topo; o export `.md` não segue a estrutura. (2) Com o Exclude oculto, o painel de qualidade não sugere levar «no X» para ele. (3) Botão «copiar título» no cartão. (4) Arrastar um arquivo para a tela importa pelo mesmo caminho do botão. (5) `albumToMarkdown` usa o Style recomposto. (6) O prompt pede um `.json` para download; quem não puder criar arquivo responde com o JSON num único bloco de código `json`. A importação aceita a resposta colada inteira: extrai o bloco de código (ou do primeiro `{` ao último `}`) e diz no toast que extraiu.
+**Alternativas consideradas:** alternar entre duas ordens prontas (o dono pediu a completa); esconder o Exclude só no v6-mini (o app não sabe o plano de quem usa); export seguir a estrutura do cartão (o `.md` é documento do acervo, e esconder lá apagaria dado); manter «só o JSON, sem cercas» como alternativa (o bloco de código tem botão de copiar que entrega só o JSON — refinamento do dono); importação estrita (resposta colada inteira falharia sem explicação).
+**Consequências:** (+) A tela se ajusta ao formulário de quem usa; o padrão não muda nada para quem não mexer. (+) Resposta do chat vira arquivo arrastável, ou bloco com botão de copiar. (−) O prompt mudou na «Saída» depois do reteste de 2026-10-29: pede reteste curto. (−) Mais estado de interface no navegador (estrutura e acervo).
+
+---
+
+## DEC-024 — No fecho do chat, a linha `/apply-wo` vem antes do «Próximo»
+
+**Data:** 2026-10-29
+**Status:** aceita
+**Contexto:** O fecho de turno segue o esqueleto do CEREBRO (Próximo, Estado, Arquivar/Manter, Config, Handoff), que não tinha lugar para o comando a colar no Code; por uma regra escrita só num brief de handoff, a linha ia «por último na mensagem». O dono, que cola a linha a cada WO, precisava rolar até o fim da resposta para achá-la `[relatado pelo dono, 2026-10-29]`.
+**Decisão:** Havendo WO no turno, o bloco de código com `/apply-wo <arquivo>` vem **logo antes do divisor e do «Próximo»** — no fim do corpo, onde a leitura termina. Fica no CEREBRO (item 0 do fecho, e no esqueleto) e nas Instruções.
+**Alternativas consideradas:** manter no fim (o atrito é diário); pôr no começo da resposta (vem antes de o dono saber o que a WO faz).
+**Consequências:** (+) Um gesto a menos por WO. (−) As Instruções mudaram: o dono cola a versão nova no painel do Projeto.

@@ -19,7 +19,7 @@ Confirme em uma frase o que entendeu da tarefa antes de executar. Se houver ambi
 **Log:** nomeie `logs/AAAA-MM-DD.md` (data ISO, sem a palavra "log" no nome). Duas conversas no mesmo dia = o MESMO arquivo, com `## Conversa N`.
 **Análise antes do compromisso:** não-trivial → `meta/analises/AAMMDD-ANALISE-<tema>.md` (a pasta nasce no primeiro uso); QUÊ já decidido = execução, vá direto. Gatilho e abandono no CEREBRO.
 **Arquivo não lido não se deduz — leia do disco; o Code mede o que roda.**
-**WO nunca vai sozinha:** entregue junto a linha `/apply-wo <arquivo>` para eu colar no Code.
+**WO nunca vai sozinha:** a linha `/apply-wo <arquivo>` vai num bloco de código logo ANTES do «Próximo» do fecho, para eu colar no Code.
 **Commit:** havendo WO no turno, o bloco é de quem APLICA e cobre tudo. Não havendo WO, é do chat: os três comandos em ordem, mensagem sem acento. Bloco git parcial (só `add`) não serve.
 **Entregáveis de repo (sem eu pedir):** `README.md` atualizado quando a estrutura estabilizar — se for cedo, DIGA e por quê. Detalhe no CEREBRO.
 
