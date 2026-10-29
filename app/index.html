@@ -59,13 +59,19 @@
     display: flex; flex-wrap: wrap; align-items: center; gap: 16px;
     position: sticky; top: 0; background: var(--paper); z-index: 10;
   }
-  .brand { display: flex; align-items: baseline; gap: 10px; margin-right: auto; }
+  /* Nome com a versao pequena embaixo; ao lado, as ferramentas (prompt, exemplo,
+     estrutura); na direita, o que mexe no arquivo (importar, baixar, exportar). */
+  .brand { display: flex; flex-direction: column; gap: 2px; }
   .brand h1 {
     font-family: var(--serif); font-weight: 600; font-size: 26px;
-    margin: 0; letter-spacing: -0.01em;
+    margin: 0; letter-spacing: -0.01em; line-height: 1;
   }
-  .brand .sub { color: var(--ink-soft); font-size: 13px; }
-  .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .brand .version { color: var(--ink-soft); font-size: 11px; }
+  .tools { display: flex; gap: 8px; flex-wrap: wrap; }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-left: auto; }
+  .ico { display: inline-flex; align-items: center; gap: 6px; }
+  .ico svg { width: 14px; height: 14px; flex: none; }
+  @media (max-width: 600px) { .actions { margin-left: 0; } }
   button, .btn {
     font-family: var(--sans); font-size: 13px; cursor: pointer;
     border: 1px solid var(--line); background: var(--paper-2); color: var(--ink);
@@ -245,8 +251,15 @@
 
   /* ---- Conveniencias de uso (spec 261029-conveniencias-de-uso) ---- */
   /* Copiar o titulo: o v6 tem campo de titulo (o ultimo do formulario). */
-  .card-title .title-copy { margin-left: auto; padding: 3px 10px; font-size: 12px; }
-  .card-title .title-copy.copied { background: var(--moss); color: #fff; border-color: var(--moss); }
+  /* O titulo e o botao de copiar (i-033): sem botao a mais, sem quebra de linha. */
+  .card-title .title-btn {
+    font: inherit; color: inherit; background: none; border: none; padding: 0; margin: 0;
+    cursor: copy; text-align: left; border-radius: 0;
+  }
+  /* sublinhado, nao borda: borda ocupa altura e desalinharia a linha do titulo */
+  .card-title .title-btn:hover { color: var(--ember); text-decoration: underline dashed; text-underline-offset: 3px; }
+  .card-title .title-btn.copied { color: var(--moss); }
+  .card-title .copied-hint { font-size: 11px; color: var(--moss); }
   /* Estrutura do cartao: uma linha por bloco, com mostrar e mover */
   .layout-list { list-style: none; padding: 0; margin: 8px 0 0; display: flex; flex-direction: column; gap: 6px; }
   .layout-list li {
@@ -254,6 +267,11 @@
     border: 1px solid var(--line); border-radius: 8px; background: var(--paper-2); font-size: 13px;
   }
   .layout-list li.off span { color: var(--ink-soft); text-decoration: line-through; }
+  .layout-list li[draggable="true"] { cursor: grab; }
+  .layout-list li .grip { color: var(--ink-soft); letter-spacing: -2px; user-select: none; }
+  .layout-list li.dragging { opacity: .45; }
+  .layout-list li.drop-before { box-shadow: 0 -3px 0 var(--ember); }
+  .layout-list li.drop-after  { box-shadow: 0 3px 0 var(--ember); }
   .layout-list li .move { margin-left: auto; display: flex; gap: 4px; }
   .layout-list li .move button { padding: 2px 8px; }
   /* Origem do acervo (DEC-022): de onde veio o que esta na tela */
@@ -276,15 +294,17 @@
     <h1>Cancioneiro</h1>
     <!-- Versao: a mesma do topo do meta/CHANGELOG.md. O scripts/validate.py confere
          que app, CHANGELOG, README e STATUS dizem a mesma (i-027). -->
-    <span class="sub">acervo de canções · copiar para o Suno sem procurar · <span data-role="app-version">v0.8.0</span></span>
+    <span class="version" data-role="app-version">v0.9.0</span>
+  </div>
+  <div class="tools">
+    <button id="prompt-btn" title="Copiar o prompt-modelo, com o seu pedido, para um chat">Prompt</button>
+    <button id="example-btn" class="ico" title="Baixar um acervo de exemplo (.json)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v8M4.5 7 8 10.5 11.5 7M3 13.5h10"/></svg>Exemplo</button>
+    <button id="layout-btn" class="ico" title="Estrutura do cartão: ordem e blocos visíveis"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 4h10M3 8h10M3 12h10"/></svg>Estrutura</button>
   </div>
   <div class="actions">
     <button id="import-btn">Importar .json</button>
     <button id="download-btn">Baixar .json</button>
     <button id="export-md-btn">Exportar .md</button>
-    <button id="prompt-btn">Prompt para chats</button>
-    <button id="example-btn">Baixar exemplo</button>
-    <button id="layout-btn">Estrutura do cartão</button>
     <input type="file" id="file-input" accept=".json,application/json" hidden>
   </div>
 </header>
@@ -338,7 +358,8 @@
 <dialog class="prompt-dialog" id="layout-dialog" aria-labelledby="layout-dialog-title">
   <h2 id="layout-dialog-title">Estrutura do cartão</h2>
   <p>A ordem dos blocos em todos os cartões, e quais aparecem. Fica guardada neste navegador.
-  O título fica sempre no topo; o export .md segue a ordem do arquivo.</p>
+  Arraste as linhas ou use ↑ ↓. O título fica sempre no topo; o export .md segue a ordem do arquivo.
+  O padrão esconde o Exclude: o formulário gratuito do Suno v6 não tem esse campo.</p>
   <ul class="layout-list" id="layout-list"></ul>
   <div class="dialog-actions">
     <button type="button" id="layout-reset-btn">Restaurar padrão</button>
@@ -1060,18 +1081,19 @@ function renderCard(song) {
   // Titulo + estado + idioma (REFERENCIA HUMANA — nunca copiavel)
   const title = document.createElement("div");
   title.className = "card-title";
-  const h3 = document.createElement("h3"); h3.textContent = song.title;
+  // i-033: clicar no titulo copia o titulo (o v6 tem campo de titulo). O botao
+  // fica DENTRO do h3 para o titulo seguir sendo cabecalho.
+  const h3 = document.createElement("h3");
+  const tbtn = document.createElement("button");
+  tbtn.type = "button"; tbtn.className = "title-btn"; tbtn.textContent = song.title;
+  tbtn.title = "Clique para copiar o título";
+  tbtn.addEventListener("click", () => copyTitle(song.title, tbtn));
+  h3.appendChild(tbtn);
   title.appendChild(h3);
   const st = document.createElement("span"); st.className = "badge state"; st.textContent = song.state;
   title.appendChild(st);
   const lang = document.createElement("span"); lang.className = "badge"; lang.textContent = song.language;
   title.appendChild(lang);
-  // i-033: o titulo tambem vai para o Suno (campo de titulo do v6). O rotulo e o
-  // proprio h3; o botao copia so o texto.
-  const tcopy = document.createElement("button");
-  tcopy.type = "button"; tcopy.className = "title-copy"; tcopy.textContent = "copiar título";
-  tcopy.addEventListener("click", () => copyText(song.title, tcopy));
-  title.appendChild(tcopy);
   card.appendChild(title);
 
   // Metadados de referencia
@@ -1354,6 +1376,16 @@ async function downloadExample() {
   toast("Exemplo baixado: cancioneiro-exemplo.json");
 }
 
+/** Copia o titulo e confirma ao lado dele, sem trocar o texto do titulo. */
+function copyTitle(text, btn) {
+  copyText(text);
+  btn.classList.add("copied");
+  const hint = document.createElement("span");
+  hint.className = "copied-hint"; hint.textContent = "copiado ✓";
+  btn.closest(".card-title").appendChild(hint);
+  setTimeout(() => { btn.classList.remove("copied"); hint.remove(); }, 1200);
+}
+
 /* ===================================================================
    Estrutura do cartao (i-030, DEC-023)
    Ordem e visibilidade dos blocos, por navegador, em App.ui.layout (estado de
@@ -1369,18 +1401,40 @@ const CARD_BLOCKS = [
   { key: "notes",    label: "Notas de produção" },
 ];
 
+/* O padrao esconde o Exclude: o formulario gratuito do Suno v6 nao tem o campo
+   (capturas do dono, 2026-10-29). O dado segue no JSON e no export. */
+const DEFAULT_HIDDEN = ["exclude"];
+const sameList = (a, b) => a.length === b.length && a.every((x, i) => x === b[i]);
+
 /** A estrutura em uso: a salva, completada com blocos que ela nao conheca
-    (versao nova do app) e limpa de chaves que nao existem mais. */
+    (versao nova do app) e limpa de chaves que nao existem mais. Sem estrutura
+    salva, o padrao. Uma estrutura da 0.9.0-pre (sem `v`) igual ao padrao de
+    entao (tudo visivel, ordem padrao) conta como «nao mexeu»: vale o padrao novo. */
 function currentLayout() {
   const known = CARD_BLOCKS.map(b => b.key);
-  const saved = (App.ui && App.ui.layout) || {};
+  let saved = App.ui && App.ui.layout;
+  if (saved && !saved.v && sameList(saved.order || [], known) && !(saved.hidden || []).length) saved = null;
+  if (!saved) return { order: known.slice(), hidden: DEFAULT_HIDDEN.slice() };
   const order = (saved.order || []).filter(k => known.includes(k));
   known.forEach(k => { if (!order.includes(k)) order.push(k); });
   const hidden = (saved.hidden || []).filter(k => known.includes(k));
   return { order, hidden };
 }
 function isHidden(key) { return currentLayout().hidden.includes(key); }
-function saveLayout(layout) { App.ui.layout = layout; saveUiState(); render(); renderLayoutDialog(); }
+/** Guarda a estrutura; igual ao padrao, apaga — assim um padrao novo alcanca quem nao mexeu. */
+function saveLayout(layout) {
+  const known = CARD_BLOCKS.map(b => b.key);
+  const isDefault = sameList(layout.order, known) && sameList(layout.hidden.slice().sort(), DEFAULT_HIDDEN.slice().sort());
+  if (isDefault) delete App.ui.layout; else App.ui.layout = { v: 2, order: layout.order, hidden: layout.hidden };
+  saveUiState(); render(); renderLayoutDialog();
+}
+/** Move `key` para antes (ou depois) de `target` na ordem. */
+function moveBlock(lay, key, target, after) {
+  if (key === target) return;
+  const order = lay.order.filter(k => k !== key);
+  order.splice(order.indexOf(target) + (after ? 1 : 0), 0, key);
+  saveLayout({ order, hidden: lay.hidden });
+}
 
 function renderLayoutDialog() {
   const list = document.getElementById("layout-list");
@@ -1412,7 +1466,29 @@ function renderLayoutDialog() {
       return b;
     };
     mv.appendChild(mk("↑", -1, "subir")); mv.appendChild(mk("↓", 1, "descer"));
-    li.appendChild(cb); li.appendChild(name); li.appendChild(mv);
+    // Arrastar a linha (pedido do dono, 2026-10-29). O ↑ ↓ fica para o teclado.
+    // O arraste interno leva texto, nao arquivo: o «soltar .json» da pagina o ignora.
+    const grip = document.createElement("span"); grip.className = "grip"; grip.textContent = "⋮⋮";
+    grip.setAttribute("aria-hidden", "true");
+    li.draggable = true; li.dataset.key = key;
+    li.addEventListener("dragstart", e => {
+      e.dataTransfer.setData("text/plain", key); e.dataTransfer.effectAllowed = "move";
+      li.classList.add("dragging");
+    });
+    li.addEventListener("dragend", () => list.querySelectorAll("li").forEach(x =>
+      x.classList.remove("dragging", "drop-before", "drop-after")));
+    const below = e => { const r = li.getBoundingClientRect(); return e.clientY > r.top + r.height / 2; };
+    li.addEventListener("dragover", e => {
+      e.preventDefault();
+      li.classList.toggle("drop-after", below(e)); li.classList.toggle("drop-before", !below(e));
+    });
+    li.addEventListener("dragleave", () => li.classList.remove("drop-before", "drop-after"));
+    li.addEventListener("drop", e => {
+      e.preventDefault();
+      const from = e.dataTransfer.getData("text/plain");
+      if (lay.order.includes(from)) moveBlock(lay, from, key, below(e));
+    });
+    li.appendChild(grip); li.appendChild(cb); li.appendChild(name); li.appendChild(mv);
     list.appendChild(li);
   });
 }
@@ -1512,7 +1588,7 @@ document.getElementById("layout-btn").addEventListener("click", () => {
 document.getElementById("layout-close-btn").addEventListener("click", () =>
   document.getElementById("layout-dialog").close());
 document.getElementById("layout-reset-btn").addEventListener("click", () =>
-  saveLayout({ order: CARD_BLOCKS.map(b => b.key), hidden: [] }));
+  saveLayout({ order: CARD_BLOCKS.map(b => b.key), hidden: DEFAULT_HIDDEN.slice() }));
 
 // i-034: soltar um arquivo em qualquer lugar = importar, pelo mesmo caminho do
 // botao. So reage a arraste de ARQUIVO (texto arrastado segue o normal).

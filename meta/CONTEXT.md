@@ -99,4 +99,4 @@ Conhecimento destilado no GLOSSARY e no HISTORY (herdado do guia de produção d
 
 ## Produto / uso
 
-Ferramenta pessoal de hobby. Uso típico: abrir `index.html`, importar o JSON do acervo, escolher um álbum, copiar o style de uma faixa (botão), copiar a letra (botão), gerar no Suno, marcar a faixa como usada. Para levar uma seleção a um chat ou Projeto, exportar em `.md`. Para gerar canções novas: «Prompt para chats» → colar num chat novo → arrastar para o app o `.json` que ele devolver (ou importar). A ordem e a visibilidade dos blocos do cartão se ajustam em «Estrutura do cartão».
+Ferramenta pessoal de hobby. Uso típico: abrir `index.html`, importar o JSON do acervo, escolher um álbum, copiar o style de uma faixa (botão), copiar a letra (botão), gerar no Suno, marcar a faixa como usada. Para levar uma seleção a um chat ou Projeto, exportar em `.md`. Para gerar canções novas: «Prompt» → colar num chat novo → arrastar para o app o `.json` que ele devolver (ou importar). A ordem e a visibilidade dos blocos do cartão se ajustam em «Estrutura» (o Exclude vem oculto).

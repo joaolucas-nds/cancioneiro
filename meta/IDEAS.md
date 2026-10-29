@@ -112,7 +112,7 @@ A API expõe pesos 0.00-1.00 para aderência ao estilo e desvio criativo (os Cre
 ### i-029 💡 Avisar quando a palavra de andamento contradiz o BPM
 `[nascido da spec do BPM, 2026-10-28]` Com o controle, ar-04 vai a 140 e continua dizendo «downtempo» e «slow build». A linha de qualidade poderia avisar, em ambar, quando uma palavra de andamento do Style («downtempo», «slow», «uptempo», «fast») briga com o numero. Pesar contra: exige uma tabela palavra → faixa de BPM, conhecimento de dominio que muda com o Suno — o mesmo motivo que tirou a tabela de generos vocais da DEC-019. Se entrar, a tabela mora num objeto unico com fonte e data, como o `QUALITY_LIMITS`.
 
-### i-030 🔨 Ordem dos campos no cartao: Lyrics acima do Style, como no Suno
+### i-030 ✅ Ordem dos campos no cartao: Lyrics acima do Style, como no Suno
 `[relatado pelo dono, 2026-10-28]` O cartao mostra Style em cima e Lyrics embaixo; no Suno e o contrario, e copiar na ordem da tela agilizaria. O dono prefere que seja **configuravel**. A preferencia e estado de interface e pode morar no navegador (DEC-004). A decidir na spec: se o export MD segue a ordem escolhida, e onde fica o controle (cabecalho ou cartao).
 `[relatado pelo dono, 2026-10-29, nota 1106]` **Refinado:** a ordem atual (titulo, Style, Lyrics) faz sentido para quem preenche o Suno de baixo para cima — o dono faz assim. O pedido e **controlar a estrutura na interface e salvar no navegador**, com a ordem atual como padrao. Medido nas capturas do dono (2026-10-29): o formulario do v6 e, de cima para baixo, Lyrics → Styles → opcoes → titulo, e **nao tem campo de Exclude** no v6-mini gratuito — o bloco Exclude do cartao fica sem destino para ele hoje. Candidato: mostrar/ocultar cada campo, alem da ordem.
 
@@ -123,22 +123,23 @@ A API expõe pesos 0.00-1.00 para aderência ao estilo e desvio criativo (os Cre
 ### i-032 💡 Outras plataformas de musica por IA
 `[relatado pelo dono, 2026-10-28]` Existem outros sites e apps de celular com estrutura parecida com a do Suno e diferente dela; o dono quer sugestoes para testar e, se valer, ampliar a estrutura do projeto para comporta-los. O esquema ja e agnostico no nome (`targetTool`), mas `style`/`lyrics`/`excludeStyles` espelham os campos do Suno. Proximo passo: um turno de pesquisa atual (plano gratuito, campos equivalentes, limites, API, app mobile) antes de qualquer mudanca de esquema. Pesar contra: generalizar o esquema antes de usar uma segunda plataforma de verdade e especular.
 
-### i-033 🔨 Copiar o titulo da faixa com um clique
+### i-033 ✅ Copiar o titulo da faixa com um clique
 `[relatado pelo dono, 2026-10-29, nota 1106]` Faltou copiar facil o nome da musica. O formulario do v6 tem campo de titulo (o ultimo, antes de «Save to»). Um botao «copiar» ao lado do titulo do cartao, com a mesma marcacao de copiado dos outros campos.
 
-### i-034 🔨 Arrastar o .json para a tela e carregar
+### i-034 ✅ Arrastar o .json para a tela e carregar
 `[relatado pelo dono, 2026-10-29, nota 1106]` Soltar o arquivo em qualquer lugar da pagina = importar, pelo mesmo caminho do botao (saneamento e avisos iguais: FIX-006, FIX-009). Combina com o prompt que entrega arquivo (i-036): baixar do chat e arrastar para o app.
 
-### i-035 🔨 O acervo continuar carregado depois de fechar o navegador
+### i-035 ✅ O acervo continuar carregado depois de fechar o navegador
 `[relatado pelo dono, 2026-10-29, nota 1106]` Hoje so as marcas «usei» sobrevivem; o acervo some ao fechar. Guardar uma copia do ultimo acervo importado no navegador e recarrega-la ao abrir. **Toca a DEC-004** (o navegador e cache, nunca fonte): uma copia do ultimo arquivo importado e cache legitimo, porque o app nao edita o acervo (FIX-004) — a copia e igual ao arquivo. Risco a tratar: o arquivo mudar fora (um chat gerou versao nova) e o app seguir mostrando a copia velha sem aviso; mitigacao: dizer na tela de onde veio o acervo e quando foi importado, e um botao para esquecer a copia. A carga automatica do Pages (`demo.json`) passa a valer so quando nao houver copia. Pede DEC propria.
 
-### i-036 🔨 O prompt pedir o JSON como arquivo para baixar
+### i-036 ✅ O prompt pedir o JSON como arquivo para baixar
 `[relatado pelo dono, 2026-10-29, nota 1106]` Em vez de texto para copiar, o chat entregar um `.json` para download. Ganha: sem colar no Bloco de notas, sem erro de codificacao, nome de arquivo pronto — e casa com a i-034. Custa: depende de o chat conseguir criar arquivo (varia por produto e por recurso ligado), e o texto atual do prompt foi o que passou no reteste de 2026-10-29 — mudar exige retestar. Forma candidata: pedir arquivo **se o chat puder criar arquivos**, e manter «so o JSON, sem texto» como alternativa.
 
-### i-037 🔨 Export de album e de acervo com o Style da tela
+### i-037 ✅ Export de album e de acervo com o Style da tela
 Achado em 2026-10-29 nos `.md` que o dono exportou: o export de **faixa** sai com o Style recomposto (modulos ligados, controle de BPM), o de **album** e o de **acervo** saem com o `style` base (`albumToMarkdown` chama `songToMarkdown(s, false)`), desde a 0.4.0. Em ar-01, 18 tags na faixa e 10 no album. Pode ser o certo — o album como documento do acervo, a faixa como «o que vou colar agora» —, mas a diferenca nao aparece na tela nem estava escrita. Decidir: os tres seguem a tela, ou o album/acervo continua base e o botao diz isso.
 
 **Em trabalho (2026-10-29, WO 0017):** as i-030, i-033 a i-037 viraram uma frente so, `meta/specs/261029-conveniencias-de-uso.md` (DEC-022, DEC-023). Decisoes do dono: acervo guardado no navegador (D1), estrutura completa (D2), aviso de negacao some com o Exclude oculto (D3), prompt pede arquivo e, sem arquivo, o JSON em bloco de codigo (D4), export segue a tela (D5). Fecha na 0.9.0, depois da tela e do reteste curto do prompt.
+**Entregues em 0.9.0** (2026-10-29), conferidas na tela e retestadas pelo dono. Ajustes pedidos em seguida (nota `261029-1618.txt`, DEC-025): o titulo copia ao clicar (sai o botao, que quebrava a linha), as linhas da estrutura se arrastam, o Exclude vem oculto por padrao e o cabecalho fica mais enxuto — em [Unreleased] ate o dono ver.
 
 ## Feedback para o Kit
 

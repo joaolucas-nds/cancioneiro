@@ -44,6 +44,8 @@ Comece vazia e escreva quando doer duas vezes: técnica que você precisou expli
 - **Toda saída nova que carrega conteúdo copiável reverifica a regra de domínio** (rótulo fora do bloco). O formato Markdown convida a pôr o rótulo dentro, e isso quase se perdeu de novo no export MD; a regra está nas Instruções e no `CLAUDE.md`, aqui fica o gatilho: saída nova = reverificar.
 - **O diferencial não é gerar prompt, é organizar o acervo próprio.** Já existem builders de prompt (`meta/HISTORY.md` §7). Proposta que empurre o projeto para competir no gerador genérico recebe o contra-argumento antes de virar trabalho.
 - **O truncamento do Suno é silencioso** — passou do limite, o excedente não chega ao modelo, sem erro. É por isso que a Fase 3 existe; números em `meta/HISTORY.md` §9-11.
+- **Número de WO medido no container do chat precisa de locale UTF-8.** `wc -m` sem `LC_ALL=C.UTF-8` conta bytes: a WO 0017 pediu 6.691 «caracteres» e eram 6.691 bytes / 6.481 caracteres (relatório do Code). Meça com o locale ligado, e diga a unidade.
+- **Checagem de WO não usa emoji no padrão do `grep`.** No shell do Code, `grep -c '🔨'` devolve 0 com o emoji presente (WO 0017, checagem 5). Conte pelo texto vizinho (`'^### i-03[03-7] '`) ou pelo hash.
 
 ## Princípios de trabalho
 

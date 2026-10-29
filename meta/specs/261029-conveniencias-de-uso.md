@@ -1,6 +1,6 @@
 # SPEC — Conveniências de uso: estrutura do cartão, título, arrastar, acervo no navegador, prompt em arquivo
 
-> **Status:** Decidida
+> **Status:** Implementada (0.9.0, 2026-10-29)
 > **Decidida em:** 2026-10-29 pelo dono — **D1 sim, D2 completa, D3 some, D4 sim, D5 segue a tela**; na D4,
 > a alternativa ao arquivo é o JSON **dentro de um bloco de código** (refinamento do dono, mesma mensagem).
 > Aplicação: `meta/workorders/261029-wo0017-conveniencias-de-uso.md`.
@@ -93,3 +93,19 @@ Executados pelo chat em Chromium headless sobre o app de chegada, contra a 0.8.0
 - **O prompt mudou de novo:** o texto que passou no reteste de 2026-10-29 foi o anterior; esta mudança só toca a
   «Saída», mas exige reteste curto (roteiro do dono).
 - **Toast longo:** o aviso do cache somado a outros pode passar de uma linha; dura até 6 s (0.8.0).
+
+---
+
+## Desfecho — 2026-10-29
+
+- **Tela** `[relatado pelo dono]`: itens A1 a A7 do roteiro ok. O `.md` de álbum exportado por ele traz o Style
+  de ar-01 com 18 tags, igual ao da faixa (D5 conferido no arquivo dele).
+- **Reteste do prompt** (dois chats, Médio e Alto; pedido próprio do dono, não o de bancada): `validate.py`
+  verde nos dois modos; 19 e 23 módulos no contrato; base 7-8 tags e recomposto 8-9 em 6 de 6 faixas; 0
+  rótulos; 19 e 23 chips, toast limpo `[medido por instrumento]`. Os arquivos chegaram com o nome do `id` do
+  álbum (`teste-esforco-alto.json`, `teste-esforco-medio.json`) — o nome que o prompt pede para o **arquivo**;
+  indica que os chats criaram arquivo, sem confirmação de como vieram.
+- **Ajustes pedidos em seguida** (nota `261029-1618.txt`, DEC-025): título que copia ao clicar, estrutura
+  arrastável, Exclude oculto por padrão, cabeçalho enxuto. Testados pelo chat (23 de 23, e a bateria desta spec
+  refeita: 34 de 34); vão em [Unreleased] até o dono ver.
+

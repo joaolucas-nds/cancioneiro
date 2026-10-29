@@ -4,7 +4,7 @@
 > O chat passa a devolver a canção/álbum em **JSON no esquema canônico**, pronto para importar
 > na ferramenta Cancioneiro — sem inventar convenção própria.
 >
-> **Como usar:** no app, botão **Prompt para chats** — escreva o pedido e copie o prompt já completo.
+> **Como usar:** no app, botão **Prompt** — escreva o pedido e copie o prompt já completo.
 > Ou, à mão: copie tudo dentro da linha `--- INÍCIO ---` até `--- FIM ---`, cole no chat,
 > e complete o "Meu pedido" no final. O chat responde só com o JSON.
 
@@ -108,7 +108,7 @@ Devolva um objeto de **coleção** com esta estrutura (campos obrigatórios marc
 ## Notas para o mantenedor (não faz parte do prompt)
 
 - Este prompt reflete o `song.schema.json` e `collection.schema.json` v1.0. Se o esquema mudar, **atualize este arquivo junto** (uma fonte por dado — o esquema é a fonte; este prompt é um espelho didático).
-- **O app lê ESTE arquivo** (botão «Prompt para chats»): busca-o no Pages a cada clique e copia o que está entre as linhas `--- INÍCIO ---` e `--- FIM ---`, trocando a linha entre parênteses abaixo de `## Meu pedido` pelo pedido digitado. Não há segunda cópia do prompt. Mantenha as duas linhas de marcação e essa linha entre parênteses: o `scripts/validate.py` reprova se uma delas sumir.
+- **O app lê ESTE arquivo** (botão «Prompt»): busca-o no Pages a cada clique e copia o que está entre as linhas `--- INÍCIO ---` e `--- FIM ---`, trocando a linha entre parênteses abaixo de `## Meu pedido` pelo pedido digitado. Não há segunda cópia do prompt. Mantenha as duas linhas de marcação e essa linha entre parênteses: o `scripts/validate.py` reprova se uma delas sumir.
 - **Módulos (DEC-016, DEC-021):** a coleção carrega os próprios módulos; a faixa cita ids. O teste de 2026-10-28 (`meta/specs/261028-prompt-modelo-e-modulos.md`) mostrou que, sem a seção de módulos, três chats inventaram três formatos e aninharam o módulo na faixa — o app abria o painel com 0 chips. As sete `category` são as camadas do app (`LAYERS` em `app/index.html`); a de `tempo` vira atalho do controle de BPM (DEC-020).
 - **Orçamento de tags (6 a 8 no style; até 10 com os módulos ligados):** mesma faixa do painel de qualidade (`QUALITY_LIMITS` em `app/index.html`, com fonte e data). Se o painel mudar, mude aqui.
 - O prompt ensina as cinco camadas e a regra copiável/referência — é o principal contra a bagunça dos álbuns antigos.

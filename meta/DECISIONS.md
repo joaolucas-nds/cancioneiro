@@ -415,3 +415,14 @@
 **Decisão:** Havendo WO no turno, o bloco de código com `/apply-wo <arquivo>` vem **logo antes do divisor e do «Próximo»** — no fim do corpo, onde a leitura termina. Fica no CEREBRO (item 0 do fecho, e no esqueleto) e nas Instruções.
 **Alternativas consideradas:** manter no fim (o atrito é diário); pôr no começo da resposta (vem antes de o dono saber o que a WO faz).
 **Consequências:** (+) Um gesto a menos por WO. (−) As Instruções mudaram: o dono cola a versão nova no painel do Projeto.
+
+---
+
+## DEC-025 — Ajustes de tela depois da 0.9.0: Exclude oculto por padrão, título que copia ao clicar, estrutura arrastável, cabeçalho enxuto
+
+**Data:** 2026-10-29
+**Status:** aceita
+**Contexto:** Conferindo a 0.9.0 na tela, o dono pediu (nota `261029-1618.txt`): o botão «copiar título» quebrava a linha do título; o cabeçalho com seis botões e o subtítulo ocupavam espaço; mudar a ordem na «Estrutura do cartão» só por ↑ ↓ era lento; e o Exclude, sem campo no v6-mini gratuito, podia vir oculto. A DEC-023 tinha fixado «padrão = a ordem de antes, tudo visível».
+**Decisão:** (1) O padrão da estrutura esconde o Exclude (e, pela D3, o aviso de negação). Uma estrutura salva igual ao padrão antigo, sem marca de versão, conta como «não mexeu» e passa ao padrão novo; estrutura personalizada fica como está; salvar o padrão apaga a estrutura salva, para um padrão futuro alcançar quem não mexeu. (2) Clicar no título copia o título — um botão dentro do `h3`, com «copiado ✓» ao lado. (3) As linhas da estrutura se arrastam; ↑ ↓ ficam para o teclado. (4) Cabeçalho: versão pequena sob o nome, sem subtítulo; «Prompt», «Exemplo» e «Estrutura», com ícones nos dois últimos, ao lado do nome; importar, baixar e exportar na direita.
+**Alternativas consideradas:** manter o botão de copiar com outro posicionamento (segue ocupando espaço); arrastar sem os ↑ ↓ (perde o teclado); trocar o padrão sem migração (o dono, que restaurou o padrão no roteiro, seguiria vendo o Exclude).
+**Consequências:** (+) Menos ruído na tela de quem usa o plano gratuito. (−) Quem usa o Exclude (Pro, outra plataforma) precisa ligá-lo uma vez na estrutura. (−) O título passa a ter ação ao clicar — selecionar texto do título com o mouse copia em vez de selecionar.

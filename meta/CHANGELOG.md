@@ -4,6 +4,35 @@
 
 ---
 
+## [Unreleased]
+
+Ajustes de tela pedidos pelo dono depois de conferir a 0.9.0 (nota `261029-1618.txt`, DEC-025). Viram 0.9.1 depois de vistos na tela.
+
+### Changed
+- **Cabecalho:** a versao fica pequena abaixo do nome, sem o subtitulo; «Prompt», «Exemplo» (icone de baixar) e «Estrutura» (icone de camadas) ficam ao lado do nome; importar, baixar e exportar ficam na ponta direita.
+- **Titulo:** clicar no nome da faixa copia o titulo, com «copiado ✓» ao lado; sai o botao «copiar titulo», que quebrava a linha.
+- **Estrutura do cartao:** as linhas se arrastam para mudar a ordem (os ↑ ↓ ficam, para o teclado). O padrao passa a **esconder o Exclude** — o formulario gratuito do Suno v6 nao tem o campo; o aviso «no X → Exclude» some junto (D3). Quem tinha salvo o padrao antigo passa ao novo; estrutura personalizada fica como estava.
+
+---
+
+## [0.9.0] — 2026-10-29
+
+Conveniencias de uso, conferidas na tela e retestadas pelo dono.
+
+### Added
+- **Estrutura do cartao (DEC-023, i-030):** ordem e mostrar/ocultar de seis blocos (Style, Lyrics, Exclude, Modulos, Variantes, Notas), guardada no navegador; «Restaurar padrao».
+- **Copiar o titulo da faixa (i-033).**
+- **Arrastar o `.json` para a tela importa (i-034)**, pelo mesmo caminho do botao.
+- **O ultimo acervo importado volta ao abrir (DEC-022, i-035):** copia em cache no navegador; a barra mostra de onde veio e quando, com «esquecer». Vence a carga automatica do Pages.
+
+### Changed
+- **Prompt-modelo (DEC-023, i-036):** a «Saida» pede um `.json` para baixar; sem arquivo, o JSON num unico bloco de codigo. Reteste do dono com dois chats: 6 de 6 faixas no contrato e no orcamento; os arquivos vieram com o nome do `id` do album, como o prompt pede para o arquivo.
+- **Importacao:** aceita a resposta do chat colada inteira — extrai o bloco de codigo (ou do primeiro `{` ao ultimo `}`) e avisa no toast.
+- **Export de album e de acervo com o Style da tela (D5, i-037):** modulos ligados e BPM do controle, como o da faixa. Conferido no `.md` exportado pelo dono: 18 tags em ar-01, igual ao cartao.
+- **Painel de qualidade:** com o Exclude oculto, nao sugere levar «no X» para ele.
+
+---
+
 ## [0.8.0] — 2026-10-29
 
 Prompt-modelo com contrato de modulos e o prompt pela interface do app, conferidos na tela e retestados pelo dono.
