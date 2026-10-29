@@ -13,6 +13,7 @@
 - **Conferência na tela** `[relatado pelo dono]`: itens A1 a A5 ok, também visíveis nas capturas. 0.8.0 fechada (WO 0016).
 - **Interface do Suno v6 medida nas capturas do dono:** v6-mini no plano gratuito; formulário Lyrics → Styles → opções → título; **sem campo de Exclude**. Registrado no `meta/HISTORY.md` §5.
 - **Nota do dono `261029-1106.txt`** capturada como ideias: i-030 refinada, i-033 a i-036; e a i-037, achada nos `.md` exportados.
+- **WO 0016 aplicada pelo Code** (`6a52111`, empurrado): os dez arquivos bateram com o hash de chegada; `validate.py` verde, só sintaxe (`jsonschema` ausente nesta máquina).
 - **Este bloco substitui o anterior, de 2026-10-28, que abria o prompt-modelo.** O que ele dizia está no CHANGELOG [0.8.0], no DECISIONS (DEC-021, FIX-009) e em `logs/2026-10-28.md`.
 
 ## Funciona (pronto)
