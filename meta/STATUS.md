@@ -9,7 +9,7 @@
 
 ## Última conversa (2026-10-29, conveniências de uso)
 
-- **Decisões do dono** sobre a nota `261029-1106.txt`: D1 acervo guardado no navegador, D2 estrutura do cartão completa, D3 aviso de negação some com o Exclude oculto, D4 prompt pede arquivo (e, sem arquivo, o JSON em bloco de código), D5 export de álbum segue a tela. Spec `meta/specs/261029-conveniencias-de-uso.md`; DEC-022 e DEC-023; aplicadas pela WO 0017, testadas pelo chat numa cópia (34 de 34).
+- **Decisões do dono** sobre a nota `261029-1106.txt`: D1 acervo guardado no navegador, D2 estrutura do cartão completa, D3 aviso de negação some com o Exclude oculto, D4 prompt pede arquivo (e, sem arquivo, o JSON em bloco de código), D5 export de álbum segue a tela. Spec `meta/specs/261029-conveniencias-de-uso.md`; DEC-022 e DEC-023; aplicadas pela WO 0017, testadas pelo chat numa cópia (34 de 34); WO 0017 aplicada e empurrada em `d1b9caf`.
 - **Fecho do chat (DEC-024):** a linha `/apply-wo` vem antes do «Próximo». CEREBRO e Instruções mudaram — o dono cola as Instruções novas no painel do Projeto.
 - **Álbuns antigos chegaram** à pasta-pai (`../Album Rainha da Preguiça/`, `../Albuns/`, 19 arquivos, ~44 mil linhas): a i-008 está desbloqueada; ainda não lidos.
 - **Este bloco substitui o anterior, de 2026-10-29, que fechava a 0.8.0.** O que ele dizia está no CHANGELOG [0.8.0], na spec do prompt-modelo e em `logs/2026-10-29.md`.
