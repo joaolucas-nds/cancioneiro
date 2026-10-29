@@ -13,6 +13,7 @@
 - **Ajustes da nota `261029-1618.txt`** (DEC-025), testados pelo chat (23 de 23): título que copia ao clicar, estrutura arrastável, Exclude oculto por padrão, cabeçalho enxuto. Em [Unreleased] no CHANGELOG até o dono ver; viram 0.9.1 na próxima WO.
 - **Duas armadilhas da WO 0017** registradas no CEREBRO: `wc -m` sem locale UTF-8 conta bytes; `grep` com emoji não casa no shell do Code.
 - **Este bloco substitui o anterior, de 2026-10-29, que abria as conveniências.** O que ele dizia está no CHANGELOG [0.9.0], na spec `meta/specs/261029-conveniencias-de-uso.md` e em `logs/2026-10-29.md`.
+- **WO 0018 aplicada e empurrada** (`2a20448`, Code, 2026-10-29): 12 hashes de chegada conferidos; `validate.py` só de sintaxe (`jsonschema` ainda ausente). Armadilhas da aplicação no log do dia (Conversa 6): reexecução de script duplica edições; `autocrlf=true` regrava CRLF no `git checkout`.
 
 ## Funciona (pronto)
 
