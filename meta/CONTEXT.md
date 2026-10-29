@@ -15,7 +15,7 @@ O problema que resolve: hoje as canções vivem espalhadas em vários `.md` de �
 
 1. **O esquema (schema/) — o contrato.** Um formato JSON canônico único que descreve uma canção (campos de Suno + metadados) e uma coleção (álbuns, blocos, módulos de estilo). É o que os chats passam a gerar, no lugar dos `.md` de convenção livre. Resolve o problema de padronização na raiz. Ver `schema/song.schema.json`.
 
-2. **A ferramenta (app/) — o leitor.** Um `index.html` autônomo (v0 já construído) que importa/carrega um JSON no esquema, renderiza cada canção como um cartão organizado por álbum, e oferece copy-por-campo com marcação de "já copiado"/"usei", troca modular de estilo por camada (recompõe o Style ao vivo), filtros e busca, import/download de JSON e export MD seletivo (faixa, álbum ou acervo). **Roda de dois modos** (ver DEC-006): servida por GitHub Pages (`https://`) ela carrega o acervo sozinha; aberta como arquivo local (`file://`) ela espera import manual — auto-detecta o ambiente.
+2. **A ferramenta (app/) — o leitor.** Um `index.html` autônomo (v0 já construído) que importa/carrega um JSON no esquema, renderiza cada canção como um cartão organizado por álbum, e oferece copy-por-campo com marcação de "já copiado"/"usei", troca modular de estilo por camada (recompõe o Style ao vivo), filtros e busca, import/download de JSON, export MD seletivo (faixa, álbum ou acervo) e, pelos botões do cabeçalho, o prompt-modelo para chats (com o pedido do usuário) e um acervo de exemplo — buscados do repositório no clique, sem cópia no app (DEC-021). **Roda de dois modos** (ver DEC-006): servida por GitHub Pages (`https://`) ela carrega o acervo sozinha; aberta como arquivo local (`file://`) ela espera import manual — auto-detecta o ambiente.
 
 ## Por que estas escolhas (resumo — detalhe em DECISIONS)
 
@@ -99,4 +99,4 @@ Conhecimento destilado no GLOSSARY e no HISTORY (herdado do guia de produção d
 
 ## Produto / uso
 
-Ferramenta pessoal de hobby. Uso típico: abrir `index.html`, importar o JSON do acervo, escolher um álbum, copiar o style de uma faixa (botão), copiar a letra (botão), gerar no Suno, marcar a faixa como usada. Para levar uma seleção a um chat ou Projeto, exportar em `.md`.
+Ferramenta pessoal de hobby. Uso típico: abrir `index.html`, importar o JSON do acervo, escolher um álbum, copiar o style de uma faixa (botão), copiar a letra (botão), gerar no Suno, marcar a faixa como usada. Para levar uma seleção a um chat ou Projeto, exportar em `.md`. Para gerar canções novas: «Prompt para chats» → colar num chat novo → importar o JSON que ele devolver.

@@ -103,21 +103,39 @@ A API expõe pesos 0.00-1.00 para aderência ao estilo e desvio criativo (os Cre
 
 **Entregue em 0.6.0.** O cabecalho mostra `v0.6.0`, e o `scripts/validate.py` reprova (codigo 1) se o topo do CHANGELOG, o app, o README e o STATUS divergirem.
 
-### i-028 🔨 O prompt-modelo pedir folga para os modulos
+### i-028 ✅ O prompt-modelo pedir folga para os modulos
 `[nascido da spec da 3a.2, 2026-10-27]` Em ar-01 e ar-04 o style base que o chat escreveu ja usa 10 de 10 tags: nenhum modulo cabe sem estourar. O painel agora diz isso, mas so depois. A regra que o evitaria mora em quem escreve o base — o `schema/PROMPT-PARA-CHATS.md` poderia pedir «style base com 6 a 8 tags, deixando folga para os modulos». Pesar contra: o base mais curto pode ficar vago (abaixo de 4 tags o painel ja avisa).
 **Em trabalho (2026-10-28, DEC-021, WO 0015).** O teste base do prompt (tres chats, `meta/specs/261028-prompt-modelo-e-modulos.md`) confirmou o base no limite (10+ tags em 5 de 9 faixas) e mostrou um problema maior: o prompt nao ensinava o contrato de modulo, e os tres chats inventaram tres formatos. O prompt agora pede style com 6 a 8 tags e ate 10 com os modulos ligados. Fecha com o reteste do dono.
+**Entregue em 0.8.0.** Reteste (2026-10-29, dois chats): base com 7 ou 8 tags e recomposto com 8 a 10 em 6 de 6 faixas.
 
 ### i-029 💡 Avisar quando a palavra de andamento contradiz o BPM
 `[nascido da spec do BPM, 2026-10-28]` Com o controle, ar-04 vai a 140 e continua dizendo «downtempo» e «slow build». A linha de qualidade poderia avisar, em ambar, quando uma palavra de andamento do Style («downtempo», «slow», «uptempo», «fast») briga com o numero. Pesar contra: exige uma tabela palavra → faixa de BPM, conhecimento de dominio que muda com o Suno — o mesmo motivo que tirou a tabela de generos vocais da DEC-019. Se entrar, a tabela mora num objeto unico com fonte e data, como o `QUALITY_LIMITS`.
 
 ### i-030 💡 Ordem dos campos no cartao: Lyrics acima do Style, como no Suno
 `[relatado pelo dono, 2026-10-28]` O cartao mostra Style em cima e Lyrics embaixo; no Suno e o contrario, e copiar na ordem da tela agilizaria. O dono prefere que seja **configuravel**. A preferencia e estado de interface e pode morar no navegador (DEC-004). A decidir na spec: se o export MD segue a ordem escolhida, e onde fica o controle (cabecalho ou cartao).
+`[relatado pelo dono, 2026-10-29, nota 1106]` **Refinado:** a ordem atual (titulo, Style, Lyrics) faz sentido para quem preenche o Suno de baixo para cima — o dono faz assim. O pedido e **controlar a estrutura na interface e salvar no navegador**, com a ordem atual como padrao. Medido nas capturas do dono (2026-10-29): o formulario do v6 e, de cima para baixo, Lyrics → Styles → opcoes → titulo, e **nao tem campo de Exclude** no v6-mini gratuito — o bloco Exclude do cartao fica sem destino para ele hoje. Candidato: mostrar/ocultar cada campo, alem da ordem.
 
-### i-031 🔨 Prompt e exemplo pela interface do app
+### i-031 ✅ Prompt e exemplo pela interface do app
 `[relatado pelo dono, 2026-10-28, notas 1813 e 1852]` O dono nao quer abrir as pastas do repositorio para pegar o prompt-modelo ou um exemplo: quer copiar o prompt ja com o «Meu pedido» e baixar um exemplo pelo app publicado, como o KCM faz. **Em trabalho (DEC-021, WO 0015):** botoes «Prompt para chats» e «Baixar exemplo», que buscam `schema/PROMPT-PARA-CHATS.md` e `data/demo.json` no clique — fonte unica, sem copia no app. Evolucao possivel: campos guiados para «estruturar» o pedido (quantidade, idioma, instrumental, BPM), so se o reteste mostrar que o texto livre nao basta.
+**Entregue em 0.8.0**, conferido na tela pelo dono. O reteste com texto livre passou em 6 de 6 faixas: os campos guiados nao sao necessarios por ora.
 
 ### i-032 💡 Outras plataformas de musica por IA
 `[relatado pelo dono, 2026-10-28]` Existem outros sites e apps de celular com estrutura parecida com a do Suno e diferente dela; o dono quer sugestoes para testar e, se valer, ampliar a estrutura do projeto para comporta-los. O esquema ja e agnostico no nome (`targetTool`), mas `style`/`lyrics`/`excludeStyles` espelham os campos do Suno. Proximo passo: um turno de pesquisa atual (plano gratuito, campos equivalentes, limites, API, app mobile) antes de qualquer mudanca de esquema. Pesar contra: generalizar o esquema antes de usar uma segunda plataforma de verdade e especular.
+
+### i-033 💡 Copiar o titulo da faixa com um clique
+`[relatado pelo dono, 2026-10-29, nota 1106]` Faltou copiar facil o nome da musica. O formulario do v6 tem campo de titulo (o ultimo, antes de «Save to»). Um botao «copiar» ao lado do titulo do cartao, com a mesma marcacao de copiado dos outros campos.
+
+### i-034 💡 Arrastar o .json para a tela e carregar
+`[relatado pelo dono, 2026-10-29, nota 1106]` Soltar o arquivo em qualquer lugar da pagina = importar, pelo mesmo caminho do botao (saneamento e avisos iguais: FIX-006, FIX-009). Combina com o prompt que entrega arquivo (i-036): baixar do chat e arrastar para o app.
+
+### i-035 💡 O acervo continuar carregado depois de fechar o navegador
+`[relatado pelo dono, 2026-10-29, nota 1106]` Hoje so as marcas «usei» sobrevivem; o acervo some ao fechar. Guardar uma copia do ultimo acervo importado no navegador e recarrega-la ao abrir. **Toca a DEC-004** (o navegador e cache, nunca fonte): uma copia do ultimo arquivo importado e cache legitimo, porque o app nao edita o acervo (FIX-004) — a copia e igual ao arquivo. Risco a tratar: o arquivo mudar fora (um chat gerou versao nova) e o app seguir mostrando a copia velha sem aviso; mitigacao: dizer na tela de onde veio o acervo e quando foi importado, e um botao para esquecer a copia. A carga automatica do Pages (`demo.json`) passa a valer so quando nao houver copia. Pede DEC propria.
+
+### i-036 💡 O prompt pedir o JSON como arquivo para baixar
+`[relatado pelo dono, 2026-10-29, nota 1106]` Em vez de texto para copiar, o chat entregar um `.json` para download. Ganha: sem colar no Bloco de notas, sem erro de codificacao, nome de arquivo pronto — e casa com a i-034. Custa: depende de o chat conseguir criar arquivo (varia por produto e por recurso ligado), e o texto atual do prompt foi o que passou no reteste de 2026-10-29 — mudar exige retestar. Forma candidata: pedir arquivo **se o chat puder criar arquivos**, e manter «so o JSON, sem texto» como alternativa.
+
+### i-037 💡 Export de album e de acervo com o Style da tela
+Achado em 2026-10-29 nos `.md` que o dono exportou: o export de **faixa** sai com o Style recomposto (modulos ligados, controle de BPM), o de **album** e o de **acervo** saem com o `style` base (`albumToMarkdown` chama `songToMarkdown(s, false)`), desde a 0.4.0. Em ar-01, 18 tags na faixa e 10 no album. Pode ser o certo — o album como documento do acervo, a faixa como «o que vou colar agora» —, mas a diferenca nao aparece na tela nem estava escrita. Decidir: os tres seguem a tela, ou o album/acervo continua base e o botao diz isso.
 
 ## Feedback para o Kit
 

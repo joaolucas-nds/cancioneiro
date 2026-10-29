@@ -2,7 +2,7 @@
 
 Ferramenta local para **organizar, copiar e variar** prompts de música gerados por IA (Suno hoje; agnóstica por design), a partir de um **acervo de canções em JSON canônico**.
 
-> **Estado:** v0.7.0 — ferramenta em uso. Lê o acervo, copia por campo, troca módulos de estilo, ajusta o BPM, **mede cada prompt contra os limites do Suno** e exporta Markdown. Publicada no GitHub Pages. Ver `meta/ROADMAP.md`.
+> **Estado:** v0.8.0 — ferramenta em uso. Lê o acervo, copia por campo, troca módulos de estilo, ajusta o BPM, **mede cada prompt contra os limites do Suno**, exporta Markdown e **entrega o prompt para chats gerarem canções no esquema**. Publicada no GitHub Pages. Ver `meta/ROADMAP.md`.
 
 ## O problema
 
@@ -47,7 +47,9 @@ Checa todos os `data/*.json` contra o esquema. Rode antes de commitar mudança e
 
 ## Gerar canções com um chat
 
-Cole o conteúdo de `schema/PROMPT-PARA-CHATS.md` num chat de IA junto do seu pedido — ele devolve JSON já no esquema, pronto para importar.
+No app, clique em **Prompt para chats**, escreva o seu pedido e copie: o prompt vai inteiro, com o pedido no lugar. Cole num chat novo e importe o JSON que ele devolver. O texto do prompt vive em `schema/PROMPT-PARA-CHATS.md` — o botão busca esse arquivo a cada clique, então o que está no repositório é o que você copia.
+
+**Baixar exemplo** baixa um acervo pronto (`data/demo.json`) para ver a estrutura.
 
 ## Fonte de verdade
 

@@ -4,6 +4,23 @@
 
 ---
 
+## [0.8.0] — 2026-10-29
+
+Prompt-modelo com contrato de modulos e o prompt pela interface do app, conferidos na tela e retestados pelo dono.
+
+### Added
+- **Botoes «Prompt para chats» e «Baixar exemplo» (DEC-021, i-031):** a janela do primeiro recebe o «Meu pedido» e copia o prompt-modelo inteiro com o pedido no lugar; o segundo baixa `cancioneiro-exemplo.json`. Os dois buscam `schema/PROMPT-PARA-CHATS.md` e `data/demo.json` no clique — o app nao guarda copia; falhando a busca, a janela mostra o link da versao publicada.
+- **`scripts/validate.py` confere o prompt (sexta checagem):** reprova se sumirem as marcacoes que o botao le (`--- INÍCIO ---`, `--- FIM ---` e a linha entre parenteses abaixo de `## Meu pedido`).
+
+### Changed
+- **Prompt-modelo (DEC-021, i-028):** ensina o contrato de modulo da DEC-016 (modulos no `styleModules` da colecao com `id`, `category`, `label`, `fragment`, `notes`; a faixa cita ids; citado = ligado), o orcamento (style com 6 a 8 tags; ate 10 com os modulos ligados) e que BPM em modulo so vai na camada `tempo`. Reteste do dono com dois chats: 6 de 6 faixas dentro do orcamento, 0 modulos fora do contrato, 0 rotulos — contra 0 de 3 chats no contrato antes.
+- **Toast:** dura conforme o tamanho da mensagem (2,2 a 6 s), para os avisos longos darem tempo de ler.
+
+### Fixed
+- **FIX-009:** modulo declarado dentro da faixa sumia em silencio no app (painel com 0 chips) e derrubava o `validate.py` com traceback. Agora o validador reprova com mensagem por item, e a importacao — por arquivo ou pela carga automatica — diz quantos modulos citados nao existem na colecao.
+
+---
+
 ## [0.7.0] — 2026-10-28
 
 Fase 3b: o controle de BPM no cartao, conferido na tela pelo dono.

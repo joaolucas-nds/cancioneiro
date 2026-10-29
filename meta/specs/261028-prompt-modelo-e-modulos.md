@@ -1,6 +1,6 @@
 # SPEC — Prompt-modelo: contrato de modulos e orcamento de tags (i-028)
 
-> **Status:** Decidida
+> **Status:** Implementada (0.8.0, 2026-10-29)
 > **Decidida em:** 2026-10-28 pelo dono — **1a, 2a, 3a, 4a** (as quatro recomendadas). A decisao 5 nasceu
 > da nota do dono `261028-1852.txt`, no mesmo dia. Aplicacao: `meta/workorders/261028-wo0015-prompt-modelo-e-modulos.md`.
 > App e validador testados pelo chat numa copia; o reteste do prompt com chats e do dono (ver «Desfecho»).
@@ -192,3 +192,34 @@ e testado pelo chat: validador em Python, nos dois modos; app em Chromium headle
 - **O `file://` COM rede:** o container nao alcanca o github.io (403 do proxy), entao nao deu para ver se o
   Pages responde ao `fetch` de uma pagina local (CORS). Se nao responder, o botao cai no link — o caso testado.
 - Tela real, temas e celular: roteiro do dono.
+
+### Reteste do prompt — 2026-10-29
+
+Pelo dono, nas condicoes do teste base (Sonnet 5.5, fora de Projeto, mesmo pedido), com o prompt copiado
+pelo botao do app publicado `[relatado pelo dono]`. **Duas amostras, nao tres:** uma em esforco Alto
+(`261029-1254 Alto.json`, sha1 `fc3a2cfe…`) e uma em Medio (`261029-1255 medio.json`, sha1 `830853bd…`).
+Medido pelo chat com o `validate.py` (dois modos) e o `recomposedStyle` do app 0.8.0 em Chromium headless.
+
+| criterio | teste base (prompt antigo) | reteste |
+|---|---|---|
+| `validate.py`, dois modos | traceback nas 3 | codigo 0 nas 2 |
+| modulos no contrato (colecao, ids na faixa, `category` valida, so as cinco chaves) | 0 de 3 | 2 de 2 (10 e 15 modulos) |
+| base com 6 a 8 tags | 1 de 9 faixas | 6 de 6 (7 ou 8) |
+| recomposto padrao com ate 10 tags | — | 6 de 6 (8 a 10) |
+| chips no app / toast sem aviso | 0 chips | 10 e 15 chips; toast limpo |
+| rotulos dentro do copiavel | 0 | 0 |
+| BPM em modulo fora de `tempo` | 2 de 3 chats | 0 (os 3 modulos `tempo` no formato «NN bpm») |
+
+**Leitura:** os criterios pediam 3 amostras e «8 de 9» faixas; vieram 2 amostras, e 6 de 6 faixas passam
+em tudo. A terceira so derrubaria um criterio de «8 de 9» se falhasse em 2 das suas 3 faixas. Fechado com
+n = 2, dito assim. Cada faixa cita **um** modulo e deixa os demais como paleta desligada — a leitura mais
+conservadora do orcamento.
+
+**Observado, sem ser criterio:** o BPM saiu do style em 4 de 6 faixas (so as de rap-pop, onde o pedido dava
+95, o trazem). Com 6 a 8 tags, o chat corta o numero primeiro. O controle de BPM (DEC-020) cobre isso: vazio,
+o numero digitado entra no fim.
+
+**Na tela** `[relatado pelo dono]`: itens A1 a A5 ok — confirmados tambem nas capturas (cabecalho com os
+cinco botoes e v0.7.0; toast «18 modulo(s) citado(s)…» ao importar `261028-1831.json`). A6 (`file://`):
+o app abriu, sem resultado relatado do botao.
+
