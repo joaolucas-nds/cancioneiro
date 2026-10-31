@@ -2,7 +2,7 @@
 
 Ferramenta local para **organizar, copiar e variar** prompts de música gerados por IA (Suno hoje; agnóstica por design), a partir de um **acervo de canções em JSON canônico**.
 
-> **Estado:** v0.9.1 — ferramenta em uso. Lê o acervo, copia por campo, troca módulos de estilo, ajusta o BPM, **mede cada prompt contra os limites do Suno**, exporta Markdown e **entrega o prompt para chats gerarem canções no esquema**. Publicada no GitHub Pages. Ver `meta/ROADMAP.md`.
+> **Estado:** v0.10.0 — ferramenta em uso. Lê o acervo, copia por campo, troca módulos de estilo, ajusta o BPM, **mede cada prompt contra os limites do Suno**, exporta Markdown e **entrega o prompt para chats gerarem canções no esquema**. Publicada no GitHub Pages. Ver `meta/ROADMAP.md`.
 
 ## O problema
 
@@ -23,6 +23,7 @@ cancioneiro/
 ├── meta/                      # contexto do projeto (CEREBRO, CONTEXT, STATUS, ...)
 ├── schema/                    # o contrato JSON (song, collection, style-modules)
 ├── scripts/                   # validador e conversores dos guias antigos
+├── kit-musica/                # o que o projeto sabe do Suno, para projetos de música (skills e bloco)
 ├── data/                      # exemplos no esquema (o acervo pessoal mora fora do repo)
 ├── app/                       # a ferramenta (index.html)
 └── logs/                      # diário do dia
@@ -54,7 +55,17 @@ Guias `.md` da família BR (`..._VOL<n>_GUIA.md`) viram um acervo no esquema com
 python3 scripts/convert_br.py ../acervos/rainha-da-preguica.json "../Album Rainha da Preguiça/ALBUM_BR_VOL1_GUIA.md" "../Album Rainha da Preguiça/ALBUM_BR_VOL2_GUIA.md"
 ```
 
-Liste quantos volumes quiser. O conversor tira os rótulos do que é copiável, não corta nada e diz no fim quantas letras e styles passam do limite do Suno — o painel do app marca as mesmas. Depois, arraste o `.json` gerado para o app. Outras famílias de guia pedem outro conversor (ver `meta/analises/`).
+Liste quantos volumes quiser. O conversor tira os rótulos do que é copiável, não corta nada e diz no fim quantas letras e styles passam do limite do Suno — o painel do app marca as mesmas. Depois, arraste o `.json` gerado para o app.
+
+Os guias de formatos mistos (`Albuns/`) vão pelo `scripts/convert_guides.py`, que aceita um mapa de grupos para reagrupar as faixas em álbuns:
+
+```
+python3 scripts/convert_guides.py ../acervos/albuns-reagrupados.json ../Albuns/*.md --groups ../acervos/albuns-grupos.json
+```
+
+## Kit de música
+
+`kit-musica/` leva o que este projeto sabe sobre o Suno para os projetos de música do Kit de Contexto Modular: um bloco para as Instruções e o CEREBRO do projeto, e duas skills — `macetes-suno` (o que tem efeito) e `revisar-faixa` (conta letra, tags, rótulos e BPM antes de entregar). Instruções de uso em `kit-musica/README.md`.
 
 ## Gerar canções com um chat
 

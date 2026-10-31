@@ -23,7 +23,7 @@ O mínimo que já é útil: ler o acervo e copiar sem procurar.
 - ✅ Prompt-modelo com contrato de modulos e orcamento de tags; prompt e exemplo pelos botoes do app (DEC-021, i-028, i-031) — 0.8.0, retestado pelo dono.
 - ✅ Script de validação de acervo `scripts/validate.py`.
 - ✅ Conveniências de uso: estrutura do cartão configurável, copiar título, arrastar o `.json`, acervo guardado no navegador, prompt que entrega arquivo, export de álbum com o Style da tela (DEC-022, DEC-023; i-030, i-033 a i-037) — 0.9.0, conferidas e retestadas pelo dono; ajustes de tela na 0.9.1 (DEC-025), vistos pelo dono.
-- 🔄 Converter os álbuns antigos (i-008, DEC-026): a família BR convertida por `scripts/convert_br.py` na 0.9.1 (151 faixas, acervo fora do repo); `Albuns/` espera os grupos (i-038).
+- ✅ Converter os álbuns antigos (i-008, DEC-026): a família BR na 0.9.1 (151 faixas) e `Albuns/` na 0.10.0 (205 faixas em 12 álbuns por cena de uso, i-038); os acervos ficam fora do repo.
 **Marco:** conseguir usar a ferramenta de verdade numa rodada de geração no Suno.
 
 ## 🔨 Fase 3 — Qualidade de prompt e modularidade

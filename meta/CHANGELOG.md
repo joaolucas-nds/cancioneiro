@@ -4,6 +4,17 @@
 
 ---
 
+## [0.10.0] — 2026-10-31
+
+Os álbuns antigos de `Albuns/` convertidos e reagrupados (i-008, i-038), e o kit de música para os projetos do KCM (i-039, DEC-027).
+
+### Added
+- **Conversor dos guias de `Albuns/` (`scripts/convert_guides.py`):** lê os oito guias de formatos mistos — rótulo no bloco, «Style — Opção A/B», «Style Prompt»/«Letra», letra em Markdown fora de bloco, «Variações para» — e grava uma coleção no esquema. Com `--groups`, um mapa (fora do repo) reagrupa as faixas em álbuns e reprova faixa perdida ou id inexistente. Teste com guias sintéticos em `scripts/test_convert_guides.py` (8 casos). Medido no acervo do dono: 205 de 205 faixas, 12 álbuns por cena de uso; o arquivo fica fora do repo.
+- **Kit de música (`kit-musica/`, DEC-027):** `BLOCO-SUNO.md` (cinco linhas para as Instruções de um projeto de música do KCM e uma seção para o CEREBRO dele), skill `macetes-suno` (o que tem efeito no Suno, com exemplo bom e ruim) e skill `revisar-faixa` (oito conferências por faixa, com script que conta). A revisão acha nos acervos do dono o que o painel do app acha: 72 letras acima de 5.000 caracteres e 138 styles acima de 10 tags na Rainha da Preguiça.
+- **Validação:** o `validate.py` confere que os limites da skill `revisar-faixa` são os do `QUALITY_LIMITS` do app.
+
+---
+
 ## [0.9.1] — 2026-10-29
 
 Ajustes de tela pedidos pelo dono depois de conferir a 0.9.0 (nota `261029-1618.txt`, DEC-025), vistos na tela. E o primeiro conversor dos guias antigos (i-008, DEC-026).

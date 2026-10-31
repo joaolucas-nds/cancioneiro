@@ -5,7 +5,7 @@ Uso:
     python3 scripts/validate.py              # valida todos os data/*.json
     python3 scripts/validate.py data/foo.json  # valida um arquivo
 
-Checa seis coisas:
+Checa sete coisas:
   1. Sintaxe JSON de todos os schemas e datasets.
   2. Conformidade estrutural de cada dataset contra collection.schema.json
      (requer o pacote 'jsonschema'; se ausente, faz so a checagem de sintaxe
@@ -19,6 +19,8 @@ Checa seis coisas:
   6. O schema/PROMPT-PARA-CHATS.md tem as marcacoes que o botao «Prompt para
      chats» do app le: as linhas de INICIO e FIM e a linha entre parenteses
      abaixo de «## Meu pedido» (DEC-021).
+  7. Os limites da skill kit-musica/skills/revisar-faixa sao os do painel de
+     qualidade do app (QUALITY_LIMITS): o kit nao envelhece separado (DEC-027).
 
 Rode antes de commitar mudanca em data/ ou schema/ (ver CLAUDE.md).
 Saida: codigo 0 se tudo passou, 1 se houve erro.
@@ -171,6 +173,49 @@ def check_prompt():
     return 0
 
 
+KIT_SKILL = "kit-musica/skills/revisar-faixa/SKILL.md"
+
+
+def check_kit():
+    """Os limites da skill revisar-faixa sao os do app (DEC-027).
+
+    A skill copia os numeros do `QUALITY_LIMITS` para o script que o chat roda no
+    projeto de musica. Se o app mudar um limite e a skill nao, o projeto passa a
+    revisar contra o numero velho sem nada falhar — por isso a checagem.
+    """
+    def read(path):
+        with open(os.path.join(ROOT, path), encoding="utf-8") as f:
+            return f.read()
+
+    try:
+        app, skill = read("app/index.html"), read(KIT_SKILL)
+    except OSError as e:
+        print(f"ERRO no kit: nao consegui ler: {e}")
+        return 1
+    block = re.search(r"const QUALITY_LIMITS = \{(.*?)\n\};", app, re.S)
+    lim = {}
+    for name, body in re.findall(r"^\s*(\w+):\s*\{([^}]*)\}", block.group(1) if block else "", re.M):
+        for key, val in re.findall(r"(\w+):\s*(\d+)", body):
+            lim[f"{name}.{key}"] = int(val)
+    want = {  # constante da skill -> chave do QUALITY_LIMITS
+        "LYRICS_MAX": "lyrics.max", "LYRICS_WARN": "lyrics.warn", "STYLE_MAX": "style.max",
+        "STYLE_WARN": "style.warn", "TAGS_VAGUE": "tags.vague", "TAGS_MANY": "tags.many",
+    }
+    got = {}
+    for names, values in re.findall(r"^(\w+(?:,\s*\w+)*)\s*=\s*(\d+(?:,\s*\d+)*)", skill, re.M):
+        for n, v in zip(re.split(r",\s*", names), re.split(r",\s*", values)):
+            got[n] = int(v)
+    bad = [f"{k} = {got.get(k, 'ausente')} na skill, {lim.get(v, 'ausente')} no app ({v})"
+           for k, v in want.items() if got.get(k) is None or got.get(k) != lim.get(v)]
+    if bad:
+        print(f"ERRO no kit {KIT_SKILL}: limites diferentes do QUALITY_LIMITS do app:")
+        for b in bad:
+            print(f"   {b}")
+        return 1
+    print(f"OK  kit: limites da skill revisar-faixa iguais ao app ({len(want)})")
+    return 0
+
+
 def main(argv):
     targets = argv[1:] or sorted(glob.glob(os.path.join(ROOT, "data", "*.json")))
     if not targets:
@@ -247,6 +292,8 @@ def main(argv):
     errors += check_version()
     # prompt-modelo: as marcacoes que o botao do app le (DEC-021)
     errors += check_prompt()
+    # kit de musica: os limites da skill sao os do app (DEC-027)
+    errors += check_kit()
 
     print()
     if errors:

@@ -118,3 +118,18 @@ casos). Medido nos dez volumes `[medido por instrumento]`:
 
 **O que fica:** `Albuns/` (oito arquivos, 172 faixas) espera a aprovação dos grupos (i-038); o índice-mestre segue
 para o ⬜ «importar prompts prontos como módulos».
+
+## Desfecho de `Albuns/` — 2026-10-31
+
+Grupos aprovados pelo dono (os 12 da proposta; versões A/B viram variantes). Conversor `scripts/convert_guides.py`
+para os formatos mistos, com mapa de grupos fora do repo (`../acervos/albuns-grupos.json`). Medido
+`[medido por instrumento]`: **205 de 205** faixas, 12 álbuns, 0 rótulos no copiável, validador completo verde,
+205 cartões no app. Gravado em `../acervos/albuns-reagrupados.json`.
+
+**Duas contas erradas da proposta, corrigidas aqui:**
+- **172 faixas eram 205.** O VOL5 tem 82, não 49: a listagem de cabeçalhos que contou foi cortada em 60 linhas
+  e perdeu 14 de código, 2 de matemática e as 19 instrumentais rítmicas (RITM-M, RITM-C, RITM-B). As 19 foram para
+  «Contagem e ritmo», pelo critério das RITM do VOL4 (o álbum ficou com 42 faixas).
+- **«Rise of the Eternal» não é duplicata:** são duas canções com o mesmo título (ÉPICO: tenor, outra letra;
+  guia_suno: soprano; letras 9% parecidas). O dono decidiu «fica uma só» sobre a premissa errada; as duas ficaram,
+  e o mapa descarta uma em uma linha (`drop`) se ele quiser. As «Variações para» desse título ficam na do guia_suno.

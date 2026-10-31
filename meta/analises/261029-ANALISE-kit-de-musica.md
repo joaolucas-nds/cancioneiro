@@ -1,6 +1,6 @@
 # ANALISE — Kit de música para os projetos do KCM (i-022, i-023, i-024)
 
-> **Status:** Em discussão — espera as decisões 1 a 3 do dono (fim deste arquivo).
+> **Status:** Implementada (0.10.0) — decidida pelo dono em 2026-10-29: 1A, 2A, 3A (ver Desfecho).
 > **Data:** 2026-10-29 (data de criação; não muda depois)
 > **Ideias de origem:** i-022 (skill que ensina o JSON), i-023 (skill com os macetes do Suno), i-024 (molde de
 > skill de estilo próprio) e o feedback ao kit de 2026-10-28 («o nicho de música do KCM ainda não carrega o que
@@ -98,3 +98,22 @@ serve, custam menos contexto que uma grande e chegam a quem escreve a música.
 Decisões **1, 2 e 3** (recomendadas **A, A, A**). Com elas: o chat escreve as três peças numa WO, testa a skill
 «revisar faixa» contra o acervo da Rainha da Preguiça (deve achar as 72 e as 138) e um projeto-piloto de álbum
 (um dos grupos da proposta de `Albuns/`) mede se as faixas novas já saem dentro do orçamento.
+
+## Desfecho — 2026-10-31
+
+**Decidido: 1A, 2A, 3A** (DEC-027). O dono liberou a leitura do KCM; lido `src/niches/music.js` (v1.133.0) e
+o i-N25 do IDEAS dele.
+
+**O que a leitura mudou na forma:** o nicho Música do KCM é de música **tocada** (DAW, arranjo, mix, master;
+«não ouço áudio») e já tem o i-N25 «Música: criação completa… prompts p/ IAs como Suno — A AVALIAR». As
+Instruções que o KCM gera têm teto (~6.900 caracteres). Por isso a primeira peça não é «Instruções-modelo»
+inteiras, que competiriam com as do KCM: é um **bloco** — cinco linhas para as Instruções (679 caracteres) e
+uma seção para o CEREBRO —, em `kit-musica/BLOCO-SUNO.md`. As skills seguem a ideia: `macetes-suno` e
+`revisar-faixa`, em `kit-musica/skills/`.
+
+**Medido:** o script da `revisar-faixa`, rodado nos acervos do dono, acha **72** letras acima de 5.000 e **138**
+styles acima de 10 tags na Rainha da Preguiça — o previsto aqui —, e 0 e 143 nos álbuns reagrupados; nenhum
+rótulo falso. O `validate.py` reprova se os limites da skill divergirem do app (duas provas negativas).
+
+**Ao KCM:** carta `261031-cancioneiro-para-kcm-01-kit-de-musica-ia.md` (fora do repo), com o mapa das peças para
+os campos do nicho e o pedido de pôr o Cancioneiro no livro de leitura dele.

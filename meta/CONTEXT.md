@@ -59,7 +59,13 @@ cancioneiro/
 ├── scripts/
 │   ├── validate.py            # valida data/ contra o schema
 │   ├── convert_br.py          # guias BR antigos -> colecao no esquema (DEC-026)
-│   └── test_convert_br.py     # teste do conversor, com guia sintetico
+│   ├── test_convert_br.py     # teste do conversor, com guia sintetico
+│   ├── convert_guides.py      # guias de Albuns/ (formatos mistos) -> colecao, com mapa de grupos
+│   └── test_convert_guides.py # teste, com guias sinteticos
+├── kit-musica/                # o que o projeto sabe do Suno, para projetos de musica (DEC-027)
+│   ├── README.md              # as tres pecas e o mapa para o nicho Musica do KCM
+│   ├── BLOCO-SUNO.md          # linhas para as Instrucoes e secao para o CEREBRO do projeto
+│   └── skills/                # macetes-suno, revisar-faixa
 ├── data/                      # o acervo real, no esquema
 │   └── exemplo-cinzeiro.json  # 1 faixa convertida como prova do esquema
 ├── index.html                 # redireciona para app/ (URL limpa no Pages)

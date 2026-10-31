@@ -29,10 +29,11 @@ Gerar `.md` legível sob demanda a partir do JSON, com o formato limpo (rótulo 
 ### i-007 ✅ Estados de canção como no Cinzeiro (ideia→gerada→…→aprovada)
 Adotar o ciclo de estados que o FAIXAS.md do Cinzeiro já usa, como campo `state` filtrável na ferramenta. Permite ver "o que falta gerar". Já no esquema; UI de filtro na Fase 2.
 
-### i-008 💡 Importar acervo existente convertendo por álbum
+### i-008 ✅ Importar acervo existente convertendo por álbum
 Converter os `ALBUM_*.md` e `album_guia_suno.md` para o esquema, um álbum por vez (semi-assistido por chat), populando `data/`. Começar pelo `album_guia_suno.md` (mais limpo). Backlog do STATUS.
 **Desbloqueada em 2026-10-29:** o dono trouxe os álbuns para a pasta-pai — `../Album Rainha da Preguiça/` (11 arquivos: índice-mestre e 10 volumes) e `../Albuns/` (8 guias, entre eles o `album_guia_suno.md`), cerca de 44 mil linhas `[medido por instrumento: wc -l]`. Ainda não lidos: frente própria.
 **Em trabalho (2026-10-29):** sonda e análise `meta/analises/261029-ANALISE-conversao-dos-albuns.md`, decidida 1A a 4A (DEC-026): conversor determinístico por família, acervo fora do repo. A família BR está convertida (0.9.1, `scripts/convert_br.py`, 151 faixas). `Albuns/` espera os grupos da i-038.
+**Entregue (0.10.0, 2026-10-31):** os 19 guias convertidos — BR (151 faixas) e `Albuns/` (205 faixas, `scripts/convert_guides.py`), os dois acervos fora do repo.
 
 ### i-009 ✅ Campo de exclusão de estilos ("exclude styles")
 A pesquisa apontou que o Suno tem um campo de estilos a excluir que funciona melhor que "no X" no texto (reconfirmado em jul/2026: o campo dedicado é mais barato e confiável que negação no style). Implementado: `excludeStyles[]` no esquema + exibição e botão de copiar na ferramenta.
@@ -81,11 +82,13 @@ O Suno pesa mais as tags iniciais; gênero primeiro, clima em seguida. A ferrame
 ### i-021 💡 Campos de peso (styleWeight / desvio criativo)
 A API expõe pesos 0.00-1.00 para aderência ao estilo e desvio criativo (os Creative Sliders). Poderiam virar campos opcionais do esquema para registrar a configuração usada numa geração. Só vale se o fluxo passar a depender disso. Fase 4.
 
-### i-022 💡 Skill que ensina a gerar o JSON do Cancioneiro
+### i-022 ✅ Skill que ensina a gerar o JSON do Cancioneiro
 `[relatado pelo dono, 2026-08-22]` Uma skill do projeto que ensine um chat a produzir o JSON canonico seguindo o esquema a risca — estrutura, campos obrigatorios, a regra de dominio (rotulo fora do bloco copiavel). Hoje isso vive no `schema/PROMPT-PARA-CHATS.md`, que e um texto colavel: a skill seria a versao que o proprio Claude Code carrega. **Sobreposicao a resolver antes de construir:** i-002 (o prompt-modelo) ja cobre parte disto; decidir se a skill substitui o prompt-modelo ou se os dois convivem em canais diferentes (chat colavel × skill do repo).
+**Resolvida em 2026-10-31 (i-039, DEC-027):** sem skill nova — o contrato fica no prompt-modelo, fonte única; o kit de música o leva ao projeto junto das skills.
 
-### i-023 💡 Skill com os macetes do Suno
+### i-023 ✅ Skill com os macetes do Suno
 `[relatado pelo dono, 2026-08-22]` Uma skill que consolide o que o projeto sabe sobre gerar musica com IA: como estruturar cada parte, onde cada coisa entra, possibilidades e exemplos. **O material ja existe** — e o `meta/HISTORY.md` §1-13, com nivel de confianca e fontes. A ideia e a FORMA, nao o conteudo: transformar conhecimento lido sob demanda em skill lida antes de trabalhar. Pesar contra o custo: skill e lida sempre, HISTORY so quando preciso.
+**Entregue em 0.10.0 (2026-10-31):** `kit-musica/skills/macetes-suno/SKILL.md` — lida sob demanda, ao escrever style ou letra.
 
 ### i-024 💡 Molde para o projeto gerar skill de estilo proprio
 `[relatado pelo dono, 2026-08-22]` Nao e uma skill, e um **molde que gera skills** — uma por estilo musical, capturando como manter o mesmo estilo, voz, idioma, forma de escrever letra, tom e melodia, e como guiar edicao, extend e cover. Serviria para replicar ou refinar um estilo ja estabelecido. E a ideia mais ambiciosa das tres e a mais dependente das outras duas; candidata a analise (`meta/analises/`) antes de qualquer spec, porque mexe no formato de um artefato que outra pessoa vai ler.
@@ -142,11 +145,13 @@ Achado em 2026-10-29 nos `.md` que o dono exportou: o export de **faixa** sai co
 **Em trabalho (2026-10-29, WO 0017):** as i-030, i-033 a i-037 viraram uma frente so, `meta/specs/261029-conveniencias-de-uso.md` (DEC-022, DEC-023). Decisoes do dono: acervo guardado no navegador (D1), estrutura completa (D2), aviso de negacao some com o Exclude oculto (D3), prompt pede arquivo e, sem arquivo, o JSON em bloco de codigo (D4), export segue a tela (D5). Fecha na 0.9.0, depois da tela e do reteste curto do prompt.
 **Entregues em 0.9.0** (2026-10-29), conferidas na tela e retestadas pelo dono. Ajustes pedidos em seguida (nota `261029-1618.txt`, DEC-025): o titulo copia ao clicar (sai o botao, que quebrava a linha), as linhas da estrutura se arrastam, o Exclude vem oculto por padrao e o cabecalho fica mais enxuto — em [Unreleased] ate o dono ver.
 
-### i-038 💡 Reagrupar as faixas de `Albuns/` em álbuns por cena de uso
+### i-038 ✅ Reagrupar as faixas de `Albuns/` em álbuns por cena de uso
 `[relatado pelo dono, 2026-10-29]` Os oito guias de `Albuns/` misturam gêneros, idiomas e propósitos num arquivo só. O dono quer as faixas em álbuns mais relacionados, para depois ampliar cada um num projeto próprio. Proposta do chat em `../261029-PROPOSTA-grupos-albuns.md` (fora do repo: traz os títulos): 172 faixas em 12 álbuns (épico vocal, trilhas de jogo, romântico multilíngue, Brasil popular, pop asiático, latino, contagem e ritmo, matemática e física, código, foco e estudo, eletrônico instrumental, treino e ação). Um mapa faixa → álbum aplica a escolha por script. Espera a aprovação do dono; depois, conversores dos formatos de `Albuns/` (i-008).
+**Entregue em 0.10.0 (2026-10-31):** grupos aprovados; 205 faixas (não 172 — a contagem da proposta perdeu 33 do VOL5) em 12 álbuns, `../acervos/albuns-reagrupados.json`, mapa em `../acervos/albuns-grupos.json`.
 
-### i-039 💡 Kit de música para os projetos do KCM
+### i-039 🔄 Kit de música para os projetos do KCM
 `[relatado pelo dono, 2026-10-29]` Criar projetos de música para o Suno já «profissionais» e adaptados ao Cancioneiro: levar ao nicho de música do KCM o que este projeto sabe. Junta i-022, i-023 e o feedback ao kit de 2026-10-28. Análise `meta/analises/261029-ANALISE-kit-de-musica.md`, em discussão: Instruções-modelo de projeto de música, skill de macetes do Suno, skill de revisão de faixa. A medida que motiva: nos guias antigos, 72 de 151 letras passam do limite em que o Suno corta.
+**Em trabalho (0.10.0, 2026-10-31, DEC-027):** as três peças em `kit-musica/` — `BLOCO-SUNO.md` (bloco para Instruções e CEREBRO, não Instruções inteiras: o KCM tem teto), `macetes-suno`, `revisar-faixa`. Carta 01 ao KCM com o mapa para o nicho Música. **Gatilho:** sem resposta do KCM até o primeiro projeto de música novo do dono, o projeto usa o kit à mão (`kit-musica/README.md`, «Como usar hoje») e o que faltar volta como feedback.
 
 ### i-040 💡 Curadoria no app: excluir, exportar e importar faixas
 `[relatado pelo dono, 2026-10-29, nota 261029-1825.txt]` Exportar uma faixa como `.json` (além do `.md`); excluir uma faixa; importar faixas para o acervo aberto — todas ou as escolhidas de outro `.json` de álbum, ou uma faixa exportada solta; mudar a ordem e levar faixas de um álbum a outro. Leva o app de leitor a editor leve: pede análise antes de spec, porque mexe na fonte de verdade (DEC-004, DEC-022 — hoje a cópia no navegador é cache do arquivo; editar nela cria um acervo que só existe ali até «Baixar .json»). Ids repetidos e módulos citados na importação também. Faria o reagrupamento da i-038 pela tela.
@@ -172,6 +177,7 @@ Achado na conversão BR: três faixas mudam de andamento de propósito. A DEC-02
 - **[2026-10-28] Bloco literal da WO com linha de titulo dentro quebra o aplicador por script.** Duas WOs seguidas (0012 e 0013) pararam no meio: o Code aplica lendo os blocos por expressao regular, e um texto novo que contem `## Desfecho` (ou o STATUS inteiro, cheio de `## `) foi lido como o inicio da secao seguinte. As duas se recuperaram so porque a idempotencia pelo texto novo inteiro deixou reexecutar sem duplicar — a regra da idempotencia pagou ali o seu custo. Sugestao ao kit: o modelo de WO dizer que o bloco literal termina na linha de quatro crases e nunca num titulo, e o `apply-wo` delimitar por crases, nao por cabecalho.
 - **[2026-10-28] O nicho de musica do KCM ainda nao carrega o que este projeto aprendeu sobre o Suno** `[relatado pelo dono]`. Os projetos de musica que o KCM monta nascem sem o conhecimento destilado aqui: `meta/HISTORY.md` §1-13 (o que tem efeito no Suno, com fonte e confianca), a regra de dominio (rotulo fora do copiavel) e o contrato prompt -> JSON. E o teste base de 2026-10-28 mostra o custo de calar: pedido o que o prompt nao ensinava (modulos), tres chats inventaram tres formatos. Sugestao ao kit: o nicho de musica trazer um resumo desse material como ponto de partida — candidato natural e a i-023 (skill com os macetes do Suno), que ja tem o conteudo pronto.
 - **[2026-10-29] O fecho de turno nao tem lugar para o comando que o dono cola, e o rodape e o pior lugar.** O esqueleto do CEREBRO tem Proximo, Estado, Arquivar/Manter, Config e Handoff; a linha `/apply-wo` ficou sem endereco, e uma regra escrita so num brief a mandou para o fim da mensagem — o dono rolava ate o fundo a cada WO `[relatado pelo dono]`. Sugestao ao kit: o esqueleto trazer um item «Aplicar» (o comando a colar, num bloco de codigo) **antes** do divisor e do Proximo, e dizer que todo comando que o dono copia vai em bloco de codigo, inclusive a resposta que um chat externo devolve (aqui: o JSON do prompt-modelo, DEC-023). Adotado neste projeto na DEC-024.
+- **[2026-10-31] O nicho Música é de música tocada; música gerada por IA pede outro eixo.** O `src/niches/music.js` (v1.133.0) fala de DAW, mix e master; num projeto em que a faixa sai do Suno, o artefato é o pedido (style e letra), com limites que cortam em silêncio. Proposta e material em `kit-musica/` (DEC-027), enviados na carta 01 (`261031-cancioneiro-para-kcm-01-kit-de-musica-ia.md`); casa com o i-N25 do KCM. Seção deste feedback para o livro de leitura do KCM: `meta/IDEAS.md`, «Feedback para o Kit».
 
 ## Concluídas
 
