@@ -17,7 +17,7 @@ regular, a «Rainha da Preguiça», chega ao Suno assim:
   começa a correr `[medido por instrumento: scripts/convert_br.py, 2026-10-29]`;
 - **138 de 151 styles passam de 10 tags**, onde as últimas perdem efeito (mesma medida);
 - **todos os oito formatos** de `Albuns/` e os dez volumes BR põem o rótulo dentro do bloco copiável ou fora de
-  qualquer padrão (sonda `../261029-SONDA-albuns-antigos.md`).
+  qualquer padrão (sonda `../notas-arquivadas/261029-SONDA-albuns-antigos.md`).
 
 Do outro lado, o que o projeto ensina funciona quando é dito: com o contrato do prompt-modelo, dois chats
 entregaram 6 de 6 faixas no formato e no orçamento; sem ele, três chats inventaram três formatos de módulo

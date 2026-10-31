@@ -16,7 +16,7 @@ painel de qualidade, sem módulos, sem marca de «usei». E o painel mostraria o
 
 ## Restrições / o que foi medido
 
-**Sonda** (`../261029-sonda-albuns.py`, relatório `../261029-SONDA-albuns-antigos.md`, fora do repo; 19 arquivos,
+**Sonda** (`../notas-arquivadas/261029-sonda-albuns.py`, relatório `../notas-arquivadas/261029-SONDA-albuns-antigos.md`, fora do repo, arquivados em 2026-10-31; 19 arquivos,
 44.083 linhas, 1.038 blocos de código; 0 alarmes na segunda execução, depois de corrigidos dois defeitos do
 próprio instrumento — notas `### Sobre BRn-mm` contadas como faixa, e o código `BRV-N01` não reconhecido):
 
@@ -133,3 +133,4 @@ para os formatos mistos, com mapa de grupos fora do repo (`../acervos/albuns-gru
 - **«Rise of the Eternal» não é duplicata:** são duas canções com o mesmo título (ÉPICO: tenor, outra letra;
   guia_suno: soprano; letras 9% parecidas). O dono decidiu «fica uma só» sobre a premissa errada; as duas ficaram,
   e o mapa descarta uma em uma linha (`drop`) se ele quiser. As «Variações para» desse título ficam na do guia_suno.
+  **Decidido pelo dono em 2026-10-31: as duas ficam** `[relatado pelo dono]`.

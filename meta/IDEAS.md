@@ -147,6 +147,7 @@ Achado em 2026-10-29 nos `.md` que o dono exportou: o export de **faixa** sai co
 
 ### i-038 ✅ Reagrupar as faixas de `Albuns/` em álbuns por cena de uso
 `[relatado pelo dono, 2026-10-29]` Os oito guias de `Albuns/` misturam gêneros, idiomas e propósitos num arquivo só. O dono quer as faixas em álbuns mais relacionados, para depois ampliar cada um num projeto próprio. Proposta do chat em `../261029-PROPOSTA-grupos-albuns.md` (fora do repo: traz os títulos): 172 faixas em 12 álbuns (épico vocal, trilhas de jogo, romântico multilíngue, Brasil popular, pop asiático, latino, contagem e ritmo, matemática e física, código, foco e estudo, eletrônico instrumental, treino e ação). Um mapa faixa → álbum aplica a escolha por script. Espera a aprovação do dono; depois, conversores dos formatos de `Albuns/` (i-008).
+**Conferido no app pelo dono em 2026-10-31:** grupos, títulos e idiomas certos; as duas «Rise of the Eternal» (ÉPICO e guia_suno) ficam `[relatado pelo dono]`.
 **Entregue em 0.10.0 (2026-10-31):** grupos aprovados; 205 faixas (não 172 — a contagem da proposta perdeu 33 do VOL5) em 12 álbuns, `../acervos/albuns-reagrupados.json`, mapa em `../acervos/albuns-grupos.json`.
 
 ### i-039 🔄 Kit de música para os projetos do KCM

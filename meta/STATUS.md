@@ -11,6 +11,8 @@
 
 - **`Albuns/` convertido e reagrupado** (i-038): `scripts/convert_guides.py` com o mapa de grupos, 205 de 205 faixas em 12 álbuns, em `../acervos/albuns-reagrupados.json` (mapa em `../acervos/albuns-grupos.json`). Duas contas da proposta corrigidas: eram 205 faixas, não 172; «Rise of the Eternal» são duas canções, e as duas ficaram.
 - **Kit de música** (i-039, DEC-027): `kit-musica/` com o bloco para Instruções e CEREBRO, `macetes-suno` e `revisar-faixa`; o `validate.py` prende os limites da skill aos do app. Carta 01 ao KCM na pasta-pai.
+- **Conferido pelo dono no app (2026-10-31):** os 12 álbuns estão certos e as duas «Rise of the Eternal» ficam `[relatado pelo dono]`. A carta 01 segue com o dono para levar ao KCM.
+- **Conversa transferida (2026-10-31):** a próxima conversa arranca pelo `../261031-HANDOFF-BRIEF.md` (fora do repo) e pelo ritual; a frente sugerida é a análise da i-040 e i-041.
 - **Este bloco substitui o anterior, de 2026-10-29, sobre a família BR.** O que ele dizia está no CHANGELOG [0.9.1], na DEC-026 e em `logs/2026-10-29.md` (Conversas 7 e 8). O item da aplicação da WO 0019, que o `/wrap` anexou no fim do arquivo, saiu: está no log (Conversa 8).
 
 ## Funciona (pronto)
@@ -41,8 +43,6 @@
 
 ## Pendências do dono
 
-- **Conferir os 12 álbuns no app** — arrastar `../acervos/albuns-reagrupados.json`; dizer se algum grupo, título ou idioma está errado (o idioma das faixas é deduzido do cabeçalho e da escrita da letra).
-- **«Rise of the Eternal»:** as duas canções ficaram (ÉPICO, tenor; guia_suno, soprano). Se quiser só uma, é uma linha no mapa de grupos.
 - **Levar a carta 01 ao KCM** — `../261031-cancioneiro-para-kcm-01-kit-de-musica-ia.md`, para a pasta-pai do KCM.
 - **Instalar o validador de esquema nesta máquina.** Sem `jsonschema` e `referencing`, o `validate.py` só confere sintaxe e diz `ESQUEMA NAO CONFERIDO` na última linha. Uma vez, no CMD: `pip install jsonschema referencing --break-system-packages`. Depois, `python3 scripts/validate.py` deve terminar em `Tudo conforme ao esquema.`
 
