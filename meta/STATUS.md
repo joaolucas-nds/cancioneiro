@@ -13,6 +13,7 @@
 - **Entrega 1 (0.11.0):** «exportar .json» no rodapé de cada cartão — a faixa como acervo (álbum de origem, a faixa, os módulos que cita), com o dado do acervo e não o da sessão. Spec `meta/specs/261102-exportar-faixa-json.md`; 15 de 15 critérios no Chromium headless, testados pelo chat.
 - **O KCM leu a carta 01** (2026-10-31): vai para a i-N25 deles; a resposta vem pela carta 02, sem data. A pendência «levar a carta» saiu.
 - **Este bloco substitui o anterior, de 2026-10-31** (`Albuns/` reagrupado e kit de música). O que ele dizia está no CHANGELOG [0.10.0], na DEC-027 e em `logs/2026-10-31.md`. Saíram também os dois itens que o `/wrap` das WOs 0020 e 0021 anexou no fim do arquivo: estão no mesmo log (Conversas 2 e 4), e a pendência do validador segue em «Pendências do dono».
+- **WO 0022 aplicada e empurrada** (`d3ad6f0`, 0.11.0): os treze arquivos bateram com o hash de chegada; `validate.py` exit=0 (esquema não conferido, falta `jsonschema`) e os dois testes dos conversores OK. O botão não foi executado na tela pelo Code; a conferência é do dono. Relatório: `../261102-1003-code-cancioneiro-apply-wo0022.txt`.
 
 ## Funciona (pronto)
 
