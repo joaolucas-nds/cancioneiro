@@ -2,7 +2,7 @@
 
 Ferramenta local para **organizar, copiar e variar** prompts de música gerados por IA (Suno hoje; agnóstica por design), a partir de um **acervo de canções em JSON canônico**.
 
-> **Estado:** v0.10.0 — ferramenta em uso. Lê o acervo, copia por campo, troca módulos de estilo, ajusta o BPM, **mede cada prompt contra os limites do Suno**, exporta Markdown e **entrega o prompt para chats gerarem canções no esquema**. Publicada no GitHub Pages. Ver `meta/ROADMAP.md`.
+> **Estado:** v0.11.0 — ferramenta em uso. Lê o acervo, copia por campo, troca módulos de estilo, ajusta o BPM, **mede cada prompt contra os limites do Suno**, exporta Markdown, exporta uma faixa como `.json` e **entrega o prompt para chats gerarem canções no esquema**. Publicada no GitHub Pages. Ver `meta/ROADMAP.md`.
 
 ## O problema
 
@@ -37,7 +37,7 @@ cancioneiro/
 3. Navegue por álbuns, copie style e lyrics por botão e o título clicando nele, marque o que usou. Em *Estrutura*, arraste os blocos para mudar a ordem e esconda os que você não usa (o Exclude já vem oculto: o formulário gratuito do Suno v6 não tem o campo).
 4. Ligue/desligue **módulos de estilo** por camada para gerar variações — o Style recompõe ao vivo. Para mudar o andamento, use o campo de **BPM** do cartão (ou um chip da camada Andamento, que é atalho para ele): o número muda em todo o Style, nunca aparecem dois. O Suno trata BPM como aproximação.
 5. Leia a linha embaixo de cada campo antes de copiar: **vermelho** = o Suno vai cortar o texto (passou do limite, ele trunca sem avisar); **âmbar** = vai funcionar, mas pior (tags demais, ou negação «no X» que rende mais no campo Exclude). Com os módulos abertos, cada chip mostra quantas tags ele põe ou tira (`+2`, `−2`, ou `0` quando não muda nada) — use isso para decidir o que desligar.
-6. Exporte em `.md` (faixa, álbum ou acervo inteiro) se precisar do formato legível.
+6. Exporte em `.md` (faixa, álbum ou acervo inteiro) se precisar do formato legível. Uma faixa também sai em `.json` (*exportar .json* no cartão): é um acervo de uma faixa só, com os módulos que ela usa, para mandar a um chat ou juntar a outro acervo.
 
 ## Validar o acervo
 
@@ -55,7 +55,7 @@ Guias `.md` da família BR (`..._VOL<n>_GUIA.md`) viram um acervo no esquema com
 python3 scripts/convert_br.py ../acervos/rainha-da-preguica.json "../Album Rainha da Preguiça/ALBUM_BR_VOL1_GUIA.md" "../Album Rainha da Preguiça/ALBUM_BR_VOL2_GUIA.md"
 ```
 
-Liste quantos volumes quiser. O conversor tira os rótulos do que é copiável, não corta nada e diz no fim quantas letras e styles passam do limite do Suno — o painel do app marca as mesmas. Depois, arraste o `.json` gerado para o app.
+Liste quantos volumes quiser. O conversor tira os rótulos do que é copiável, não corta nada e diz no fim quantas letras e styles passam do limite do Suno — o painel do app marca as mesmas. Depois, arraste o `.json` gerado para o app. O conversor é para a primeira geração: se você mudar o `.json` depois — à mão ou, quando a curadoria chegar, no app —, rodar de novo por cima apaga a mudança (DEC-028).
 
 Os guias de formatos mistos (`Albuns/`) vão pelo `scripts/convert_guides.py`, que aceita um mapa de grupos para reagrupar as faixas em álbuns:
 

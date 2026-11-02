@@ -19,6 +19,10 @@ demais nao e cortado aqui — o relatorio conta, e o painel de qualidade do app 
 A colecao gerada e produto do dono e NAO e versionada no repo (decisao 2A):
 grave a saida fora do repo, por exemplo na pasta-pai.
 
+Conversor de PRIMEIRA geracao (DEC-028): depois que o acervo for mudado fora
+daqui (a mao ou pela curadoria do app), o `.json` curado manda — rodar de novo
+por cima apaga a curadoria. Para comparar, grave a saida com outro nome.
+
 Saida: codigo 0 se todo cabecalho de faixa virou faixa; 1 se algum ficou para tras.
 """
 import argparse

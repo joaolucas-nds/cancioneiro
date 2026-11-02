@@ -153,15 +153,21 @@ Achado em 2026-10-29 nos `.md` que o dono exportou: o export de **faixa** sai co
 ### i-039 🔄 Kit de música para os projetos do KCM
 `[relatado pelo dono, 2026-10-29]` Criar projetos de música para o Suno já «profissionais» e adaptados ao Cancioneiro: levar ao nicho de música do KCM o que este projeto sabe. Junta i-022, i-023 e o feedback ao kit de 2026-10-28. Análise `meta/analises/261029-ANALISE-kit-de-musica.md`, em discussão: Instruções-modelo de projeto de música, skill de macetes do Suno, skill de revisão de faixa. A medida que motiva: nos guias antigos, 72 de 151 letras passam do limite em que o Suno corta.
 **Em trabalho (0.10.0, 2026-10-31, DEC-027):** as três peças em `kit-musica/` — `BLOCO-SUNO.md` (bloco para Instruções e CEREBRO, não Instruções inteiras: o KCM tem teto), `macetes-suno`, `revisar-faixa`. Carta 01 ao KCM com o mapa para o nicho Música. **Gatilho:** sem resposta do KCM até o primeiro projeto de música novo do dono, o projeto usa o kit à mão (`kit-musica/README.md`, «Como usar hoje») e o que faltar volta como feedback.
+**O KCM leu a carta 01 (2026-10-31, aviso `../notas-arquivadas/261031-kcm-leu-01.md`):** foi para a i-N25 deles, cujo próximo passo é analisar o eixo «Produção: tocada / gerada por IA» com o teto das Instruções medido; o feedback ao kit foi para a i-N76; o Cancioneiro entrou no livro de leitura. A resposta vem pela carta 02, sem data. O gatilho acima continua valendo.
 
-### i-040 💡 Curadoria no app: excluir, exportar e importar faixas
+### i-040 🔨 Curadoria no app: excluir, exportar e importar faixas
 `[relatado pelo dono, 2026-10-29, nota 261029-1825.txt]` Exportar uma faixa como `.json` (além do `.md`); excluir uma faixa; importar faixas para o acervo aberto — todas ou as escolhidas de outro `.json` de álbum, ou uma faixa exportada solta; mudar a ordem e levar faixas de um álbum a outro. Leva o app de leitor a editor leve: pede análise antes de spec, porque mexe na fonte de verdade (DEC-004, DEC-022 — hoje a cópia no navegador é cache do arquivo; editar nela cria um acervo que só existe ali até «Baixar .json»). Ids repetidos e módulos citados na importação também. Faria o reagrupamento da i-038 pela tela.
+**Decidida (2026-11-02, DEC-028):** análise `meta/analises/261102-ANALISE-curadoria-no-app.md`, F1 + G1 em três entregas. **Entrega 1 feita (0.11.0):** exportar faixa como `.json` (spec `meta/specs/261102-exportar-faixa-json.md`). A entrega 2 é a i-041; a 3 é o resto desta ideia (excluir, reordenar, mover, novo álbum, importar faixas), num rascunho marcado.
 
 ### i-041 💡 Mais de um acervo guardado no navegador
 `[relatado pelo dono, 2026-10-29, nota 261029-1825.txt]` Hoje a DEC-022 guarda só o último importado. Com os acervos convertidos (Rainha da Preguiça, os álbuns de `Albuns/`), trocar de acervo obriga a importar de novo. Medida: a Rainha da Preguiça ocupa ~955 mil caracteres na cópia; o `localStorage` costuma dar ~5 MB por site — dois ou três acervos grandes cabem, mais que isso pede IndexedDB. Anda junto com a i-040.
+**Decidida (2026-11-02, DEC-028):** IndexedDB, um acervo por nome de arquivo, marcas «usei» por acervo (hoje colidem: `brv-04`, `cinzeiro-01`). É a entrega 2 da curadoria; a sonda `../261102-sonda-armazenamento.html` mede o navegador do dono antes da spec.
 
 ### i-042 💡 Rampa de BPM no style («95 BPM to 118 BPM»)
 Achado na conversão BR: três faixas mudam de andamento de propósito. A DEC-020 reprova dois BPM no `validate.py`, e o controle de BPM do cartão igualaria os dois números. Decidir: o controle não aparecer (ou avisar) quando o style tem uma rampa, e o `validate.py` aceitar o par ligado por «to»/«building to», sem perder o erro de autoria que a DEC-020 pega.
+
+### i-043 💡 Gravar direto no arquivo do acervo (File System Access)
+Achado na análise da curadoria (2026-11-02, opção F4): no Chrome e no Edge o app pode abrir o `.json` com permissão de gravar e «Salvar» no mesmo arquivo, sem passar por Downloads. Não existe no Firefox nem no Safari, e a permissão é pedida de novo a cada sessão. **Gatilho:** depois da entrega 3 da curadoria (DEC-028), se a sonda mostrar a API no navegador do dono — entra como «Salvar no arquivo» onde existir, com «Baixar» onde não.
 
 ## Feedback para o Kit
 

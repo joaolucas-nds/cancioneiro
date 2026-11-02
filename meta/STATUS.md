@@ -3,17 +3,16 @@
 > **O agora.** O que funciona, o que está em progresso, o que está quebrado, backlog curto.
 > Rolante: item resolvido sai daqui e vai para o CHANGELOG. Médio/longo prazo vive no ROADMAP.
 
-**Versão atual:** 0.10.0 · **Fase:** 3a, 3a.2, o BPM da 3b, o prompt-modelo e as conveniências de uso concluídos e conferidos · os álbuns antigos convertidos (i-008, fora do repo) · kit de música entregue, à espera do KCM (i-039)
+**Versão atual:** 0.11.0 · **Fase:** 3a, 3a.2, o BPM da 3b, o prompt-modelo e as conveniências de uso concluídos e conferidos · os álbuns antigos convertidos (i-008, fora do repo) · curadoria no app em curso, entrega 1 de 3 (DEC-028) · kit de música lido pelo KCM, à espera da carta 02 (i-039)
 
 ---
 
-## Última conversa (2026-10-31, `Albuns/` reagrupado e kit de música, WO 0020)
+## Última conversa (2026-11-02, curadoria no app: decisão e entrega 1, WO 0022)
 
-- **`Albuns/` convertido e reagrupado** (i-038): `scripts/convert_guides.py` com o mapa de grupos, 205 de 205 faixas em 12 álbuns, em `../acervos/albuns-reagrupados.json` (mapa em `../acervos/albuns-grupos.json`). Duas contas da proposta corrigidas: eram 205 faixas, não 172; «Rise of the Eternal» são duas canções, e as duas ficaram.
-- **Kit de música** (i-039, DEC-027): `kit-musica/` com o bloco para Instruções e CEREBRO, `macetes-suno` e `revisar-faixa`; o `validate.py` prende os limites da skill aos do app. Carta 01 ao KCM na pasta-pai.
-- **Conferido pelo dono no app (2026-10-31):** os 12 álbuns estão certos e as duas «Rise of the Eternal» ficam `[relatado pelo dono]`. A carta 01 segue com o dono para levar ao KCM.
-- **Conversa transferida (2026-10-31):** a próxima conversa arranca pelo `../261031-HANDOFF-BRIEF.md` (fora do repo) e pelo ritual; a frente sugerida é a análise da i-040 e i-041.
-- **Este bloco substitui o anterior, de 2026-10-29, sobre a família BR.** O que ele dizia está no CHANGELOG [0.9.1], na DEC-026 e em `logs/2026-10-29.md` (Conversas 7 e 8). O item da aplicação da WO 0019, que o `/wrap` anexou no fim do arquivo, saiu: está no log (Conversa 8).
+- **Análise da curadoria e de vários acervos decidida** (i-040, i-041, DEC-028): F1 + G1, em três entregas — exportar faixa como `.json` → vários acervos no navegador (IndexedDB, marcas «usei» por acervo) → curadoria pela tela num rascunho marcado. O arquivo baixado é a fonte; depois da primeira curadoria, o `.json` curado manda sobre os conversores.
+- **Entrega 1 (0.11.0):** «exportar .json» no rodapé de cada cartão — a faixa como acervo (álbum de origem, a faixa, os módulos que cita), com o dado do acervo e não o da sessão. Spec `meta/specs/261102-exportar-faixa-json.md`; 15 de 15 critérios no Chromium headless, testados pelo chat.
+- **O KCM leu a carta 01** (2026-10-31): vai para a i-N25 deles; a resposta vem pela carta 02, sem data. A pendência «levar a carta» saiu.
+- **Este bloco substitui o anterior, de 2026-10-31** (`Albuns/` reagrupado e kit de música). O que ele dizia está no CHANGELOG [0.10.0], na DEC-027 e em `logs/2026-10-31.md`. Saíram também os dois itens que o `/wrap` das WOs 0020 e 0021 anexou no fim do arquivo: estão no mesmo log (Conversas 2 e 4), e a pendência do validador segue em «Pendências do dono».
 
 ## Funciona (pronto)
 
@@ -28,6 +27,7 @@
 - **Kit de música** (`kit-musica/`, 0.10.0, DEC-027): bloco para Instruções e CEREBRO de um projeto de música, skills `macetes-suno` e `revisar-faixa`. Uso à mão em `kit-musica/README.md`.
 - **Validação** (`scripts/validate.py`): sintaxe, esquema (com `jsonschema`), integridade referencial dos módulos (id ausente ou objeto no lugar do id, sem traceback — FIX-009), versão igual nos quatro lugares, um BPM só por faixa (DEC-020) e as marcações do prompt que o app lê (DEC-021) e os limites da skill `revisar-faixa` contra o app (DEC-027); código 1 se falhar; a última linha diz se o esquema foi de fato conferido.
 - **Export MD** (faixa / álbum / acervo), com o rótulo fora do bloco e o Style da tela nos três (0.9.0, D5).
+- **Exportar faixa como `.json`** (0.11.0, DEC-028): botão no rodapé do cartão; a faixa sai como acervo — o álbum de origem (id e título), a faixa e os módulos que ela cita — e importa como qualquer acervo. Sai o dado do acervo, não os módulos ligados nem o BPM da tela; o toast conta os módulos e os citados que não existem.
 - **Prompt-modelo** (`schema/PROMPT-PARA-CHATS.md`, DEC-021, DEC-023): contrato de módulo, style com 6 a 8 tags e até 10 com os módulos ligados; pede o JSON como arquivo e, sem arquivo, em bloco de código. Dois retestes em 2026-10-29: 6 de 6 faixas dentro do contrato e do orçamento, nos dois.
 - **Botões «Prompt» e «Exemplo»** (0.8.0, DEC-021): buscam o prompt e o `data/demo.json` do repositório no clique; a janela do prompt recebe o «Meu pedido».
 - **Conveniências (0.9.0, DEC-022, DEC-023):** «Estrutura» do cartão (ordem e blocos visíveis, no navegador); copiar o título; arrastar o `.json` para importar; o último acervo importado volta ao abrir, com origem, data e «esquecer»; a importação aceita a resposta do chat colada inteira e avisa.
@@ -35,7 +35,8 @@
 
 ## Em progresso
 
-- **Kit de música no KCM (i-039)** — as peças estão em `kit-musica/`; a carta 01 leva o mapa ao nicho Música do KCM. Gatilho: sem resposta até o primeiro projeto de música novo, o projeto usa o kit à mão.
+- **Curadoria no app e vários acervos** (i-040, i-041, DEC-028) — entrega 1 feita (0.11.0). Próximas: a 2 (vários acervos no IndexedDB, marcas «usei» por acervo), com spec depois do relatório da sonda, e a 3 (curadoria pela tela).
+- **Kit de música no KCM (i-039)** — o KCM leu a carta 01 e responde pela carta 02, sem data. Gatilho: sem resposta até o primeiro projeto de música novo, o projeto usa o kit à mão (`kit-musica/README.md`).
 
 ## Quebrado / pendências que travam
 
@@ -43,16 +44,18 @@
 
 ## Pendências do dono
 
-- **Levar a carta 01 ao KCM** — `../261031-cancioneiro-para-kcm-01-kit-de-musica-ia.md`, para a pasta-pai do KCM.
+- **Conferir a entrega 1 na tela** — roteiro na conversa de 2026-11-02, depois do push da WO 0022.
+- **Rodar a sonda de armazenamento** — `../261102-sonda-armazenamento.html`: duplo clique, «Medir», «Baixar relatório», e o `.txt` na pasta-pai. É o dado da spec da entrega 2.
 - **Instalar o validador de esquema nesta máquina.** Sem `jsonschema` e `referencing`, o `validate.py` só confere sintaxe e diz `ESQUEMA NAO CONFERIDO` na última linha. Uma vez, no CMD: `pip install jsonschema referencing --break-system-packages`. Depois, `python3 scripts/validate.py` deve terminar em `Tudo conforme ao esquema.`
 
 ## Backlog curto (próximas ações concretas)
 
-1. **Curadoria no app e mais de um acervo** (i-040, i-041) — análise antes de spec: o app passaria de leitor a editor leve. Com dois acervos grandes no navegador (Rainha da Preguiça e os 12 álbuns), a i-041 ganhou uso real.
-2. **Rampa de BPM** (i-042) — três faixas BR reprovam no `validate.py` por mudarem de andamento de propósito.
-3. **Pesquisar outras plataformas de música por IA** (i-032) — um turno de pesquisa antes de qualquer mudança de esquema.
-4. **Avisar palavra de andamento que contradiz o BPM** (i-029) — pede uma tabela palavra → faixa de BPM, com fonte e data.
-5. **Importar prompts prontos dos álbuns como módulos** — o último ⬜ da 3b no ROADMAP; o índice-mestre da BR e os «estilos originais» do VOL5 trazem fórmulas de estilo.
+1. **Entrega 2 da curadoria: vários acervos no navegador** (i-041, DEC-028) — spec depois do relatório da sonda; corrige a colisão das marcas «usei».
+2. **Entrega 3 da curadoria: excluir, reordenar, mover, novo álbum, importar faixas** (i-040) — num rascunho marcado, com as regras de id e módulo repetidos da análise.
+3. **Rampa de BPM** (i-042) — três faixas BR reprovam no `validate.py` por mudarem de andamento de propósito.
+4. **Pesquisar outras plataformas de música por IA** (i-032) — um turno de pesquisa antes de qualquer mudança de esquema.
+5. **Avisar palavra de andamento que contradiz o BPM** (i-029) — pede uma tabela palavra → faixa de BPM, com fonte e data.
+6. **Importar prompts prontos dos álbuns como módulos** — o último ⬜ da 3b no ROADMAP; o índice-mestre da BR e os «estilos originais» do VOL5 trazem fórmulas de estilo.
 
 ## Notas de estado
 
@@ -61,12 +64,10 @@
 - **Limites do Suno:** o v6 saiu em 2026-09-09 e a nota oficial não documenta limite de campo; os números do painel vêm de fonte secundária, com fonte e data no `QUALITY_LIMITS` (DEC-018). Outra fonte secundária (2026-08) põe o ideal em 4 a 7 descritores; o prompt usa 6 a 8. Reconferir quando houver documentação oficial. O `meta/HISTORY.md` §5 ganhou a interface do v6 vista na conta (2026-10-29); o resto do arquivo ainda descreve o v5.5.
 - **Exclude no v6-mini:** o formulário gratuito não tem o campo (capturas de 2026-10-29). Desde a 0.9.1 (DEC-025) o bloco vem oculto por padrão, com o aviso «no X → Exclude» junto (D3); o dado continua no JSON e no export. Quem usa o campo liga em «Estrutura».
 - **Navegador (DEC-004, DEC-022):** guarda as marcas «usei», a estrutura do cartão e a cópia do último acervo importado. A cópia é cache: se o arquivo mudou fora, importe de novo; a linha de origem diz quando a cópia foi feita.
+- **Marcas «usei» colidem entre acervos com o mesmo id** (`brv-04` na Rainha e no demo; `cinzeiro-01` no demo e no exemplo): são guardadas só pelo id. Corrige-se na entrega 2 (DEC-028).
+- **Conversores são de primeira geração (DEC-028):** depois de mudar um acervo (à mão ou, com a entrega 3, no app), não rode o conversor por cima dele.
 - **Botões «Prompt» e «Exemplo»:** dependem de rede e do Pages. No `file://`, só funcionam se o Pages aceitar o `fetch` de uma página local — não conferido (o dono abriu o `file://` em 2026-10-29, sem relatar o resultado do botão); sem isso, a janela mostra o link para a versão publicada (DEC-021).
 - **Estado de sessão** (módulos ligados e BPM escolhido) sobrevive a filtro, busca e «marcar usei»; volta ao acervo ao recarregar a página ou importar de novo (FIX-008, DEC-020).
 - **Limite conhecido:** `tryAutoLoad` (carregamento automático pelo Pages) não saneia chaves internas — só a importação por arquivo faz isso. Inócuo enquanto nenhum acervo contaminado for para `data/`.
 - **Pendência de contexto — ASU:** o dono perguntou se o «modo ASU» do KCM seria melhor que o modo Code para este projeto; ficou pendente até ele trazer a descrição do ASU `[relatado pelo dono, sem material de apoio]`.
 - Design: na recomposição do Style a base manda — desligar um módulo não remove o que já está no style base; módulos só somam. O dedup compara sequências de palavras (FIX-003). Os módulos de gênero e de andamento costumam custar 0 tag por isso (DEC-019). O chip de andamento é atalho do controle de BPM, no máximo um ligado (DEC-020).
-
-- **Instalar o validador de esquema continua pendente** (aplicação da WO 0020, 2026-10-31): o `validate.py` ainda termina em `ESQUEMA NAO CONFERIDO`; o verde da 0.10.0 não prova o esquema.
-
-- **WO 0021 aplicada** (2026-10-31, `b03dcc8`): só registro (conferência dos álbuns, transferência da conversa); `validate.py` exit=0, esquema ainda não conferido. Detalhe em `logs/2026-10-31.md` (Conversa 4).

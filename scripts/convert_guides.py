@@ -24,6 +24,10 @@ linha em negrito logo antes dele:
 A regra de dominio vale igual: o rotulo nunca entra em `style` nem `lyrics`.
 Conversao fiel (DEC-026): nada e cortado; o relatorio conta o que passa do limite.
 
+Conversor de PRIMEIRA geracao (DEC-028): depois que o acervo for mudado fora
+daqui (a mao ou pela curadoria do app), o `.json` curado manda — rodar de novo
+por cima apaga a curadoria. Para comparar, grave a saida com outro nome.
+
 Sem `--groups`, um album por arquivo. Com `--groups`, o mapa (JSON, fora do repo:
 traz os titulos do dono) diz quais faixas vao para qual album:
     {"albums": [{"id": "...", "title": "...", "description": "...", "songs": ["v4-br-01", ...]}],

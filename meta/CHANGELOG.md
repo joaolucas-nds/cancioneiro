@@ -4,6 +4,18 @@
 
 ---
 
+## [0.11.0] — 2026-11-02
+
+Primeira das três entregas da curadoria no app (i-040, DEC-028): exportar uma faixa como `.json`.
+
+### Added
+- **Exportar faixa como `.json`:** botão «exportar .json» no rodapé de cada cartão, depois de «exportar .md». A faixa sai como um acervo completo — o álbum de origem (id e título), a faixa e os módulos que ela cita, cada um uma vez — e importa como qualquer acervo, sem aviso de módulo faltando. O arquivo leva o id da faixa no nome (`brv-04.json`). Sai o dado do acervo, nunca os módulos ligados nem o BPM da tela (a regra do «Baixar .json»); citação de módulo que não existe no acervo segue citada, e o toast conta. Spec `meta/specs/261102-exportar-faixa-json.md`: 15 de 15 critérios no Chromium headless, com prova de vida no app da 0.10.0.
+
+### Changed
+- **Decisão da curadoria (DEC-028):** o app vai editar um rascunho marcado do acervo, guardado no IndexedDB; o arquivo baixado é a fonte, e o `.json` curado passa a mandar sobre os conversores. Os dois conversores e o README dizem isso.
+
+---
+
 ## [0.10.0] — 2026-10-31
 
 Os álbuns antigos de `Albuns/` convertidos e reagrupados (i-008, i-038), e o kit de música para os projetos do KCM (i-039, DEC-027).

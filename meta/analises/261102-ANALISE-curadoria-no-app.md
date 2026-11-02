@@ -1,6 +1,7 @@
 # ANALISE — Curadoria no app e mais de um acervo (i-040, i-041)
 
-> **Status:** Em discussão
+> **Status:** Decidida — pelo dono em 2026-11-02: F1 + G1, entregas 1 → 2 → 3, o `.json` curado manda sobre os
+> conversores (DEC-028). Entrega 1: spec `meta/specs/261102-exportar-faixa-json.md`, WO 0022 (0.11.0).
 > **Data:** 2026-11-02 (data de criação; não muda depois)
 > **Ideias de origem:** i-040 (excluir, exportar, importar, reordenar e mover faixas) e i-041 (mais de um acervo
 > guardado no navegador), da nota `../notas-arquivadas/261029-1825.txt`.
@@ -211,3 +212,14 @@ Se sim, o próximo passo é a spec da entrega 1, que é curta, e a WO dela. A so
 Alternativas que mudam o plano:
 - (b) ir direto à F4, gravar no arquivo, aceitando só Chrome/Edge;
 - (c) parar na entrega 2, sem edição pela tela.
+
+## Desfecho — 2026-11-02
+
+Decidida pelo dono como recomendada: **F1 + G1, nas três entregas, na ordem 1 → 2 → 3, com o `.json` curado
+mandando sobre os conversores**. Registrada na DEC-028, que amplia a DEC-004 e revê a consequência «a cópia é
+igual ao arquivo» da DEC-022. A F4 (gravar direto no arquivo) virou a i-043, com gatilho depois da entrega 3.
+
+- **Entrega 1 — exportar faixa como `.json`:** spec `meta/specs/261102-exportar-faixa-json.md`, aplicada pela
+  WO 0022 (0.11.0). 15 de 15 critérios no Chromium headless.
+- **Entrega 2 — vários acervos:** espera o relatório da sonda `../261102-sonda-armazenamento.html` para a spec.
+- **Entrega 3 — curadoria pela tela:** depois da 2.

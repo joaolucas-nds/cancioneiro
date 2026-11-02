@@ -294,7 +294,7 @@
     <h1>Cancioneiro</h1>
     <!-- Versao: a mesma do topo do meta/CHANGELOG.md. O scripts/validate.py confere
          que app, CHANGELOG, README e STATUS dizem a mesma (i-027). -->
-    <span class="version" data-role="app-version">v0.10.0</span>
+    <span class="version" data-role="app-version">v0.11.0</span>
   </div>
   <div class="tools">
     <button id="prompt-btn" title="Copiar o prompt-modelo, com o seu pedido, para um chat">Prompt</button>
@@ -561,6 +561,60 @@ function downloadCollection() {
   if (!App.collection) { toast("Nada para baixar ainda"); return; }
   downloadFile(slug(App.collection.title) + ".json",
     JSON.stringify(App.collection, null, 2), "application/json");
+}
+
+/* ===================================================================
+   Export de uma faixa como .json (i-040, entrega 1 — spec
+   meta/specs/261102-exportar-faixa-json.md, DEC-028)
+   A faixa sai como uma colecao completa: o album de origem (so id e
+   titulo), a faixa e os modulos que ela cita. Assim o arquivo importa
+   como qualquer acervo, e a faixa nao chega com modulo faltando (FIX-009).
+   Sai o DADO do acervo, nunca o estado da sessao (modulos ligados, BPM do
+   controle): a mesma regra do «Baixar .json». O Style da tela e do .md.
+   =================================================================== */
+
+/** Monta a colecao de uma faixa so. Copia profunda: o objeto exportado nunca
+    compartilha referencia com o acervo aberto. Devolve {json, missing}:
+    `missing` conta as citacoes de modulo que nao resolvem no acervo aberto
+    (id inexistente ou objeto no lugar do id). Elas seguem citadas na faixa,
+    por fidelidade, e o toast avisa — sem saneamento mudo (FIX-006). */
+function songToCollection(song) {
+  const coll = App.collection || {};
+  const album = (coll.albums || []).find(a => (a.songs || []).includes(song));
+  const copy = JSON.parse(JSON.stringify(song));
+  const modules = [];
+  const seen = new Set();
+  let missing = 0;
+  (song.styleModules || []).forEach(id => {
+    const mod = typeof id === "string" ? App.modulesById[id] : null;
+    if (!mod) { missing++; return; }
+    if (seen.has(id)) return;   // citado duas vezes: o modulo vai uma vez so
+    seen.add(id);
+    modules.push(JSON.parse(JSON.stringify(mod)));
+  });
+  const json = { schemaVersion: coll.schemaVersion || "1.0", title: song.title };
+  if (coll.targetTool) json.targetTool = coll.targetTool;
+  json.albums = [{
+    id: album ? album.id : "faixa",
+    title: album ? album.title : song.title,
+    songs: [copy],
+  }];
+  if (modules.length) json.styleModules = modules;
+  // Chave interna (prefixo _) nunca sai do app (FIX-004). Aqui nao deveria
+  // haver nenhuma, mas saida nova passa pela mesma peneira.
+  stripInternalKeys(json);
+  return { json, missing };
+}
+
+/** Baixa a faixa como `<id>.json` (o id e ASCII pelo esquema) e diz no toast
+    quantos modulos foram junto e quantos citados nao existem no acervo. */
+function exportSongJson(song) {
+  const { json, missing } = songToCollection(song);
+  const name = (song.id || slug(song.title)) + ".json";
+  downloadFile(name, JSON.stringify(json, null, 2), "application/json");
+  const n = (json.styleModules || []).length;
+  toast("Faixa exportada em .json: " + name + " · " + n + " módulo" + (n === 1 ? "" : "s")
+    + (missing ? " · " + missing + " módulo(s) citado(s) não existe(m) no acervo — a faixa os cita assim mesmo" : ""));
 }
 
 /* ===================================================================
@@ -1189,6 +1243,11 @@ function renderCard(song) {
     toast("Faixa exportada: " + song.title);
   });
   foot.appendChild(mdBtn);
+  const jsonBtn = document.createElement("button");
+  jsonBtn.textContent = "exportar .json";
+  jsonBtn.title = "Exporta esta faixa como acervo .json, com os módulos que ela cita. Sai o dado do acervo: sem os módulos ligados nem o BPM da tela.";
+  jsonBtn.addEventListener("click", () => exportSongJson(song));
+  foot.appendChild(jsonBtn);
   card.appendChild(foot);
 
   return card;
