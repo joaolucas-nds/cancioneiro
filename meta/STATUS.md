@@ -13,6 +13,7 @@
 - **Sonda de armazenamento** (Chrome 156, `file://`): o IndexedDB grava e lê 1,5 milhão de caracteres; o `localStorage` tem 5.242.731 caracteres no total; a cota é de 10.737 MB; as APIs de gravar direto no arquivo existem. No `file://`, todas as páginas locais são a mesma origem: 9 das 11 chaves do `localStorage` são de outros projetos.
 - **Entrega 2 (0.12.0):** vários acervos no IndexedDB, pelo nome do arquivo; janela «acervos (N)» na linha de origem; reabre no último aberto; marcas «usei» por acervo, com migração; a cópia antiga só sai depois de lida de volta. Spec `meta/specs/261104-varios-acervos.md`; 25 de 25 conferências no Chromium headless, testadas pelo chat.
 - **Carta 02 ao KCM** (`../261105-cancioneiro-para-kcm-02-chaves-no-file.md`, com o dono): as chaves `kit-state-*`, `kit-niche` e `base_v4` no `localStorage` do `file://`, para o KCM conferir se são dele e se estão limpas.
+- **WO 0023 aplicada** (commit `e6663d8`, pushed): a 0.12.0 está no `main` e no Pages; falta só a conferência de tela do dono.
 - **Este bloco substitui o anterior, de 2026-11-02** (decisão da curadoria e entrega 1). O que ele dizia está no CHANGELOG [0.11.0], na DEC-028 e em `logs/2026-11-02.md` (Conversas 1 e 2).
 
 ## Funciona (pronto)
