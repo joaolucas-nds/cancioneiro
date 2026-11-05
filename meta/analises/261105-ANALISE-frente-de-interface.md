@@ -1,6 +1,7 @@
 # ANALISE — Frente de interface: organizar, ler e editar o acervo (i-044 a i-048)
 
-> **Status:** Em discussão
+> **Status:** Decidida — pelo dono em 2026-11-05: B, SortableJS embutido, sem o interruptor «editar», ordem
+> I1 → I2 → I3 → I4. Vai para a DEC-030 pela WO da I1. Spec da I1: `meta/specs/261105-barra-unica.md`.
 > **Data:** 2026-11-05 (data de criação; não muda depois)
 > **Ideias de origem:** i-044 (a barra que não some), i-045 (cabeçalho compacto), i-046 (filtros que acompanham a
 > rolagem, visões no estilo Notion e Airtable), i-047 (painel lateral com abas) e i-048 (edição e organização sem UX,
@@ -156,3 +157,12 @@ Quatro respostas para a frente virar spec. Cada uma já vem com a recomendada:
    embutido**.
 3. **O interruptor «editar»:** tirar, com «Desfazer» (recomendada), ou manter?
 4. **Ordem:** I1 → I2 → I3 → I4 (recomendada), ou outra?
+
+## Desfecho — 2026-11-05
+
+Decidida pelo dono como recomendada, nos quatro pontos: **B** (três painéis), **SortableJS 1.15.7 embutido**, **sem
+o interruptor «editar»** (sai na I3, com «Desfazer») e a ordem **I1 → I2 → I3 → I4**. O registro vai para a
+DEC-030 pela WO da I1.
+
+- **I1 — barra única:** spec `meta/specs/261105-barra-unica.md` (0.14.0), com o protótipo navegável no mesmo canvas
+  (telas «I1 · computador» e «I1 · celular»).
