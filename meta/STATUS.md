@@ -14,6 +14,7 @@
 - **I1, barra única (0.14.0):** barra fixa de 48 px com o seletor de acervo, a busca (tecla `/`), Filtros com etiquetas removíveis, o rascunho com «Salvar .json», «editar» e o «⋯». No celular, 95 px de controles no topo (eram 469). Spec `meta/specs/261105-barra-unica.md`; 14 de 14 conferências no Chromium headless, testadas pelo chat.
 - **i-048** (edição e organização com UX de verdade, arrastando) registrada; é a I3.
 - **Este bloco substitui o anterior, da WO 0024** (entrega 3). O que ele dizia está no CHANGELOG [0.13.0], na spec `meta/specs/261105-curadoria-pela-tela.md` e em `logs/2026-11-05.md` (Conversas 4 a 6).
+- **WO 0025 aplicada pelo Code e empurrada (`0158c88`, 0.14.0):** 37 edições, hashes de chegada conferidos, `validate.py` exit=0 (esquema não conferido: falta `jsonschema`). Falta só o dono conferir a I1 na tela.
 
 ## Funciona (pronto)
 
