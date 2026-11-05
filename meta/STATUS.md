@@ -12,6 +12,7 @@
 - **Entrega 2 conferida na tela pelo dono** (2026-11-05, roteiro de 8 itens, tudo OK `[relatado pelo dono]`); a carta 02 foi levada ao KCM.
 - **Entrega 3 (0.13.0):** modo «editar» na linha de origem; ↑ ↓, mover (inclusive para álbum novo), excluir e importar faixas, num rascunho gravado a cada operação; «Baixar .json» com o nome de origem zera a contagem. Fechar a aba não avisa, só quando a gravação falha (DEC-029). Spec `meta/specs/261105-curadoria-pela-tela.md`; 19 de 19 conferências no Chromium headless, testadas pelo chat.
 - **Ideias de interface do dono** (i-045 a i-047, com a i-044): cabeçalho compacto, filtros que acompanham a rolagem, visões no estilo Notion e Airtable, painel lateral. Vêm depois das funcionalidades, com pesquisa antes.
+- **WO 0024 aplicada pelo Code** (2026-11-05, `f695f81`): 28 edições, os dez hashes de chegada batem, `validate.py` exit=0 (esquema não conferido, falta `jsonschema`), testes dos conversores OK. Não foi aberta no navegador; a conferência de tela é do dono.
 - **Este bloco substitui o anterior, de 2026-11-04 e 2026-11-05** (entrega 2). O que ele dizia está no CHANGELOG [0.12.0], na spec `meta/specs/261104-varios-acervos.md` e em `logs/2026-11-05.md` (Conversas 1 e 2).
 
 ## Funciona (pronto)
@@ -45,7 +46,7 @@
 
 ## Pendências do dono
 
-- **Conferir a entrega 3 na tela** — roteiro na conversa de 2026-11-05 (WO 0024), depois do push.
+- **Conferir a entrega 3 na tela** — roteiro na conversa de 2026-11-05 (WO 0024); aplicada e empurrada em `f695f81`, o Pages já publica a 0.13.0.
 - **Instalar o validador de esquema nesta máquina.** Sem `jsonschema` e `referencing`, o `validate.py` só confere sintaxe e diz `ESQUEMA NAO CONFERIDO` na última linha. Uma vez, no CMD: `pip install jsonschema referencing --break-system-packages`. Depois, `python3 scripts/validate.py` deve terminar em `Tudo conforme ao esquema.`
 
 ## Backlog curto (próximas ações concretas)
