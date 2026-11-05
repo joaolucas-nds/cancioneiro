@@ -54,25 +54,110 @@
     font-family: var(--sans); line-height: 1.5;
     -webkit-font-smoothing: antialiased;
   }
-  /* ---- Cabecalho ---- */
-  header {
-    padding: 20px 24px; border-bottom: 1px solid var(--line);
-    display: flex; flex-wrap: wrap; align-items: center; gap: 16px;
-    position: sticky; top: 0; background: var(--paper); z-index: 10;
+  /* ---- Barra unica (I1, DEC-030) ----
+     Uma linha fixa: nome, seletor de acervo, busca, filtros, rascunho, editar
+     e «⋯». A fileira de etiquetas (filtros aplicados) e o aviso de primeira
+     abertura moram juntos dela, dentro de .top, que e o que fica fixo. */
+  [hidden] { display: none !important; }   /* i-044: o que tem hidden some de fato */
+  .top { position: sticky; top: 0; z-index: 10; background: var(--paper); }
+  .bar {
+    height: 48px; box-sizing: border-box; padding: 0 14px; border-bottom: 1px solid var(--line);
+    display: flex; flex-wrap: nowrap; align-items: center; gap: 8px; background: var(--paper);
   }
-  /* Nome com a versao pequena embaixo; ao lado, as ferramentas (prompt, exemplo,
-     estrutura); na direita, o que mexe no arquivo (importar, baixar, exportar). */
-  .brand { display: flex; flex-direction: column; gap: 2px; }
+  .bar button { height: 32px; padding: 0 10px; }
+  .brand { display: flex; align-items: baseline; gap: 6px; flex-shrink: 0; margin-right: 2px; }
   .brand h1 {
-    font-family: var(--serif); font-weight: 600; font-size: 26px;
+    font-family: var(--serif); font-weight: 600; font-size: 19px;
     margin: 0; letter-spacing: -0.01em; line-height: 1;
   }
   .brand .version { color: var(--ink-soft); font-size: 11px; }
-  .tools { display: flex; gap: 8px; flex-wrap: wrap; }
-  .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-left: auto; }
   .ico { display: inline-flex; align-items: center; gap: 6px; }
-  .ico svg { width: 14px; height: 14px; flex: none; }
-  @media (max-width: 600px) { .actions { margin-left: 0; } }
+  .ico svg, .icon-btn svg, .search-wrap svg { width: 14px; height: 14px; flex: none;
+    fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; }
+  .pop-wrap { position: relative; flex-shrink: 0; min-width: 0; }
+  /* O seletor encolhe antes da busca; sem min-width:0 o botao vaza por cima dela. */
+  #acervo-wrap { flex: 0 1 auto; max-width: 420px; }
+  .acervo-btn { display: inline-flex; align-items: center; gap: 8px; max-width: 100%; min-width: 0; overflow: hidden; }
+  /* O nome do acervo encolhe por ultimo; o arquivo e a contagem cedem antes. */
+  .acervo-title { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 0 1 auto; max-width: 220px; }
+  .acervo-sub { flex: 1 1 0; }
+  .acervo-sub { color: var(--ink-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .chev { width: 12px; height: 12px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; }
+  .search-wrap {
+    flex: 1 1 460px; max-width: 460px; min-width: 160px; height: 32px; box-sizing: border-box;
+    display: flex; align-items: center; gap: 8px; padding: 0 10px;
+    border: 1px solid var(--line); border-radius: 8px; background: var(--paper);
+  }
+  /* Mais especifico que o input[type="search"] geral, que vem depois no arquivo. */
+  .search-wrap input[type="search"] { border: 0; border-radius: 0; height: 100%; outline: 0; padding: 0; background: transparent; flex: 1; min-width: 0; }
+  .search-wrap:focus-within { outline: 2px solid var(--ember); outline-offset: 1px; }
+  .search-wrap kbd { font: 11px var(--sans); color: var(--ink-soft); border: 1px solid var(--line); border-radius: 4px; padding: 0 5px; }
+  /* .count-badge, nao .badge: .badge ja e a etiqueta de estado do cartao. */
+  .count-badge { background: var(--ember); color: #fff; border-radius: 9px; padding: 0 6px; font-size: 11px; line-height: 16px; }
+  .bar-space { flex: 1 1 0; min-width: 0; }
+  .bar-draft { display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 4px 0 10px;
+    border-radius: 8px; background: var(--ember-soft); flex-shrink: 0; white-space: nowrap; }
+  .bar-draft .dot { width: 8px; height: 8px; border-radius: 4px; background: var(--ember); }
+  .bar-draft button { height: 26px; }
+  .bar-edit { display: flex; gap: 6px; flex-shrink: 0; }
+  .icon-btn { width: 32px; padding: 0 !important; display: inline-flex; align-items: center; justify-content: center; font-size: 16px; }
+  .mobile-only { display: none; }
+  .pop {
+    position: absolute; top: calc(100% + 6px); left: 0; z-index: 20; min-width: 220px; max-width: 440px;
+    background: var(--paper); border: 1px solid var(--line); border-radius: 10px;
+    box-shadow: 0 12px 32px rgba(35,32,27,.18); padding: 6px; display: flex; flex-direction: column;
+  }
+  .pop-right { left: auto; right: 0; }
+  .pop [role="menuitem"] { text-align: left; border: 0; background: transparent; height: auto; padding: 9px 10px; border-radius: 8px; }
+  .pop [role="menuitem"]:hover, .pop [role="menuitem"]:focus-visible { background: var(--paper-2); color: var(--ink); }
+  .pop .danger { color: var(--ember); }
+  .pop-head { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); padding: 6px 10px; }
+  .pop-sep { border-top: 1px solid var(--line); margin: 6px 0; }
+  .pop-note { margin: 0; padding: 4px 10px; font-size: 12px; color: var(--ink-soft); }
+  #acervo-pop { width: 440px; }
+  #filters-pop { width: 280px; padding: 12px; gap: 4px; }
+  #filters-pop label { color: var(--ink-soft); font-size: 12px; margin-top: 6px; }
+  #filters-pop select { width: 100%; }
+  .pop-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+  .link { border: 0 !important; background: transparent !important; color: var(--ember); padding: 0 4px; height: auto; }
+  .btn-dark { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .btn-dark:hover { color: var(--paper); filter: brightness(1.2); }
+  .chips { height: 36px; box-sizing: border-box; display: flex; align-items: center; gap: 8px; padding: 0 14px;
+    border-bottom: 1px solid var(--line); font-size: 13px; white-space: nowrap; overflow-x: auto; }
+  .chips-count { color: var(--ink-soft); }
+  .chips-list { display: flex; gap: 8px; }
+  .fchip { display: inline-flex; align-items: center; gap: 4px; height: 24px; padding: 0 2px 0 10px;
+    border-radius: 12px; background: var(--paper-2); border: 1px solid var(--line); }
+  .fchip .k { color: var(--ink-soft); }
+  .fchip button { border: 0; background: transparent; padding: 0 6px; height: 22px; color: var(--ink-soft); font-size: 14px; }
+  .tour { display: flex; align-items: center; gap: 8px; padding: 6px 14px; font-size: 12px;
+    background: var(--ember-soft); border-bottom: 1px solid var(--line); }
+  @media (max-width: 1279px) { .acervo-source { display: none; } }
+  @media (max-width: 1150px) { #draft-text { display: none; } }
+  /* Celular: uma linha de 52 px; busca e editar saem da linha; rascunho vai ao pe. */
+  @media (max-width: 719px) {
+    .bar { height: auto; min-height: 51px; padding: 3px 4px 3px 6px; gap: 2px; flex-wrap: wrap; }
+    .bar button { height: 44px; }
+    .brand, .bar-space, .bar-edit, .search-wrap kbd, .btn-label { display: none; }
+    #acervo-wrap { flex: 1 1 0; max-width: none; }
+    .acervo-btn { max-width: none; width: 100%; border-color: transparent; background: transparent; }
+    .acervo-sub { font-size: 12px; }
+    .icon-btn, #filters-btn { width: 44px; padding: 0 !important; justify-content: center; border-color: transparent; background: transparent; }
+    #filters-btn { position: relative; }
+    #filters-btn .count-badge { position: absolute; top: 3px; right: 1px; padding: 0 5px; }
+    .mobile-only { display: inline-flex; }
+    .pop .mobile-only { display: block; }
+    .search-wrap { display: none; }
+    .top.search-open .search-wrap { display: flex; order: 99; flex: 1 1 100%; max-width: none; height: 44px; margin: 4px 6px; }
+    .pop { position: fixed; left: 8px; right: 8px; top: 56px; max-width: none; width: auto !important; }
+    .chips { height: 44px; padding: 0 12px; }
+    .bar-draft { position: fixed; left: 12px; right: 12px; bottom: 16px; height: auto; padding: 8px 8px 8px 14px; z-index: 15;
+      background: var(--ink); color: var(--paper); border-radius: 12px; }
+    .bar-draft #draft-text { display: inline; flex: 1; }
+    .bar-draft button { height: 40px; }
+    body.has-draft main { padding-bottom: 88px; }
+    body.has-draft .toast { bottom: 84px; }
+  }
   button, .btn {
     font-family: var(--sans); font-size: 13px; cursor: pointer;
     border: 1px solid var(--line); background: var(--paper-2); color: var(--ink);
@@ -85,19 +170,12 @@
   .btn-primary { background: var(--ember); color: #fff; border-color: var(--ember); }
   .btn-primary:hover { filter: brightness(1.08); color: #fff; }
 
-  /* ---- Barra de controles ---- */
-  .controls {
-    padding: 14px 24px; border-bottom: 1px solid var(--line);
-    display: flex; gap: 14px; flex-wrap: wrap; align-items: center;
-    font-size: 13px;
-  }
-  .controls label { color: var(--ink-soft); margin-right: 4px; }
   select, input[type="search"] {
     font-family: var(--sans); font-size: 13px; padding: 6px 10px;
     border: 1px solid var(--line); border-radius: 8px;
     background: var(--paper); color: var(--ink);
   }
-  input[type="search"] { min-width: 200px; }
+  input[type="search"] { min-width: 0; }
 
   /* ---- Layout ---- */
   main { padding: 24px; max-width: 1100px; margin: 0 auto; }
@@ -220,8 +298,7 @@
   /* Curadoria (DEC-028): no modo «editar» o rodape ganha ↑ ↓ mover excluir e quebra linha. */
   .card-foot { flex-wrap: wrap; }
   .card-foot .edit-btn { border-style: dashed; }
-  .origin [data-role="edit-btn"][aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
-  .origin .dirty { color: var(--ember); font-weight: 600; }
+  [data-role="edit-btn"][aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
   .import-list { list-style: none; padding: 0; margin: 8px 0 12px; max-height: 45vh; overflow: auto;
     display: flex; flex-direction: column; gap: 8px; }
   .import-list li { display: flex; flex-direction: column; gap: 2px; padding: 6px 10px; background: var(--paper-2); border-radius: 6px; }
@@ -285,13 +362,14 @@
   .layout-list li.drop-after  { box-shadow: 0 3px 0 var(--ember); }
   .layout-list li .move { margin-left: auto; display: flex; gap: 4px; }
   .layout-list li .move button { padding: 2px 8px; }
-  /* Origem do acervo (DEC-022): de onde veio o que esta na tela */
-  .origin { font-size: 12px; color: var(--ink-soft); display: flex; gap: 8px; align-items: center; }
-  .origin button { font-size: 12px; padding: 3px 8px; }
-  /* Janela «acervos» (DEC-028): um acervo guardado por linha. */
-  .acervos-list { list-style: none; padding: 0; margin: 8px 0 0; display: flex; flex-direction: column; gap: 6px; }
+  /* Origem do acervo (DEC-022): de onde veio o que esta na tela. Na I1, mora no
+     pe do menu do seletor de acervo (#origin, .pop-note). */
+  /* Lista de acervos (DEC-028), no menu do seletor de acervo (I1). */
+  .acervos-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 2px; max-height: 50vh; overflow: auto; }
   .acervos-list li { display: flex; gap: 10px; align-items: center; padding: 8px 10px;
-    background: var(--paper-2); border-radius: 6px; font-size: 13px; }
+    border-radius: 8px; font-size: 13px; }
+  .acervos-list li.is-open { background: var(--paper-2); }
+  .acervos-list .acervo-actions button { height: 28px; padding: 0 8px; }
   .acervos-list .acervo-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
   .acervos-list .acervo-meta { font-size: 12px; color: var(--ink-soft); overflow-wrap: anywhere; }
   .acervos-list .acervo-actions { margin-left: auto; display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
@@ -308,54 +386,103 @@
 </style>
 </head>
 <body>
-<header>
+<!-- Barra unica (I1, DEC-030 — spec meta/specs/261105-barra-unica.md): o topo
+     inteiro numa linha fixa. Os botoes que eram do cabecalho moram no «⋯» com
+     os MESMOS ids, entao os ouvintes de sempre continuam valendo. -->
+<div class="top" id="top">
+<header class="bar" id="bar">
   <div class="brand">
     <h1>Cancioneiro</h1>
     <!-- Versao: a mesma do topo do meta/CHANGELOG.md. O scripts/validate.py confere
          que app, CHANGELOG, README e STATUS dizem a mesma (i-027). -->
-    <span class="version" data-role="app-version">v0.13.0</span>
+    <span class="version" data-role="app-version">v0.14.0</span>
   </div>
-  <div class="tools">
-    <button id="prompt-btn" title="Copiar o prompt-modelo, com o seu pedido, para um chat">Prompt</button>
-    <button id="example-btn" class="ico" title="Baixar um acervo de exemplo (.json)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v8M4.5 7 8 10.5 11.5 7M3 13.5h10"/></svg>Exemplo</button>
-    <button id="layout-btn" class="ico" title="Estrutura do cartão: ordem e blocos visíveis"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 4h10M3 8h10M3 12h10"/></svg>Estrutura</button>
+  <div class="pop-wrap" id="acervo-wrap">
+    <button type="button" id="acervo-btn" class="acervo-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="acervo-pop" title="Os acervos guardados neste navegador">
+      <span class="acervo-title" id="acervo-title">Abrir um acervo</span>
+      <span class="acervo-sub"><span class="acervo-source" id="acervo-source"></span><span id="stats"></span></span>
+      <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5"/></svg>
+    </button>
+    <div class="pop" id="acervo-pop" role="menu" aria-label="Acervos" hidden>
+      <div class="pop-head">Neste navegador</div>
+      <ul class="acervos-list" id="acervos-list"></ul>
+      <div class="pop-sep"></div>
+      <button type="button" role="menuitem" id="import-btn">Importar outro .json…</button>
+      <button type="button" role="menuitem" id="forget-btn" class="danger" hidden>Esquecer este acervo</button>
+      <p class="pop-note" id="origin"></p>
+      <p class="pop-note" id="acervos-persist"></p>
+    </div>
   </div>
-  <div class="actions">
-    <button id="import-btn">Importar .json</button>
-    <button id="download-btn">Baixar .json</button>
-    <button id="export-md-btn">Exportar .md</button>
-    <input type="file" id="file-input" accept=".json,application/json" hidden>
+  <label class="search-wrap" id="search-wrap">
+    <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14"/></svg>
+    <input type="search" id="search" placeholder="Buscar título, estilo, tag…" aria-label="Buscar">
+    <kbd aria-hidden="true">/</kbd>
+  </label>
+  <button type="button" class="icon-btn mobile-only" id="search-toggle" aria-label="Buscar" aria-expanded="false" aria-controls="search-wrap"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5 14 14"/></svg></button>
+  <div class="pop-wrap">
+    <button type="button" id="filters-btn" class="ico" aria-haspopup="dialog" aria-expanded="false" aria-controls="filters-pop"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M4.5 8h7M7 12h2"/></svg><span class="btn-label">Filtros</span><span class="count-badge" id="filters-count" hidden></span></button>
+    <div class="pop" id="filters-pop" role="dialog" aria-label="Filtros" hidden>
+      <label for="filter-album">Álbum</label>
+      <select id="filter-album"><option value="">todos</option></select>
+      <label for="filter-state">Estado</label>
+      <select id="filter-state">
+        <option value="">todos</option>
+        <option value="ideia">ideia</option>
+        <option value="gerada">gerada</option>
+        <option value="editada">editada</option>
+        <option value="loop-pronto">loop-pronto</option>
+        <option value="aprovada">aprovada</option>
+      </select>
+      <label for="filter-used">Uso</label>
+      <select id="filter-used">
+        <option value="">todos</option>
+        <option value="used">só usados</option>
+        <option value="unused">só não usados</option>
+      </select>
+      <div class="pop-actions">
+        <button type="button" class="link" id="filters-clear">Limpar tudo</button>
+        <button type="button" class="btn-dark" id="filters-done">Pronto</button>
+      </div>
+    </div>
   </div>
+  <div class="bar-space"></div>
+  <div class="bar-draft" id="bar-draft" hidden>
+    <span class="dot" aria-hidden="true"></span>
+    <span id="draft-text" data-role="dirty"></span>
+    <button type="button" class="btn-primary" id="draft-save" data-role="dirty-download" title="Baixa o acervo com as alterações, com o nome do arquivo de origem.">Salvar .json</button>
+  </div>
+  <div class="bar-edit" id="bar-edit"></div>
+  <div class="pop-wrap">
+    <button type="button" class="icon-btn" id="more-btn" aria-label="Mais ações" aria-haspopup="menu" aria-expanded="false" aria-controls="more-pop">⋯</button>
+    <div class="pop pop-right" id="more-pop" role="menu" aria-label="Mais ações" hidden>
+      <div class="pop-head mobile-only" id="more-brand">Cancioneiro</div>
+      <button type="button" role="menuitem" id="menu-import">Importar .json…</button>
+      <button type="button" role="menuitem" id="download-btn">Baixar .json</button>
+      <button type="button" role="menuitem" id="export-md-btn">Exportar .md</button>
+      <div class="pop-sep"></div>
+      <button type="button" role="menuitem" id="prompt-btn" title="Copiar o prompt-modelo, com o seu pedido, para um chat">Prompt para chats</button>
+      <button type="button" role="menuitem" id="example-btn" title="Baixar um acervo de exemplo (.json)">Baixar exemplo</button>
+      <div class="pop-sep"></div>
+      <button type="button" role="menuitem" id="layout-btn" title="Estrutura do cartão: ordem e blocos visíveis">Estrutura do cartão</button>
+      <button type="button" role="menuitem" class="mobile-only" id="menu-edit" hidden>Ligar editar</button>
+      <button type="button" role="menuitem" class="mobile-only" id="menu-import-tracks" hidden>Importar faixas…</button>
+    </div>
+  </div>
+  <input type="file" id="file-input" accept=".json,application/json" hidden>
 </header>
-
-<div class="controls" id="controls" hidden>
-  <div><label for="filter-album">Álbum</label>
-    <select id="filter-album"><option value="">todos</option></select></div>
-  <div><label for="filter-state">Estado</label>
-    <select id="filter-state">
-      <option value="">todos</option>
-      <option value="ideia">ideia</option>
-      <option value="gerada">gerada</option>
-      <option value="editada">editada</option>
-      <option value="loop-pronto">loop-pronto</option>
-      <option value="aprovada">aprovada</option>
-    </select></div>
-  <div><label for="filter-used">Uso</label>
-    <select id="filter-used">
-      <option value="">todos</option>
-      <option value="used">só usados</option>
-      <option value="unused">só não usados</option>
-    </select></div>
-  <input type="search" id="search" placeholder="buscar título, estilo, tag…">
-  <span class="note" id="stats"></span>
-  <span class="origin" id="origin"></span>
+<div class="chips" id="chips" hidden>
+  <span class="chips-count" id="chips-count"></span>
+  <span class="chips-list" id="chips-list"></span>
+  <button type="button" class="link" id="chips-clear">Limpar tudo</button>
+</div>
+<div class="tour" id="tour" role="status" hidden>Prompt, Exemplo, Importar, Baixar e Exportar agora ficam em <b>⋯</b>, no canto direito da barra. <button type="button" class="link" id="tour-ok">entendi</button></div>
 </div>
 
 <main id="main">
   <div class="empty" id="empty">
     <p><strong>Nenhum acervo carregado.</strong></p>
-    <p>Clique em <strong>Importar .json</strong> ou <strong>arraste o arquivo para esta tela</strong><br>
-    (ex.: <code>data/demo.json</code>). O último acervo importado fica guardado neste navegador.</p>
+    <p>Clique em <strong>Abrir um acervo</strong>, no topo, ou <strong>arraste o arquivo para esta tela</strong><br>
+    (ex.: <code>data/demo.json</code>). Cada acervo importado fica guardado neste navegador.</p>
   </div>
 </main>
 
@@ -383,17 +510,6 @@
   <div class="dialog-actions">
     <button type="button" id="layout-reset-btn">Restaurar padrão</button>
     <button type="button" id="layout-close-btn" class="spacer">Fechar</button>
-  </div>
-</dialog>
-
-<dialog class="prompt-dialog" id="acervos-dialog" aria-labelledby="acervos-dialog-title">
-  <h2 id="acervos-dialog-title">Acervos neste navegador</h2>
-  <p>Cada arquivo importado fica guardado aqui, pelo nome. Importar de novo o mesmo arquivo substitui a cópia.
-  O arquivo no seu computador continua sendo a fonte; esquecer não o toca.</p>
-  <ul class="acervos-list" id="acervos-list"></ul>
-  <p id="acervos-persist"></p>
-  <div class="dialog-actions">
-    <button type="button" id="acervos-close-btn" class="spacer">Fechar</button>
   </div>
 </dialog>
 
@@ -1043,9 +1159,7 @@ function songMatches(song, f) {
 
 function render() {
   const main = document.getElementById("main");
-  const controls = document.getElementById("controls");
-  if (!App.collection) { controls.hidden = true; return; }
-  controls.hidden = false;
+  if (!App.collection) { document.getElementById("chips").hidden = true; updateBar(); return; }
 
   const f = currentFilters();
   main.innerHTML = "";
@@ -1085,8 +1199,12 @@ function render() {
     main.innerHTML = '<div class="empty"><p><strong>Nada bate com os filtros.</strong></p>' +
       '<p>Ajuste o álbum, o estado ou a busca acima.</p></div>';
   }
-  document.getElementById("stats").textContent =
-    App.collection.title + " · " + shown + "/" + total + " faixas";
+  // I1 (DEC-030): o total vai no seletor de acervo; o «N de M», na fileira de etiquetas.
+  // O total e o do acervo inteiro: `total` acima conta so os albuns que passam no filtro.
+  const all = (App.collection.albums || []).reduce((n, a) => n + (a.songs || []).length, 0);
+  document.getElementById("stats").textContent = nPlural(all, "faixa", "faixas");
+  renderChips(f, shown, all);
+  updateBar();
 }
 
 /* ===================================================================
@@ -1772,39 +1890,12 @@ function fmtDate(iso) {
 
 /** A linha de origem na barra de controles. Com `forgettable`, o «esquecer» do
     acervo aberto; com acervos guardados, o «acervos (N)» entre os dois. */
-/** A linha de origem na barra de controles, redesenhada a partir do estado.
-    Chamada com texto, guarda o texto; sem argumentos, so redesenha (curadoria).
-    Ordem: o texto · a marca de rascunho com «Baixar .json» · «editar» ·
-    «importar faixas…» (no modo editar) · «acervos (N)» · «esquecer». */
+/** Guarda o texto de origem (mostrado no menu do seletor de acervo) e se o
+    acervo aberto pode ser esquecido; sem argumentos, so redesenha a barra.
+    Na I1 (DEC-030) a linha de origem acabou: as pecas dela moram na barra. */
 function setOrigin(text, forgettable) {
   if (text !== undefined) { App.originText = text; App.originForget = !!forgettable; }
-  const el = document.getElementById("origin");
-  el.textContent = "";
-  if (!App.originText) return;
-  const btn = (label, role, title, fn) => {
-    const b = document.createElement("button"); b.type = "button"; b.textContent = label;
-    if (role) b.dataset.role = role;
-    b.title = title; b.addEventListener("click", fn); el.appendChild(b); return b;
-  };
-  const t = document.createElement("span"); t.textContent = "Acervo " + App.originText; el.appendChild(t);
-  if (App.saved && App.changes > 0) {
-    const d = document.createElement("span"); d.className = "dirty"; d.dataset.role = "dirty";
-    d.textContent = "alterado: " + nPlural(App.changes, "alteração não baixada", "alterações não baixadas");
-    el.appendChild(d);
-    btn("Baixar .json", "dirty-download", "Baixa o acervo com as alterações, com o nome do arquivo de origem.", downloadCollection);
-  }
-  if (App.saved) {
-    const e = btn("editar", "edit-btn", "Liga a curadoria: mudar a ordem, mover, excluir e importar faixas.", toggleEditing);
-    e.setAttribute("aria-pressed", App.editing ? "true" : "false");
-    if (App.editing) btn("importar faixas…", "import-tracks-btn", "Traz faixas de outro .json para este acervo.", pickTracksFile);
-  }
-  if (Store.db && Store.count > 0) {
-    btn("acervos (" + Store.count + ")", "acervos-btn", "Os acervos guardados neste navegador: abrir outro ou esquecer.", openAcervosDialog);
-  }
-  if (App.originForget) {
-    btn("esquecer", "", "Apaga a cópia deste acervo guardada neste navegador. O arquivo no seu computador não é tocado.",
-        () => forgetAcervo(App.source));
-  }
+  updateBar();
 }
 const savedOrigin = (source, savedAt) =>
   setOrigin("importado de " + source + " em " + fmtDate(savedAt) + " · guardado neste navegador", true);
@@ -1950,6 +2041,7 @@ async function renderAcervosDialog() {
     info.appendChild(t); info.appendChild(m); li.appendChild(info);
     const act = document.createElement("div"); act.className = "acervo-actions";
     if (r.source === App.source) {
+      li.classList.add("is-open");
       const s = document.createElement("span"); s.className = "acervo-open"; s.textContent = "aberto";
       act.appendChild(s);
     } else {
@@ -1958,12 +2050,14 @@ async function renderAcervosDialog() {
         let rec = null;
         try { rec = await dbGet(r.source); } catch (e) { /* trata abaixo */ }
         if (!rec || !openRecord(rec)) { toast("Não consegui abrir " + r.source); return; }
-        document.getElementById("acervos-dialog").close();
+        closePopovers(false);
         toast("Acervo aberto: " + (rec.json.title || rec.source) + moduleRefsNotice(rec.json));
       });
       act.appendChild(o);
     }
-    const f = document.createElement("button"); f.type = "button"; f.textContent = "esquecer";
+    const f = document.createElement("button"); f.type = "button"; f.textContent = "×";
+    f.setAttribute("aria-label", "Esquecer " + (r.title || r.source));
+    f.title = "Apaga a cópia guardada neste navegador. O arquivo no seu computador não é tocado.";
     f.addEventListener("click", async () => { await forgetAcervo(r.source); renderAcervosDialog(); });
     act.appendChild(f);
     li.appendChild(act);
@@ -1980,9 +2074,10 @@ async function renderAcervosDialog() {
     : persisted ? "Guardado de forma persistente: sim."
     : "Guardado de forma persistente: não — sem espaço em disco, o navegador pode apagar estas cópias. O arquivo continua sendo a fonte.";
 }
+/** Abre o menu do seletor de acervo com a lista atualizada (era uma janela, ate a 0.13.0). */
 async function openAcervosDialog() {
   await renderAcervosDialog();
-  document.getElementById("acervos-dialog").showModal();
+  openPopover("acervo");
 }
 
 /* ===================================================================
@@ -2359,8 +2454,165 @@ document.addEventListener("drop", e => {
   document.getElementById(id).addEventListener("change", render));
 document.getElementById("search").addEventListener("input", render);
 
-document.getElementById("acervos-close-btn").addEventListener("click", () =>
-  document.getElementById("acervos-dialog").close());
+
+/* ===================================================================
+   Barra unica (I1, DEC-030 — spec meta/specs/261105-barra-unica.md)
+   Tres paineis ancorados (seletor de acervo, Filtros, «⋯»): so um aberto por
+   vez; Esc e clique fora fecham, e o foco volta ao botao que abriu. A fileira
+   de etiquetas mostra os filtros aplicados (Baymard: remover direto no resumo).
+   =================================================================== */
+const POPS = {
+  acervo: ["acervo-btn", "acervo-pop"],
+  filtros: ["filters-btn", "filters-pop"],
+  mais: ["more-btn", "more-pop"],
+};
+let openPop = null;
+const isMobile = () => window.matchMedia("(max-width: 719px)").matches;
+
+function openPopover(name) {
+  closePopovers(false);
+  const [b, p] = POPS[name].map(id => document.getElementById(id));
+  p.hidden = false;
+  b.setAttribute("aria-expanded", "true");
+  openPop = name;
+  const first = p.querySelector("button:not([hidden]), select, input");
+  if (first) first.focus();
+}
+/** Fecha o painel aberto; com `restoreFocus`, devolve o foco ao botao dele. */
+function closePopovers(restoreFocus) {
+  if (!openPop) return;
+  const [b, p] = POPS[openPop].map(id => document.getElementById(id));
+  p.hidden = true;
+  b.setAttribute("aria-expanded", "false");
+  openPop = null;
+  if (restoreFocus) b.focus();
+}
+function togglePopover(name) {
+  if (openPop === name) closePopovers(true); else openPopover(name);
+}
+
+/** Redesenha as pecas da barra a partir do estado (chamada por setOrigin e render). */
+function updateBar() {
+  const has = !!App.collection;
+  document.getElementById("acervo-title").textContent =
+    has ? (App.collection.title || App.source || "Acervo") : "Abrir um acervo";
+  document.getElementById("acervo-source").textContent = has && App.source ? App.source + " · " : "";
+  if (!has) document.getElementById("stats").textContent = "";
+  // Sem acervo aberto, «outro» nao faz sentido.
+  document.getElementById("import-btn").textContent = has ? "Importar outro .json…" : "Importar .json…";
+  document.getElementById("origin").textContent = App.originText ? "Acervo " + App.originText : "";
+  // Sem acervo aberto nao ha o que esquecer, mesmo que a origem antiga ainda diga que sim.
+  document.getElementById("forget-btn").hidden = !(has && App.originForget);
+  const dirty = App.saved && App.changes > 0;
+  document.getElementById("bar-draft").hidden = !dirty;
+  document.body.classList.toggle("has-draft", dirty);
+  document.getElementById("draft-text").textContent =
+    dirty ? nPlural(App.changes, "alteração não salva", "alterações não salvas") : "";
+  const be = document.getElementById("bar-edit");
+  be.textContent = "";
+  if (App.saved) {
+    const mk = (label, role, title, fn) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.textContent = label; b.dataset.role = role; b.title = title;
+      b.addEventListener("click", fn); be.appendChild(b); return b;
+    };
+    const e = mk("editar", "edit-btn", "Liga a curadoria: mudar a ordem, mover, excluir e importar faixas.", toggleEditing);
+    e.setAttribute("aria-pressed", App.editing ? "true" : "false");
+    if (App.editing) mk("importar faixas…", "import-tracks-btn", "Traz faixas de outro .json para este acervo.", pickTracksFile);
+  }
+  const me = document.getElementById("menu-edit");
+  me.hidden = !App.saved;
+  me.textContent = App.editing ? "Desligar editar" : "Ligar editar";
+  document.getElementById("menu-import-tracks").hidden = !(App.saved && App.editing);
+}
+
+/** As etiquetas dos filtros aplicados, a contagem «N de M» e o numero no botao. */
+function renderChips(f, shown, total) {
+  const list = document.getElementById("chips-list");
+  list.textContent = "";
+  const chip = (kind, value, clear) => {
+    const c = document.createElement("span"); c.className = "fchip";
+    const k = document.createElement("span"); k.className = "k"; k.textContent = kind;
+    c.appendChild(k); c.appendChild(document.createTextNode(" " + value + " "));
+    const x = document.createElement("button"); x.type = "button"; x.textContent = "×";
+    x.setAttribute("aria-label", "Tirar o filtro " + kind);
+    x.addEventListener("click", () => { clear(); render(); });
+    c.appendChild(x); list.appendChild(c);
+  };
+  const alb = document.getElementById("filter-album");
+  if (f.album) chip("Álbum", alb.options[alb.selectedIndex].text, () => { alb.value = ""; });
+  if (f.state) chip("Estado", f.state, () => { document.getElementById("filter-state").value = ""; });
+  if (f.used) chip("Uso", f.used === "used" ? "só usadas" : "não usadas", () => { document.getElementById("filter-used").value = ""; });
+  const q = document.getElementById("search").value.trim();
+  if (q) chip("Busca", "«" + q + "»", () => { document.getElementById("search").value = ""; });
+  const n = (f.album ? 1 : 0) + (f.state ? 1 : 0) + (f.used ? 1 : 0);
+  const badge = document.getElementById("filters-count");
+  badge.hidden = !n; badge.textContent = n ? String(n) : "";
+  document.getElementById("filters-btn").setAttribute("aria-label", n ? "Filtros, " + n + (n === 1 ? " ligado" : " ligados") : "Filtros");
+  document.getElementById("chips-count").textContent = shown + " de " + nPlural(total, "faixa", "faixas");
+  document.getElementById("chips").hidden = !(n || q);
+}
+function clearAllFilters() {
+  ["filter-album", "filter-state", "filter-used", "search"].forEach(id => { document.getElementById(id).value = ""; });
+  render();
+}
+
+function setSearchOpen(open) {
+  document.getElementById("top").classList.toggle("search-open", open);
+  document.getElementById("search-toggle").setAttribute("aria-expanded", open ? "true" : "false");
+  if (open) document.getElementById("search").focus();
+}
+
+document.getElementById("acervo-btn").addEventListener("click", () => {
+  if (openPop === "acervo") { closePopovers(true); return; }
+  openAcervosDialog();
+});
+document.getElementById("filters-btn").addEventListener("click", () => togglePopover("filtros"));
+document.getElementById("more-btn").addEventListener("click", () => { dismissTour(); togglePopover("mais"); });
+// Item de menu escolhido fecha o painel (a acao do item ja rodou: o ouvinte
+// dele dispara antes, no proprio botao).
+["acervo-pop", "more-pop"].forEach(id => document.getElementById(id).addEventListener("click", e => {
+  if (e.target.closest('[role="menuitem"]')) closePopovers(false);
+}));
+document.addEventListener("pointerdown", e => {
+  if (!openPop) return;
+  const wrap = document.getElementById(POPS[openPop][1]).parentElement;
+  if (!wrap.contains(e.target)) closePopovers(false);
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && openPop) { e.preventDefault(); closePopovers(true); return; }
+  if (e.key === "Escape" && e.target && e.target.id === "search" && isMobile()) { setSearchOpen(false); document.getElementById("search-toggle").focus(); return; }
+  if (e.key !== "/" || e.ctrlKey || e.metaKey || e.altKey) return;
+  const t = e.target, tag = t && t.tagName;
+  // Falso positivo que nao pode acontecer: digitar «/» dentro de um campo.
+  if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || (t && t.isContentEditable)) return;
+  if (document.querySelector("dialog[open]")) return;
+  e.preventDefault();
+  if (isMobile()) setSearchOpen(true); else document.getElementById("search").focus();
+});
+document.getElementById("search-toggle").addEventListener("click", () =>
+  setSearchOpen(!document.getElementById("top").classList.contains("search-open")));
+document.getElementById("filters-clear").addEventListener("click", clearAllFilters);
+document.getElementById("chips-clear").addEventListener("click", clearAllFilters);
+document.getElementById("filters-done").addEventListener("click", () => closePopovers(true));
+document.getElementById("draft-save").addEventListener("click", () => downloadCollection());
+document.getElementById("forget-btn").addEventListener("click", () => forgetAcervo(App.source));
+document.getElementById("menu-import").addEventListener("click", () => document.getElementById("file-input").click());
+document.getElementById("menu-edit").addEventListener("click", toggleEditing);
+document.getElementById("menu-import-tracks").addEventListener("click", pickTracksFile);
+document.getElementById("more-brand").textContent =
+  "Cancioneiro " + document.querySelector('[data-role="app-version"]').textContent;
+
+/* Aviso de primeira abertura da 0.14.0: os botoes do cabecalho foram para o «⋯».
+   Some ao clicar em «entendi» ou ao abrir o «⋯», e nao volta (App.ui.tour14). */
+function dismissTour() {
+  if (App.ui.tour14) return;
+  App.ui.tour14 = true;
+  saveUiState();
+  document.getElementById("tour").hidden = true;
+}
+document.getElementById("tour").hidden = !!App.ui.tour14;
+document.getElementById("tour-ok").addEventListener("click", dismissTour);
 
 // A abertura e assincrona (IndexedDB); a importacao espera por ela.
 const bootDone = boot();

@@ -172,18 +172,27 @@ Achado na conversão BR: três faixas mudam de andamento de propósito. A DEC-02
 Achado na análise da curadoria (2026-11-02, opção F4): no Chrome e no Edge o app pode abrir o `.json` com permissão de gravar e «Salvar» no mesmo arquivo, sem passar por Downloads. Não existe no Firefox nem no Safari, e a permissão é pedida de novo a cada sessão. **Gatilho:** depois da entrega 3 da curadoria (DEC-028), se a sonda mostrar a API no navegador do dono — entra como «Salvar no arquivo» onde existir, com «Baixar» onde não.
 **Medido (2026-11-04, sonda):** no Chrome 156 do dono existem as três APIs — `showSaveFilePicker`, `showOpenFilePicker` e `getAsFileSystemHandle` (arrastar com permissão de gravar). Falta só a entrega 3.
 **Gatilho atingido (2026-11-05):** a entrega 3 está pronta (0.13.0). Com ela, o passo que sobra é baixar e substituir o arquivo; gravar direto tira esse passo.
+**Planejada (DEC-030):** é a I4 da frente de interface (0.17.0), depois de a I3 deixar o «Salvar» fácil de achar.
 
-### i-044 💡 A barra de controles não some quando não há acervo
+### i-044 ✅ A barra de controles não some quando não há acervo
 Achado no teste da entrega 2 (2026-11-05): o CSS `.controls { display: flex }` vence o atributo `hidden` que o `render()` põe na barra quando não há acervo, então os filtros vazios ficam na tela no estado inicial e depois de esquecer todos. Já era assim antes da 0.12.0. O conserto provável é uma linha (`.controls[hidden] { display: none; }`), mas muda o que o dono vê ao abrir o app vazio — conferir na tela antes.
+**Entregue (0.14.0, I1, DEC-030):** a regra `[hidden] { display: none !important; }` vale para o app todo; sem acervo, nem a fileira de etiquetas nem o rascunho aparecem. Spec `meta/specs/261105-barra-unica.md`, WO 0025.
 
-### i-045 💡 Cabeçalho compacto
+### i-045 ✅ Cabeçalho compacto
 `[relatado pelo dono, 2026-11-05]` A barra do topo está «muito folgada»; deixá-la quase colada às bordas dos botões. Medido nas capturas dele (Chrome, janela de 720 px de altura): o cabeçalho é fixo (`position: sticky`) e ocupa uns 85 px. Objetivo dito por ele: uma interface «bonita, profissional, intuitiva». Faz parte da frente de interface (i-044 a i-047), que vem **depois** das funcionalidades em curso, por pedido dele, e começa por um turno de pesquisa.
+**Entregue (0.14.0, I1, DEC-030):** uma barra única, fixa, de 48 px (no celular, 51), no lugar do cabeçalho, da barra de filtros e da linha de origem.
 
-### i-046 💡 Filtros que acompanham a rolagem, e visões do acervo
+### i-046 🔨 Filtros que acompanham a rolagem, e visões do acervo
 `[relatado pelo dono, 2026-11-05]` A barra «Álbum · Estado · Uso · buscar» some ao rolar uma lista grande (nas capturas, só o cabeçalho fica fixo). Ele quer que ela fique fixa ou que se possa chamá-la. Inspirações citadas: o controle e a organização de e-commerce e de tabelas, e de Notion e Airtable, com visões (lista, tabela) e opções melhores. Pede pesquisa antes de spec.
+**Em andamento (DEC-030):** os filtros fixos, num painel, com etiquetas removíveis e «N de M», entraram na I1 (0.14.0). As visões (Lista e Cartões, com o detalhe à direita) são a I2.
 
 ### i-047 💡 Painel lateral com abas
 `[relatado pelo dono, 2026-11-05]` Painéis que abrem pela lateral direita, com etiquetas no estilo de «bookmarks». Exemplo dele: os acervos da entrega 2 também numa barra lateral, além da janela. Junto da i-046 na pesquisa. O arrastar cartões para reordenar (fora da entrega 3) entra nesta frente.
+**Planejada (DEC-030):** a lateral de álbuns e acervos é a I2 (0.15.0).
+
+### i-048 💡 Edição e organização com UX de verdade, arrastando onde for útil
+`[relatado pelo dono, 2026-11-05]` A estrutura para «edição, controle e organização das faixas, acervos e tudo mais» não está prática nem intuitiva, e falta muito UX/UI. Ele pede estudo e planejamento antes, e praticidades como **arrastar objetos** onde for possível, útil e interessante: cartões entre posições e álbuns, faixas para um acervo, arquivos para a tela. Junta-se às i-044 a i-047, numa frente só (análise `meta/analises/261105-ANALISE-frente-de-interface.md`).
+**Planejada (DEC-030):** é a I3 (0.16.0): arrastar pela alça, com o SortableJS embutido; o «⋯» por faixa como caminho sem arrastar; seleção em lote; «Desfazer»; o fim do interruptor «editar».
 
 ## Feedback para o Kit
 

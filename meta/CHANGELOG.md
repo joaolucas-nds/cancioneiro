@@ -4,6 +4,28 @@
 
 ---
 
+## [0.14.0] — 2026-11-05
+
+Primeira entrega da frente de interface (I1, DEC-030): uma barra única no topo. O cartão não muda.
+
+### Added
+- **Barra única**, fixa no topo, de 48 px (no celular, 51): o nome e a versão, o seletor de acervo, a busca, «Filtros», o rascunho, «editar» e o «⋯».
+- **Seletor de acervo:** mostra o título, o arquivo e a contagem do acervo aberto. Abre um menu com os acervos guardados (abrir; × para esquecer), «Importar outro .json…», «Esquecer este acervo», a origem da cópia e o estado do armazenamento. Substitui «acervos (N)», a janela de acervos e a linha de origem.
+- **Filtros num painel** (Álbum, Estado, Uso), com o número de filtros ligados no botão, e uma fileira de etiquetas removíveis com «N de M faixas» e «Limpar tudo». A tecla `/` leva à busca (fora de um campo de texto).
+- **«⋯»:** Importar .json…, Baixar .json, Exportar .md, Prompt para chats, Baixar exemplo e Estrutura do cartão. Na primeira abertura, um aviso de uma linha diz para onde eles foram; some em «entendi» e fica guardado no navegador (`tour14`).
+- **Celular:** botões de 44 px; a busca abre numa linha própria; o rascunho fica no pé da tela. O topo, com um filtro ligado, passou de 469 px de controles para 95 px.
+
+### Changed
+- O rascunho aparece na barra como «● N alterações não salvas», com **Salvar .json**: o mesmo «Baixar .json» da DEC-028, com o nome de origem.
+- Os seis botões do cabeçalho foram para o «⋯»; «editar» e «importar faixas…» foram da linha de origem para a barra.
+
+### Fixed
+- Sem acervo, a barra de filtros não fica mais na tela: a regra `[hidden]` vale para o app todo (i-044).
+
+Spec `meta/specs/261105-barra-unica.md`: 14 de 14 conferências dos 13 critérios no Chromium headless, com prova de vida no app da 0.13.0; os testes das entregas 1 a 3 seguem em 15 de 15, 25 de 25 e 19 de 19, com os seletores dos botões que mudaram de lugar.
+
+---
+
 ## [0.13.0] — 2026-11-05
 
 Terceira e última entrega da curadoria no app (i-040, DEC-028): editar o acervo pela tela.

@@ -2,7 +2,7 @@
 
 Ferramenta local para **organizar, copiar e variar** prompts de música gerados por IA (Suno hoje; agnóstica por design), a partir de um **acervo de canções em JSON canônico**.
 
-> **Estado:** v0.13.0 — ferramenta em uso. Lê, guarda e edita vários acervos, copia por campo, troca módulos de estilo, ajusta o BPM, **mede cada prompt contra os limites do Suno**, exporta Markdown, exporta uma faixa como `.json` e **entrega o prompt para chats gerarem canções no esquema**. Publicada no GitHub Pages. Ver `meta/ROADMAP.md`.
+> **Estado:** v0.14.0 — ferramenta em uso. Lê, guarda e edita vários acervos, copia por campo, troca módulos de estilo, ajusta o BPM, **mede cada prompt contra os limites do Suno**, exporta Markdown, exporta uma faixa como `.json` e **entrega o prompt para chats gerarem canções no esquema**. Publicada no GitHub Pages. Ver `meta/ROADMAP.md`.
 
 ## O problema
 
@@ -32,13 +32,13 @@ cancioneiro/
 ## Como começar
 
 1. **Pelo navegador (recomendado):** abra a versão publicada no GitHub Pages — o acervo carrega sozinho.
-   **Ou local:** duplo-clique em `app/index.html` (modo `file://`) e clique em *Importar .json* — ou arraste o arquivo para a tela. Cada acervo importado fica guardado no navegador, pelo nome do arquivo: o app reabre no último que você usou, e *acervos (N)*, na linha de origem, troca de um para outro sem procurar o arquivo.
+   **Ou local:** duplo-clique em `app/index.html` (modo `file://`), clique em *Abrir um acervo*, no começo da barra, e em *Importar .json…* — ou arraste o arquivo para a tela. Cada acervo importado fica guardado no navegador, pelo nome do arquivo: o app reabre no último que você usou, e o seletor de acervo (o mesmo botão, que passa a mostrar o título do aberto) troca de um para outro sem procurar o arquivo.
 2. Escolha um acervo de `data/` (ex.: `demo.json`).
-3. Navegue por álbuns, copie style e lyrics por botão e o título clicando nele, marque o que usou. Em *Estrutura*, arraste os blocos para mudar a ordem e esconda os que você não usa (o Exclude já vem oculto: o formulário gratuito do Suno v6 não tem o campo).
+3. Navegue por álbuns, copie style e lyrics por botão e o título clicando nele, marque o que usou. *Filtros*, na barra, escolhe álbum, estado e uso; cada filtro ligado vira uma etiqueta com ×, e a tecla `/` leva à busca. Em *Estrutura do cartão* (no «⋯», à direita da barra), arraste os blocos para mudar a ordem e esconda os que você não usa (o Exclude já vem oculto: o formulário gratuito do Suno v6 não tem o campo).
 4. Ligue/desligue **módulos de estilo** por camada para gerar variações — o Style recompõe ao vivo. Para mudar o andamento, use o campo de **BPM** do cartão (ou um chip da camada Andamento, que é atalho para ele): o número muda em todo o Style, nunca aparecem dois. O Suno trata BPM como aproximação.
 5. Leia a linha embaixo de cada campo antes de copiar: **vermelho** = o Suno vai cortar o texto (passou do limite, ele trunca sem avisar); **âmbar** = vai funcionar, mas pior (tags demais, ou negação «no X» que rende mais no campo Exclude). Com os módulos abertos, cada chip mostra quantas tags ele põe ou tira (`+2`, `−2`, ou `0` quando não muda nada) — use isso para decidir o que desligar.
 6. Exporte em `.md` (faixa, álbum ou acervo inteiro) se precisar do formato legível. Uma faixa também sai em `.json` (*exportar .json* no cartão): é um acervo de uma faixa só, com os módulos que ela usa, para mandar a um chat ou juntar a outro acervo.
-7. Para reorganizar, ligue *editar* na linha de origem: cada cartão ganha ↑ ↓, *mover…* e *excluir*, e *importar faixas…* traz faixas de outro `.json`. As mudanças ficam num rascunho no navegador; *Baixar .json* baixa com o nome do arquivo original — substitua o antigo por ele, e ele passa a ser a fonte.
+7. Para reorganizar, ligue *editar* na barra: cada cartão ganha ↑ ↓, *mover…* e *excluir*, e *importar faixas…* traz faixas de outro `.json`. As mudanças ficam num rascunho no navegador; a barra mostra quantas são, com *Salvar .json*, que baixa com o nome do arquivo original — substitua o antigo por ele, e ele passa a ser a fonte.
 
 ## Validar o acervo
 
@@ -70,13 +70,13 @@ python3 scripts/convert_guides.py ../acervos/albuns-reagrupados.json ../Albuns/*
 
 ## Gerar canções com um chat
 
-No app, clique em **Prompt**, escreva o seu pedido e copie: o prompt vai inteiro, com o pedido no lugar. Cole num chat novo: ele devolve um arquivo `.json` (ou, se não puder criar arquivo, o JSON num bloco de código, com botão de copiar). Arraste o arquivo para o app. O texto do prompt vive em `schema/PROMPT-PARA-CHATS.md` — o botão busca esse arquivo a cada clique, então o que está no repositório é o que você copia.
+No app, abra o «⋯» da barra, clique em **Prompt para chats**, escreva o seu pedido e copie: o prompt vai inteiro, com o pedido no lugar. Cole num chat novo: ele devolve um arquivo `.json` (ou, se não puder criar arquivo, o JSON num bloco de código, com botão de copiar). Arraste o arquivo para o app. O texto do prompt vive em `schema/PROMPT-PARA-CHATS.md` — o botão busca esse arquivo a cada clique, então o que está no repositório é o que você copia.
 
-**Exemplo** baixa um acervo pronto (`data/demo.json`) para ver a estrutura.
+**Baixar exemplo**, no mesmo «⋯», baixa um acervo pronto (`data/demo.json`) para ver a estrutura.
 
 ## Fonte de verdade
 
-O acervo canônico são **arquivos JSON** no esquema: os exemplos versionados em `data/`, e o acervo pessoal fora do repo (DEC-026). O navegador guarda **cópias dos acervos importados** (IndexedDB) e, no localStorage, as marcações por acervo e a estrutura do cartão — cache, nunca a fonte: a linha de origem diz de onde a cópia veio e quando, e *esquecer* a apaga sem tocar no arquivo. Com *editar*, a cópia vira rascunho até você baixar o `.json` e substituir o arquivo. Ver `meta/DECISIONS.md` (DEC-004, DEC-022, DEC-028, DEC-029).
+O acervo canônico são **arquivos JSON** no esquema: os exemplos versionados em `data/`, e o acervo pessoal fora do repo (DEC-026). O navegador guarda **cópias dos acervos importados** (IndexedDB) e, no localStorage, as marcações por acervo e a estrutura do cartão — cache, nunca a fonte: o menu do seletor de acervo diz de onde a cópia veio e quando, e *Esquecer este acervo* a apaga sem tocar no arquivo. Com *editar*, a cópia vira rascunho até você salvar o `.json` e substituir o arquivo. Ver `meta/DECISIONS.md` (DEC-004, DEC-022, DEC-028, DEC-029, DEC-030).
 
 ## Conhecimento do Suno
 

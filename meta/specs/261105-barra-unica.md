@@ -1,6 +1,6 @@
 # SPEC — Barra única (frente de interface, entrega I1)
 
-> **Status:** Pronta para WO (0.14.0)
+> **Status:** Pronta — aplicação pela `meta/workorders/261105-wo0025-barra-unica.md` (0.14.0, DEC-030)
 > **Decidida em:** 2026-11-05 pelo dono. Na análise `meta/analises/261105-ANALISE-frente-de-interface.md`, ele aprovou:
 > - a arquitetura B (três painéis);
 > - o SortableJS embutido;
@@ -144,12 +144,41 @@ O seletor de acervo, os Filtros e o «⋯» abrem um painel ancorado no botão:
 | C7 | Popovers: `Esc` e o clique fora fecham; o foco volta ao botão; abrir um fecha o outro; `aria-expanded` acompanha. |
 | C8 | Rascunho: com alterações, «● N alterações não salvas» e «Salvar .json» na barra; sem alterações, nada. «Salvar» baixa com o nome de origem e zera (DEC-028). |
 | C9 | No celular (390×844): a barra tem no máximo 52 px, numa linha; os botões têm pelo menos 44 px; a busca abre e fecha; o rascunho fica no pé da tela. |
-| C10 | No celular, com um filtro ligado, a distância do topo da página ao primeiro cartão é de **no máximo 100 px** (hoje, 469). |
+| C10 | No celular, com um filtro ligado, os controles fixos no topo (a barra e a fileira de etiquetas) somam **no máximo 100 px** (hoje, 469 px de controles antes da primeira faixa). (Corrigido na implementação: a primeira versão media «do topo da página ao primeiro cartão», mas o título do álbum vem antes do primeiro cartão e não é controle.) |
 | C11 | A 1024 px de largura, a barra continua numa linha (a busca encolhe até 160 px). |
 | C12 | O cartão é idêntico ao da 0.13.0: o mesmo HTML no `<main>` para o mesmo acervo, com filtros e editar desligados. |
 | C13 | O cabeçalho diz `v0.14.0`; nenhum erro de página; os testes das entregas 1 a 3 continuam passando, com os seletores dos botões que mudaram de lugar ajustados. |
 
 **Prova de vida:** o mesmo teste no app da 0.13.0 reprova (no mínimo C1, C5 e C10).
+
+## Resultado (medido pelo chat em 2026-11-05, Chromium headless, `file://`, app de chegada da WO 0025)
+
+**14 de 14 conferências**, cobrindo os 13 critérios (C13 em duas). Acervos sintéticos: um com 10 álbuns e 150
+faixas, outro com 12 álbuns e 36.
+
+| # | O que foi conferido | Resultado |
+|---|---|---|
+| C1 | a 1366×720, barra de 48 px numa linha, fixa até o fim da página; o aviso de primeira abertura some em «entendi» e não volta ao recarregar | OK |
+| C2 | as 15 linhas do inventário e o texto de origem, cada uma clicada no destino novo, com o efeito da 0.13.0 | OK |
+| C3 | menu com os dois acervos, do mais recente ao mais antigo, o aberto marcado; «abrir» troca; «Esquecer este acervo» com alterações pede confirmação | OK |
+| C4 | três filtros e a busca: «3» no botão, quatro etiquetas, o × tira só a sua, «Limpar tudo» tira todas e a busca, «5 de 150 faixas» com 5 cartões | OK |
+| C5 | sem filtro nem busca, a fileira fica `hidden`, com altura 0 | OK |
+| C6 | `/` leva o foco à busca; dentro de um campo de texto, digita «/» | OK |
+| C7 | um popover por vez; `Esc` fecha e devolve o foco ao botão; clique fora fecha; `aria-expanded` acompanha | OK |
+| C8 | «● N alterações não salvas» e «Salvar .json» só com alterações; «Salvar» baixa com o nome de origem e zera | OK |
+| C9 | a 390×844, barra de 51 px numa linha; botões de 44 px; a busca abre e fecha; o rascunho fica fixo no pé | OK |
+| C10 | com um filtro ligado, 95 px de controles fixos (barra 51 + etiquetas 44) | OK |
+| C11 | a 1024 px, com rascunho e «editar» ligados, a barra segue numa linha e a busca fica com pelo menos 160 px | OK |
+| C12 | o `<main>` sai idêntico ao da 0.13.0 para o mesmo acervo | OK |
+| C13 | `v0.14.0`; nenhum erro de página; as entregas 1 a 3 seguem em 15 de 15, 25 de 25 e 19 de 19, com os seletores ajustados | OK |
+
+**Prova de vida, medida:** no app da 0.13.0 o teste para no começo, antes do C1, porque os elementos da barra
+nova não existem lá.
+
+**O que a revisão visual pegou** (capturas a 1366×720 e 390×844, antes da WO): três nomes de classe do CSS novo
+já existiam no app (`.chip` dos módulos, `.badge` do estado e `.acervo-meta` da lista de acervos). Isso causava a
+etiqueta em fonte mono, o seletor por cima da busca e o texto da lista por baixo dos botões. As classes novas viraram
+`.fchip`, `.count-badge` e `.acervo-sub`. No celular, o toast subiu para cima do rascunho.
 
 ## Fora de escopo
 
