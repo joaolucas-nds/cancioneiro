@@ -4,6 +4,23 @@
 
 ---
 
+## [0.12.0] — 2026-11-05
+
+Segunda das três entregas da curadoria no app (i-041, DEC-028): vários acervos guardados no navegador.
+
+### Added
+- **Vários acervos no navegador:** cada `.json` importado fica guardado no IndexedDB (banco `cancioneiro`), pelo nome do arquivo; reimportar o mesmo arquivo substitui a cópia, e o toast diz de quando era a anterior. O botão «acervos (N)», na linha de origem, abre a janela com os guardados — título, arquivo, data, álbuns e faixas — para abrir outro sem seletor de arquivo ou esquecer um. O app reabre no último acervo aberto. Na primeira gravação, pede ao navegador para guardar de forma persistente; a janela mostra o resultado.
+
+### Changed
+- **Marcas «usei» por acervo.** Até a 0.11.0 eram só por id, e o mesmo id em dois acervos (`brv-04` na Rainha e no demo, `cinzeiro-01` no demo e no exemplo) marcava nos dois. A migração copia cada marca antiga para todo acervo guardado que tem aquele id, então nada some da tela.
+- **Migração da cópia antiga** (`cancioneiro:acervo`, da 0.9.0 à 0.11.0): é gravada no IndexedDB, lida de volta e comparada, e só então apagada. Se falhar, ela fica, e o app segue como na 0.11.0. Sem IndexedDB, o app guarda só o último, como antes, e avisa uma vez.
+- **Esquecer** apaga só aquele acervo; as marcas dele ficam, e reimportar o arquivo as traz de volta.
+- **Importar um `.json` que não é acervo** (sem `albums`) não guarda mais a cópia. Antes, o toast de erro era coberto por «Acervo importado».
+
+Spec `meta/specs/261104-varios-acervos.md`: 25 de 25 conferências dos 16 critérios no Chromium headless, com acervos sintéticos do tamanho dos reais (960 mil, 430 mil e 22 mil caracteres) e prova de vida no app da 0.11.0; o teste da entrega 1 continua em 15 de 15.
+
+---
+
 ## [0.11.0] — 2026-11-02
 
 Primeira das três entregas da curadoria no app (i-040, DEC-028): exportar uma faixa como `.json`.

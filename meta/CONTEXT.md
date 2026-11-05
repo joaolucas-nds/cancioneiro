@@ -22,7 +22,7 @@ O problema que resolve: hoje as canções vivem espalhadas em vários `.md` de �
 - **JSON como fonte de verdade, MD como export** (DEC-001): a ferramenta precisa de campos discretos para copy-por-botão e troca modular; parsear MD de convenção livre é frágil (é a causa da bagunça atual). MD vira saída legível sob demanda, não entrada.
 - **HTML+JS single-file** (DEC-002): zero setup no Windows, abre com duplo-clique, sem Node/Python, sem servidor. É o padrão das ferramentas concorrentes do nicho.
 - **Nome "cancioneiro"** (DEC-003): português, evoca coletânea de canções, não amarra à marca "Suno" — sobrevive a troca de plataforma.
-- **Dado canônico em arquivo versionado, não em `localStorage`** (DEC-004): o navegador é cache/rascunho; o JSON no repo é a verdade. Evita perder acervo ao limpar o navegador. O navegador guarda uma **cópia do último acervo importado** para ele voltar ao abrir — cache, com a origem e a data na tela e um botão para esquecer (DEC-022). A curadoria pela tela, em três entregas, vai editar um rascunho marcado até «Baixar .json»; depois dela, o `.json` curado manda sobre os conversores (DEC-028).
+- **Dado canônico em arquivo versionado, não em `localStorage`** (DEC-004): o navegador é cache/rascunho; o JSON no repo é a verdade. Evita perder acervo ao limpar o navegador. O navegador guarda **cópias dos acervos importados** (IndexedDB, pelo nome do arquivo) para trocar de acervo e reabrir no último — cache, com a origem e a data na tela e um botão para esquecer (DEC-022, DEC-028). A curadoria pela tela, em três entregas, vai editar um rascunho marcado até «Baixar .json»; depois dela, o `.json` curado manda sobre os conversores (DEC-028).
 
 ## Stack
 
@@ -31,7 +31,7 @@ O problema que resolve: hoje as canções vivem espalhadas em vários `.md` de �
 | Ferramenta | HTML5 + JS vanilla (sem framework, sem build) | Um arquivo `app/index.html`. CSS inline ou `<style>`. |
 | Dados | JSON validável por JSON Schema (Draft 2020-12) | `schema/song.schema.json` + `schema/collection.schema.json`. |
 | Export | Markdown gerado por JS | Formato limpo (rótulo FORA do bloco copiável). |
-| Persistência no navegador | `localStorage`: marcações «usei», a estrutura do cartão e a cópia do último acervo importado | Nunca fonte de verdade — ver DEC-004 e DEC-022. |
+| Persistência no navegador | IndexedDB (banco `cancioneiro`): as cópias dos acervos importados · `localStorage` (`cancioneiro:ui`): marcações «usei» por acervo e a estrutura do cartão | Nunca fonte de verdade — ver DEC-004, DEC-022 e DEC-028. |
 | Repositório | Git; desenvolvido no Claude Code + chat de planejamento | Ver seção "Raias" no CEREBRO. |
 
 ## Estrutura do repositório
@@ -95,7 +95,8 @@ Conhecimento destilado no GLOSSARY e no HISTORY (herdado do guia de produção d
 ## Armadilhas conhecidas
 
 - **Não parsear MD de convenção livre.** Os álbuns antigos (`ALBUM_*`, `album_guia_suno.md`) usam convenções diferentes entre si (`[ESTILO SUNO]`, `[LETRA]`, `[VAR A]`). A conversão para o esquema é semi-manual/assistida por chat, não um parser universal confiável.
-- **`localStorage` não é backup.** Limpar o navegador apaga marcações, a estrutura do cartão e a cópia do acervo. O acervo real está no JSON versionado; a cópia guardada pode estar velha se o arquivo mudou fora — a linha de origem diz quando ela foi importada.
+- **No `file://`, todas as páginas locais dividem o armazenamento** (medido em 2026-11-04: 9 das 11 chaves do `localStorage` eram de outros projetos). O app só lê, grava e apaga o que tem o nome `cancioneiro`; nunca conta nem limpa o resto.
+- **O navegador não é backup.** Limpar o navegador apaga marcações, a estrutura do cartão e as cópias dos acervos. O acervo real está no JSON versionado; a cópia guardada pode estar velha se o arquivo mudou fora — a linha de origem diz quando ela foi importada.
 - **A interface do Suno muda.** Nomes de botões/menus (Extend, Persona, Custom Mode, Creative Sliders) variam entre versões. O conhecimento no HISTORY tem data — reconfirmar na conta antes de assumir que algo sumiu.
 - **Não competir com o gerador genérico.** Já existem builders de prompt (usesuno.com, sunobuilder). O diferencial do Cancioneiro é *organizar o acervo próprio por álbum/bloco com copy marcável e troca modular*, não gerar prompt do zero.
 

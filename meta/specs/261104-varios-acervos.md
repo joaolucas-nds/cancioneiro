@@ -1,6 +1,6 @@
 # SPEC — Vários acervos guardados no navegador (curadoria, entrega 2)
 
-> **Status:** Pronta para WO (0.12.0)
+> **Status:** Pronta — aplicação pela `meta/workorders/261105-wo0023-varios-acervos.md` (0.12.0)
 > **Decidida em:** 2026-11-02 pelo dono: F1 + G1, entregas 1 → 2 → 3 (análise
 > `meta/analises/261102-ANALISE-curadoria-no-app.md`, DEC-028). As escolhas abaixo são técnicas, dentro dessa decisão.
 > **Data:** 2026-11-04 (data de criação; não muda depois)
@@ -23,7 +23,7 @@ No navegador do dono (Chrome 156, Windows), aberto por `file://`:
 | Medida | Valor |
 |---|---|
 | `localStorage` total | 5.242.731 caracteres (livre 5.214.208, com precisão de 4.096) |
-| `localStorage` já usado | 28.523 caracteres em 11 chaves, **7 delas de outros projetos** (`kit-state-*`, `kit-niche`, `base_v4`) |
+| `localStorage` já usado | 28.523 caracteres em 11 chaves, **9 delas de outros projetos**: sete `kit-state-*`, `kit-niche` e `base_v4` (corrigido em 2026-11-05; a primeira versão dizia 7, contando só o prefixo) |
 | IndexedDB | grava e lê 1.500.000 caracteres |
 | Cota (`storage.estimate`) | 10.737 MB |
 | Armazenamento persistente | `false` (ainda não foi pedido) |
@@ -32,8 +32,9 @@ No navegador do dono (Chrome 156, Windows), aberto por `file://`:
 O que isso muda no plano:
 - **Some o risco principal da análise:** o IndexedDB funciona no `file://`. O ramo sem IndexedDB fica como
   defesa, não como caso comum.
-- **No `file://`, todas as páginas locais são a mesma origem.** As chaves `kit-state-*` são das ferramentas do KCM
-  abertas pelo mesmo navegador. Tudo do Cancioneiro precisa de nome próprio: o banco se chama `cancioneiro`, as chaves
+- **No `file://`, todas as páginas locais são a mesma origem.** As chaves `kit-state-*` e `kit-niche` são,
+  pelo nome, das ferramentas do KCM abertas pelo mesmo navegador; `base_v4`, de dono desconhecido `[deduzido, não
+  conferido]`. Carta 02 ao KCM. Tudo do Cancioneiro precisa de nome próprio: o banco se chama `cancioneiro`, as chaves
   continuam com o prefixo `cancioneiro:`, e o app nunca lê, conta nem apaga o que não é dele.
 - **A cota do `localStorage` é a maior das estimativas** (5,24 milhões), mas é dividida com essas outras páginas. G1
   continua: os três acervos (1.410.184 caracteres) ocupariam 27% de um espaço que não é só nosso.
@@ -147,6 +148,36 @@ Acervos sintéticos do tamanho dos reais: os do dono ficam fora do repo e fora d
 | C16 | O cabeçalho diz `v0.12.0`; nenhum erro de página; a entrega 1 (exportar faixa como `.json`) continua passando no teste dela. |
 
 **Prova de vida:** o mesmo teste no app da 0.11.0 reprova (no mínimo C1, C3, C6 e C16).
+
+## Resultado (medido pelo chat em 2026-11-05, Chromium headless, `file://` e `http://` local, app de chegada da WO 0023)
+
+**25 de 25 conferências**, cobrindo os 16 critérios. Acervos sintéticos de 960.109, 430.328 e 22.014 caracteres
+(10 álbuns/151 faixas com `brv-04`, 12/205, 1/7 com os 27 módulos do demo).
+
+| # | Conferências | Resultado |
+|---|---|---|
+| C1 | migração: mesmo acervo, 1 registro, chave antiga apagada, 2 cartões marcados; marca órfã (`cinzeiro-01`) em `demo.json` | OK, 2 de 2 |
+| C2 | `put` que lança: a chave antiga fica, o app abre como na 0.11.0, sem «acervos» | OK |
+| C3 | 3 registros e «acervos (3)» antes do «esquecer»; janela em ordem, com contagens («12 álbuns, 205 faixas», «1 álbum, 7 faixas»), o aberto marcado; «abrir» troca e fecha a janela | OK, 3 de 3 |
+| C4 | recarregar abre a Rainha (último aberto), não o demo (último importado), com a marca | OK |
+| C5 | reimportar `albuns-reagrupados.json`: continua 4 registros, data nova, toast «substituiu a cópia de» | OK |
+| C6 | `brv-04` marcado na Rainha não aparece no demo; filtro «Uso»: 0 no demo, 1 na Rainha | OK, 2 de 2 |
+| C7 | marca antiga `brv-04`, com a Rainha e o demo guardados: vai para os dois | OK |
+| C8 | esquecer um que não é o aberto; esquecer o aberto (abre o mais recente, toast das marcas); esquecer todos (estado inicial); reimportar traz a marca | OK, 4 de 4 |
+| C9 | sem `indexedDB`: o último no `localStorage`, sem botão, aviso só no primeiro toast | OK |
+| C10 | `put` que lança numa importação: abre na sessão, «não coube», origem «não guardado» | OK |
+| C11 | o migrado e os três importados saem do banco idênticos (`JSON.stringify`) | OK, 2 de 2 |
+| C12 | «Baixar .json» do aberto igual ao importado | OK |
+| C13 | `http://` sem nada guardado: carrega o demo; a marca vai para `demo.json` | OK |
+| C14 | `kit-state-game`, `kit-niche`, `base_v4` postos antes seguem iguais depois de importar, trocar e esquecer | OK |
+| C15 | `persistAsked` gravado; a janela mostra «Guardado de forma persistente: …» | OK |
+| C16 | `v0.12.0`; nenhum erro de página; o teste da entrega 1 segue em 15 de 15 | OK, 2 de 2 + 15 de 15 |
+
+**Prova de vida, medida:** no app da 0.11.0 o mesmo teste reprova C1 e C1b e para em `dbGet is not defined`.
+
+**Achado de passagem, fora do escopo:** o CSS `.controls { display: flex }` vence o atributo `hidden`, então a barra
+de controles nunca some sem acervo (já era assim). O C8 confere o atributo, que é a intenção do código; o defeito
+virou a i-044.
 
 ## Fora de escopo
 

@@ -45,6 +45,8 @@ Comece vazia e escreva quando doer duas vezes: técnica que você precisou expli
 - **O diferencial não é gerar prompt, é organizar o acervo próprio.** Já existem builders de prompt (`meta/HISTORY.md` §7). Proposta que empurre o projeto para competir no gerador genérico recebe o contra-argumento antes de virar trabalho.
 - **O truncamento do Suno é silencioso** — passou do limite, o excedente não chega ao modelo, sem erro. É por isso que a Fase 3 existe; números em `meta/HISTORY.md` §9-11.
 - **Número de WO medido no container do chat precisa de locale UTF-8.** `wc -m` sem `LC_ALL=C.UTF-8` conta bytes: a WO 0017 pediu 6.691 «caracteres» e eram 6.691 bytes / 6.481 caracteres (relatório do Code). Meça com o locale ligado, e diga a unidade.
+- **`app/index.html` · armazenamento no `file://`.** Todas as páginas locais abertas no mesmo navegador são uma origem só (sonda de 2026-11-04: 9 das 11 chaves eram de outros projetos). Tudo do app tem o nome `cancioneiro` (banco e prefixo `cancioneiro:`), e nenhum código lê, conta ou apaga chave alheia — `localStorage.clear()` é proibido aqui.
+- **Contar por prefixo não é contar.** A spec da entrega 2 disse «7 chaves de outros projetos» contando os `kit-state-*`; eram 9. Contagem que vai para documento sai do item por item, não do padrão que a maioria segue.
 - **Checagem de WO não usa emoji no padrão do `grep`.** No shell do Code, `grep -c '🔨'` devolve 0 com o emoji presente (WO 0017, checagem 5). Conte pelo texto vizinho (`'^### i-03[03-7] '`) ou pelo hash.
 
 ## Princípios de trabalho
