@@ -217,6 +217,16 @@
   }
   .card-foot { display: flex; gap: 8px; margin-top: 2px; }
   .card-foot button { font-size: 12px; padding: 5px 10px; }
+  /* Curadoria (DEC-028): no modo «editar» o rodape ganha ↑ ↓ mover excluir e quebra linha. */
+  .card-foot { flex-wrap: wrap; }
+  .card-foot .edit-btn { border-style: dashed; }
+  .origin [data-role="edit-btn"][aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .origin .dirty { color: var(--ember); font-weight: 600; }
+  .import-list { list-style: none; padding: 0; margin: 8px 0 12px; max-height: 45vh; overflow: auto;
+    display: flex; flex-direction: column; gap: 8px; }
+  .import-list li { display: flex; flex-direction: column; gap: 2px; padding: 6px 10px; background: var(--paper-2); border-radius: 6px; }
+  .import-list label { font-size: 13px; margin: 0; }
+  .prompt-dialog select, .prompt-dialog input[type="text"] { font: inherit; padding: 4px 6px; margin: 0 0 8px; width: 100%; box-sizing: border-box; }
 
   .toast {
     position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
@@ -303,7 +313,7 @@
     <h1>Cancioneiro</h1>
     <!-- Versao: a mesma do topo do meta/CHANGELOG.md. O scripts/validate.py confere
          que app, CHANGELOG, README e STATUS dizem a mesma (i-027). -->
-    <span class="version" data-role="app-version">v0.12.0</span>
+    <span class="version" data-role="app-version">v0.13.0</span>
   </div>
   <div class="tools">
     <button id="prompt-btn" title="Copiar o prompt-modelo, com o seu pedido, para um chat">Prompt</button>
@@ -387,6 +397,41 @@
   </div>
 </dialog>
 
+<dialog class="prompt-dialog" id="confirm-dialog" aria-labelledby="confirm-text">
+  <p id="confirm-text"></p>
+  <div class="dialog-actions">
+    <button type="button" id="confirm-cancel-btn">cancelar</button>
+    <button type="button" id="confirm-ok-btn" class="spacer">confirmar</button>
+  </div>
+</dialog>
+
+<dialog class="prompt-dialog" id="move-dialog" aria-labelledby="move-dialog-title">
+  <h2 id="move-dialog-title">Mover faixa</h2>
+  <p>«<span id="move-song-title"></span>» vai para o fim do álbum escolhido.</p>
+  <label for="move-target">Álbum</label>
+  <select id="move-target"></select>
+  <input type="text" id="move-new-title" placeholder="título do álbum novo" hidden>
+  <div class="dialog-actions">
+    <button type="button" id="move-cancel-btn">cancelar</button>
+    <button type="button" id="move-ok-btn" class="spacer">mover</button>
+  </div>
+</dialog>
+
+<dialog class="prompt-dialog" id="import-dialog" aria-labelledby="import-dialog-title">
+  <h2 id="import-dialog-title">Importar faixas</h2>
+  <p>De <span id="import-source"></span>. Desmarque o que não quer trazer. Faixa idêntica a uma que já está
+  aqui é pulada; com o mesmo id e conteúdo diferente, entra com sufixo (-2).</p>
+  <ul class="import-list" id="import-list"></ul>
+  <label for="import-target">Destino</label>
+  <select id="import-target"></select>
+  <input type="text" id="import-new-title" placeholder="título do álbum novo" hidden>
+  <div class="dialog-actions">
+    <button type="button" id="import-cancel-btn">cancelar</button>
+    <button type="button" id="import-ok-btn" class="spacer">importar</button>
+  </div>
+</dialog>
+<input type="file" id="tracks-input" accept=".json,application/json" hidden>
+
 <div class="drop-hint" aria-hidden="true">Solte o .json para importar</div>
 
 <script>
@@ -464,6 +509,7 @@ async function tryAutoLoad() {
       if (!res.ok) continue;
       const json = await res.json();
       App.source = DEMO_SOURCE;   // as marcas do demo, o mesmo de quem importa demo.json
+      App.saved = false; App.changes = 0;   // sem copia guardada, sem curadoria
       setCollection(json);
       setOrigin("carregado de " + path.replace(/^\.\.\//, "") + " (GitHub Pages)", false);
       toast("Acervo carregado de " + path + moduleRefsNotice(json));
@@ -502,6 +548,10 @@ function importFromFile(file) {
     // A abertura (boot) precisa ter terminado: senao ela poderia abrir o acervo
     // guardado por cima deste, ou o banco ainda nao estaria pronto.
     await bootDone;
+    // Mesmo nome com alteracoes nao baixadas: o arquivo substituiria o rascunho.
+    const pending = await recordChanges(file.name);
+    if (pending > 0 && !(await confirmAsk("Importar " + file.name + " substitui o rascunho guardado, e as "
+        + nPlural(pending, "alteração não baixada se perde", "alterações não baixadas se perdem") + ".", "substituir"))) return;
     try {
       const before = App.source;
       App.source = file.name;   // antes do render: as marcas sao deste acervo
@@ -511,6 +561,7 @@ function importFromFile(file) {
       App.ui.open = file.name;
       saveUiState();
       const r = await saveAcervo(json, file.name);
+      App.saved = r.ok; App.changes = 0; App.savedAt = r.savedAt; App.editedAt = null; App.unsavedInMemory = false;
       if (r.ok) savedOrigin(file.name, r.savedAt);
       else setOrigin("importado de " + file.name + " · não guardado no navegador", false);
       toast("Acervo importado: " + (json.title || file.name)
@@ -598,10 +649,19 @@ function downloadFile(filename, content, mime) {
 
 function slug(s) { return (s || "acervo").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
 
+/** «Baixar .json». Com rascunho (acervo guardado), sai com o NOME DO ARQUIVO de
+    origem, para substituir o antigo, e zera a contagem de alteracoes (DEC-028).
+    Sem copia guardada (o demo do Pages), sai com o titulo, como antes. */
 function downloadCollection() {
   if (!App.collection) { toast("Nada para baixar ainda"); return; }
-  downloadFile(slug(App.collection.title) + ".json",
-    JSON.stringify(App.collection, null, 2), "application/json");
+  stripInternalKeys(App.collection);
+  const name = App.saved && App.source ? App.source : slug(App.collection.title) + ".json";
+  downloadFile(name, JSON.stringify(App.collection, null, 2), "application/json");
+  if (!App.saved) return;
+  App.changes = 0;
+  persistDraft(false).then(() => { App.unsavedInMemory = false; });
+  toast("Baixado como " + name + ". Substitua o arquivo antigo por este: ele passa a ser a fonte."
+        + " Se o navegador acrescentar «(1)» ao nome, tire ao substituir.");
 }
 
 /* ===================================================================
@@ -948,13 +1008,16 @@ async function copyText(text, btn) {
 /* ===================================================================
    Renderizacao
    =================================================================== */
-function populateAlbumFilter() {
+/** Com `keep` (curadoria), mantem o album escolhido se ele ainda existir. */
+function populateAlbumFilter(keep) {
   const sel = document.getElementById("filter-album");
+  const cur = sel.value;
   sel.innerHTML = '<option value="">todos</option>';
   (App.collection.albums || []).forEach(a => {
     const o = document.createElement("option");
     o.value = a.id; o.textContent = a.title; sel.appendChild(o);
   });
+  if (keep && [...sel.options].some(o => o.value === cur)) sel.value = cur;
 }
 
 function currentFilters() {
@@ -1172,6 +1235,7 @@ function fieldBlock(label, content, extraClass) {
 function renderCard(song) {
   const card = document.createElement("div");
   card.className = "card" + (isUsed(song.id) ? " used" : "");
+  card.dataset.id = song.id;   // para a curadoria trazer o cartao movido para a tela
 
   // Titulo + estado + idioma (REFERENCIA HUMANA — nunca copiavel)
   const title = document.createElement("div");
@@ -1289,6 +1353,20 @@ function renderCard(song) {
   jsonBtn.title = "Exporta esta faixa como acervo .json, com os módulos que ela cita. Sai o dado do acervo: sem os módulos ligados nem o BPM da tela.";
   jsonBtn.addEventListener("click", () => exportSongJson(song));
   foot.appendChild(jsonBtn);
+  // Modo «editar» (DEC-028): so com o acervo guardado, que e onde o rascunho mora.
+  if (App.editing && App.saved) {
+    const loc = locateSong(song.id);
+    const mk = (txt, title, fn, off) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "edit-btn"; b.textContent = txt; b.title = title; b.disabled = !!off;
+      b.addEventListener("click", fn);
+      foot.appendChild(b);
+    };
+    mk("↑", "Subir no álbum", () => moveSongBy(song.id, -1), !loc || loc.index === 0);
+    mk("↓", "Descer no álbum", () => moveSongBy(song.id, 1), !loc || loc.index === loc.album.songs.length - 1);
+    mk("mover…", "Levar para outro álbum ou para um álbum novo", () => openMoveDialog(song.id));
+    mk("excluir", "Tirar do rascunho; o arquivo só muda quando você baixar o novo", () => deleteSong(song.id));
+  }
   card.appendChild(foot);
 
   return card;
@@ -1694,22 +1772,38 @@ function fmtDate(iso) {
 
 /** A linha de origem na barra de controles. Com `forgettable`, o «esquecer» do
     acervo aberto; com acervos guardados, o «acervos (N)» entre os dois. */
+/** A linha de origem na barra de controles, redesenhada a partir do estado.
+    Chamada com texto, guarda o texto; sem argumentos, so redesenha (curadoria).
+    Ordem: o texto · a marca de rascunho com «Baixar .json» · «editar» ·
+    «importar faixas…» (no modo editar) · «acervos (N)» · «esquecer». */
 function setOrigin(text, forgettable) {
+  if (text !== undefined) { App.originText = text; App.originForget = !!forgettable; }
   const el = document.getElementById("origin");
   el.textContent = "";
-  const t = document.createElement("span"); t.textContent = "Acervo " + text; el.appendChild(t);
-  if (Store.db && Store.count > 0) {
-    const l = document.createElement("button"); l.type = "button";
-    l.textContent = "acervos (" + Store.count + ")"; l.dataset.role = "acervos-btn";
-    l.title = "Os acervos guardados neste navegador: abrir outro ou esquecer.";
-    l.addEventListener("click", openAcervosDialog);
-    el.appendChild(l);
+  if (!App.originText) return;
+  const btn = (label, role, title, fn) => {
+    const b = document.createElement("button"); b.type = "button"; b.textContent = label;
+    if (role) b.dataset.role = role;
+    b.title = title; b.addEventListener("click", fn); el.appendChild(b); return b;
+  };
+  const t = document.createElement("span"); t.textContent = "Acervo " + App.originText; el.appendChild(t);
+  if (App.saved && App.changes > 0) {
+    const d = document.createElement("span"); d.className = "dirty"; d.dataset.role = "dirty";
+    d.textContent = "alterado: " + nPlural(App.changes, "alteração não baixada", "alterações não baixadas");
+    el.appendChild(d);
+    btn("Baixar .json", "dirty-download", "Baixa o acervo com as alterações, com o nome do arquivo de origem.", downloadCollection);
   }
-  if (forgettable) {
-    const b = document.createElement("button"); b.type = "button"; b.textContent = "esquecer";
-    b.title = "Apaga a cópia deste acervo guardada neste navegador. O arquivo no seu computador não é tocado.";
-    b.addEventListener("click", () => forgetAcervo(App.source));
-    el.appendChild(b);
+  if (App.saved) {
+    const e = btn("editar", "edit-btn", "Liga a curadoria: mudar a ordem, mover, excluir e importar faixas.", toggleEditing);
+    e.setAttribute("aria-pressed", App.editing ? "true" : "false");
+    if (App.editing) btn("importar faixas…", "import-tracks-btn", "Traz faixas de outro .json para este acervo.", pickTracksFile);
+  }
+  if (Store.db && Store.count > 0) {
+    btn("acervos (" + Store.count + ")", "acervos-btn", "Os acervos guardados neste navegador: abrir outro ou esquecer.", openAcervosDialog);
+  }
+  if (App.originForget) {
+    btn("esquecer", "", "Apaga a cópia deste acervo guardada neste navegador. O arquivo no seu computador não é tocado.",
+        () => forgetAcervo(App.source));
   }
 }
 const savedOrigin = (source, savedAt) =>
@@ -1725,6 +1819,8 @@ function openRecord(rec) {
   if (App.collection !== rec.json) { App.source = before; return false; }
   App.ui.open = rec.source;
   saveUiState();
+  App.saved = true; App.changes = rec.changes || 0; App.savedAt = rec.savedAt;
+  App.editedAt = rec.editedAt || null; App.unsavedInMemory = false;
   savedOrigin(rec.source, rec.savedAt);
   return true;
 }
@@ -1754,7 +1850,8 @@ function migrateMarks(records) {
     modo sem IndexedDB nesta sessao (devolve false). */
 async function migrateLegacy(legacy) {
   const rec = { source: legacy.source || "acervo.json", title: legacy.json.title || legacy.source,
-                savedAt: legacy.savedAt, json: legacy.json };
+                savedAt: legacy.savedAt, json: legacy.json,
+                changes: legacy.changes || 0, editedAt: legacy.editedAt || null };
   try {
     await dbPut(rec);
     const back = await dbGet(rec.source);
@@ -1780,7 +1877,8 @@ async function boot() {
   }
   if (!Store.db) {
     const c = loadCollectionCache();
-    records = c ? [{ source: c.source || "acervo.json", title: c.json.title, savedAt: c.savedAt, json: c.json }] : [];
+    records = c ? [{ source: c.source || "acervo.json", title: c.json.title, savedAt: c.savedAt, json: c.json,
+                     changes: c.changes || 0, editedAt: c.editedAt || null }] : [];
   }
   Store.count = Store.db ? records.length : 0;
   migrateMarks(records);
@@ -1796,6 +1894,9 @@ async function boot() {
     recente que sobrou; sem nenhum, volta ao estado inicial (no Pages, o demo). */
 async function forgetAcervo(source) {
   if (!source) return;
+  const pending = await recordChanges(source);
+  if (pending > 0 && !(await confirmAsk("Esquecer " + source + "? "
+      + nPlural(pending, "alteração não baixada se perde", "alterações não baixadas se perdem") + ".", "esquecer"))) return;
   if (Store.db) {
     try { await dbDelete(source); } catch (e) { toast("Não consegui esquecer: " + e.message); return; }
     await refreshCount();
@@ -1809,6 +1910,7 @@ async function forgetAcervo(source) {
   if (Store.db) { try { rest = await dbAll(); } catch (e) { rest = []; } }
   if (rest.length) { openRecord(newest(rest)); toast(msg); return; }
   App.collection = null; App.activeModules = {}; App.bpm = {}; App.modulesById = {}; App.source = null;
+  App.saved = false; App.changes = 0; App.originText = ""; App.unsavedInMemory = false;
   delete App.ui.open; saveUiState();
   document.getElementById("main").innerHTML = EMPTY_HTML;
   document.getElementById("origin").textContent = "";
@@ -1882,6 +1984,327 @@ async function openAcervosDialog() {
   await renderAcervosDialog();
   document.getElementById("acervos-dialog").showModal();
 }
+
+/* ===================================================================
+   Curadoria pela tela (i-040, DEC-028 — spec meta/specs/261105-curadoria-pela-tela.md)
+   O app edita o RASCUNHO: a copia guardada do acervo aberto (entrega 2).
+   Cada operacao grava o rascunho e soma 1 em App.changes; «Baixar .json»
+   baixa com o nome do arquivo de origem e zera. O arquivo continua sendo a
+   fonte (DEC-004): o rascunho so vira fonte quando o dono substitui o arquivo.
+   Fechar a aba NAO avisa, porque o rascunho ja esta gravado no navegador; so
+   avisa quando a gravacao falhou (App.unsavedInMemory).
+   =================================================================== */
+App.editing = false;          // o interruptor «editar», so da sessao
+App.saved = false;            // o acervo aberto tem copia guardada (sem ela, nao ha rascunho)
+App.changes = 0;              // alteracoes desde a importacao ou o ultimo «Baixar .json»
+App.savedAt = null; App.editedAt = null;
+App.unsavedInMemory = false;  // a ultima gravacao do rascunho falhou
+App.originText = ""; App.originForget = false;   // o que setOrigin redesenha
+
+const nPlural = (n, um, varios) => n + " " + (n === 1 ? um : varios);
+
+/** Grava o rascunho do acervo aberto; com `count`, soma uma alteracao.
+    Devolve false se o navegador recusou (o rascunho fica so na memoria). */
+async function persistDraft(count) {
+  if (!App.collection || !App.saved) return false;
+  if (count) { App.changes++; App.editedAt = new Date().toISOString(); }
+  const rec = { source: App.source, title: App.collection.title || App.source, savedAt: App.savedAt,
+                editedAt: App.editedAt, changes: App.changes, json: App.collection };
+  let ok = true;
+  if (Store.db) { try { await dbPut(rec); } catch (e) { ok = false; } }
+  else { try { localStorage.setItem(CACHE_KEY, JSON.stringify(rec)); } catch (e) { ok = false; } }
+  App.unsavedInMemory = !ok;
+  setOrigin();
+  return ok;
+}
+
+/** Quantas alteracoes nao baixadas tem o acervo guardado com esse nome. */
+async function recordChanges(source) {
+  if (source === App.source && App.saved) return App.changes;
+  if (Store.db) {
+    try { const r = await dbGet(source); return (r && r.changes) || 0; } catch (e) { return 0; }
+  }
+  const c = loadCollectionCache();
+  return c && c.source === source ? (c.changes || 0) : 0;
+}
+
+/** Janela de confirmacao do app (sem confirm() do navegador). Resolve true/false. */
+function confirmAsk(message, okLabel) {
+  return new Promise(resolve => {
+    const dlg = document.getElementById("confirm-dialog");
+    document.getElementById("confirm-text").textContent = message;
+    const ok = document.getElementById("confirm-ok-btn");
+    ok.textContent = okLabel || "confirmar";
+    let done = false;
+    const finish = v => { if (done) return; done = true; if (dlg.open) dlg.close(); resolve(v); };
+    ok.onclick = () => finish(true);
+    document.getElementById("confirm-cancel-btn").onclick = () => finish(false);
+    dlg.oncancel = e => { e.preventDefault(); finish(false); };
+    dlg.showModal();
+  });
+}
+
+function locateSong(id) {
+  for (const album of (App.collection && App.collection.albums) || []) {
+    const i = (album.songs || []).findIndex(s => s.id === id);
+    if (i >= 0) return { album, index: i };
+  }
+  return null;
+}
+/** Id de album a partir do titulo: sem acento, so [a-z0-9-] (o padrao do esquema). */
+function idSlug(title) {
+  const s = String(title || "").normalize("NFD").replace(/[̀-ͯ]/g, "");
+  return slug(s) || "album";
+}
+function nextFreeId(base, taken) {
+  if (!taken.has(base)) return base;
+  let n = 2;
+  while (taken.has(base + "-" + n)) n++;
+  return base + "-" + n;
+}
+const allSongIds = () => new Set((App.collection.albums || []).flatMap(a => (a.songs || []).map(s => s.id)));
+const albumIdSet = () => new Set((App.collection.albums || []).map(a => a.id));
+function addModule(m) {
+  (App.collection.styleModules = App.collection.styleModules || []).push(m);
+  App.modulesById[m.id] = m;
+}
+
+/** Album que ficou sem faixa sai do rascunho: a tela nao mostra album vazio,
+    e mante-lo criaria um album invisivel. Devolve o trecho do toast. */
+function pruneEmpty(album) {
+  if ((album.songs || []).length) return "";
+  const list = App.collection.albums, i = list.indexOf(album);
+  if (i >= 0) list.splice(i, 1);
+  return " · o álbum «" + album.title + "» ficou vazio e saiu";
+}
+
+/** Redesenha mantendo a rolagem; com `focusId`, so rola se aquele cartao saiu
+    da tela. Um cartao costuma ser mais alto que a janela, entao rolar sempre
+    («nearest») mexeria na pagina a cada ↑/↓. */
+function rerender(focusId) {
+  const y = window.scrollY;
+  populateAlbumFilter(true);
+  render();
+  window.scrollTo(0, y);
+  if (focusId) {
+    const c = document.querySelector('.card[data-id="' + CSS.escape(focusId) + '"]');
+    if (!c) return;
+    const r = c.getBoundingClientRect();
+    if (r.bottom < 0 || r.top > window.innerHeight) c.scrollIntoView({ block: "start" });
+  }
+}
+/** Fecho comum das operacoes: redesenha, grava o rascunho (+1) e avisa. */
+async function afterEdit(msg, focusId) {
+  rerender(focusId);
+  const ok = await persistDraft(true);
+  toast(msg + (ok ? "" : " · não consegui guardar no navegador: baixe o .json para não perder"));
+}
+
+function toggleEditing() {
+  App.editing = !App.editing;
+  setOrigin();
+  rerender();
+}
+
+/** ↑ / ↓: troca com a vizinha na ordem COMPLETA do album, mesmo com filtro ligado. */
+async function moveSongBy(id, delta) {
+  const loc = locateSong(id);
+  if (!loc) return;
+  const songs = loc.album.songs, j = loc.index + delta;
+  if (j < 0 || j >= songs.length) return;
+  [songs[loc.index], songs[j]] = [songs[j], songs[loc.index]];
+  await afterEdit("«" + songs[j].title + "» " + (delta < 0 ? "subiu" : "desceu") + " em «" + loc.album.title + "»", id);
+}
+
+/** «mover…»: para o fim de outro album, ou de um album novo. A marca «usei», os
+    modulos ligados e o BPM vao junto, porque ficam presos ao id da faixa. */
+function openMoveDialog(id) {
+  const loc = locateSong(id);
+  if (!loc) return;
+  const dlg = document.getElementById("move-dialog");
+  const sel = document.getElementById("move-target"), inp = document.getElementById("move-new-title");
+  document.getElementById("move-song-title").textContent = loc.album.songs[loc.index].title;
+  sel.innerHTML = "";
+  App.collection.albums.filter(a => a !== loc.album).forEach(a => sel.appendChild(new Option(a.title, a.id)));
+  sel.appendChild(new Option("novo álbum…", "__new"));
+  inp.value = "";
+  const sync = () => { inp.hidden = sel.value !== "__new"; };
+  sel.onchange = sync; sync();
+  document.getElementById("move-cancel-btn").onclick = () => dlg.close();
+  document.getElementById("move-ok-btn").onclick = async () => {
+    let target;
+    if (sel.value === "__new") {
+      const title = inp.value.trim();
+      if (!title) { inp.focus(); return; }
+      target = { id: nextFreeId(idSlug(title), albumIdSet()), title, songs: [] };
+      App.collection.albums.push(target);
+    } else {
+      target = App.collection.albums.find(a => a.id === sel.value);
+    }
+    if (!target) return;
+    dlg.close();
+    const src = loc.album;
+    const [song] = src.songs.splice(loc.index, 1);
+    target.songs.push(song);
+    const gone = pruneEmpty(src);
+    await afterEdit("«" + song.title + "» foi para «" + target.title + "»" + gone, song.id);
+  };
+  dlg.showModal();
+}
+
+/** «excluir»: com confirmacao. A faixa sai do rascunho e a marca «usei» dela sai. */
+async function deleteSong(id) {
+  const loc = locateSong(id);
+  if (!loc) return;
+  const song = loc.album.songs[loc.index];
+  if (!(await confirmAsk("Excluir «" + song.title + "» deste acervo? Ela continua no arquivo até você baixar o novo.", "excluir"))) return;
+  loc.album.songs.splice(loc.index, 1);
+  const by = App.ui.usedBy && App.ui.usedBy[App.source];
+  if (by && by[id]) {
+    delete by[id];
+    if (!Object.keys(by).length) delete App.ui.usedBy[App.source];
+    saveUiState();
+  }
+  delete App.activeModules[id]; delete App.bpm[id];
+  const gone = pruneEmpty(loc.album);
+  await afterEdit("«" + song.title + "» excluída do rascunho" + gone);
+}
+
+/* ---- Importar faixas (regras da analise, item 4 da spec) ---- */
+function pickTracksFile() { document.getElementById("tracks-input").click(); }
+
+/** Le o .json de origem pelo mesmo leitor da importacao (aceita resposta de chat). */
+function readTracksFile(file) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    let src;
+    try { src = parseCollectionText(reader.result).json; }
+    catch (e) { toast("Arquivo inválido: não é um JSON válido"); return; }
+    stripInternalKeys(src);
+    if (!src || !Array.isArray(src.albums)) { toast("JSON sem 'albums' — não parece uma coleção do Cancioneiro"); return; }
+    openImportDialog(src, file.name);
+  };
+  reader.onerror = () => toast("Não consegui ler o arquivo");
+  reader.readAsText(file);
+}
+
+function openImportDialog(src, name) {
+  const dlg = document.getElementById("import-dialog");
+  document.getElementById("import-source").textContent = name;
+  const list = document.getElementById("import-list");
+  list.textContent = "";
+  src.albums.forEach((a, ai) => {
+    const li = document.createElement("li");
+    const h = document.createElement("strong"); h.textContent = a.title || a.id || "álbum"; li.appendChild(h);
+    (a.songs || []).forEach((s, si) => {
+      const lab = document.createElement("label");
+      const cb = document.createElement("input");
+      cb.type = "checkbox"; cb.checked = true; cb.dataset.key = ai + ":" + si;
+      lab.appendChild(cb);
+      lab.appendChild(document.createTextNode(" " + (s.title || s.id) + " "));
+      const m = document.createElement("span"); m.className = "acervo-meta"; m.textContent = s.id;
+      lab.appendChild(m);
+      li.appendChild(lab);
+    });
+    list.appendChild(li);
+  });
+  const sel = document.getElementById("import-target"), inp = document.getElementById("import-new-title");
+  sel.innerHTML = "";
+  sel.appendChild(new Option("manter os álbuns de origem", "__keep"));
+  App.collection.albums.forEach(a => sel.appendChild(new Option(a.title, a.id)));
+  sel.appendChild(new Option("novo álbum…", "__new"));
+  inp.value = "";
+  const sync = () => { inp.hidden = sel.value !== "__new"; };
+  sel.onchange = sync; sync();
+  document.getElementById("import-cancel-btn").onclick = () => dlg.close();
+  document.getElementById("import-ok-btn").onclick = async () => {
+    if (sel.value === "__new" && !inp.value.trim()) { inp.focus(); return; }
+    const keys = new Set([...list.querySelectorAll('input[type="checkbox"]')]
+      .filter(c => c.checked).map(c => c.dataset.key));
+    dlg.close();
+    await importTracks(src, keys, sel.value, inp.value.trim());
+  };
+  dlg.showModal();
+}
+
+/** Traz as faixas marcadas. Id repetido: identico (objeto inteiro serializado,
+    nunca so o titulo) pula; diferente entra com sufixo. Modulo citado: o que
+    falta entra; o identico nao duplica; o diferente entra com sufixo e a faixa
+    importada passa a citar o id novo; o que nao existe em lugar nenhum fica
+    citado e e contado (FIX-006: nada de saneamento mudo). */
+async function importTracks(src, keys, dest, newTitle) {
+  const coll = App.collection;
+  const n = { imported: 0, same: 0, renamed: 0, modsAdded: 0, modsRenamed: 0, missing: 0 };
+  const ids = allSongIds();
+  const srcMods = {};
+  (src.styleModules || []).forEach(m => { if (m && typeof m.id === "string") srcMods[m.id] = m; });
+  const modIds = new Set(Object.keys(App.modulesById));
+  const renamedMods = {};
+  const findSong = id => {
+    for (const a of coll.albums) { const s = (a.songs || []).find(x => x.id === id); if (s) return s; }
+    return null;
+  };
+  let fixed = null;   // destino unico (album escolhido ou novo); null = manter os de origem
+  if (dest === "__new") fixed = { id: nextFreeId(idSlug(newTitle), albumIdSet()), title: newTitle, songs: [] };
+  else if (dest !== "__keep") fixed = coll.albums.find(a => a.id === dest) || null;
+
+  src.albums.forEach((a, ai) => (a.songs || []).forEach((orig, si) => {
+    if (!keys.has(ai + ":" + si)) return;
+    const s = JSON.parse(JSON.stringify(orig));
+    const ex = ids.has(s.id) ? findSong(s.id) : null;
+    if (ex && JSON.stringify(ex) === JSON.stringify(s)) { n.same++; return; }
+    if (ids.has(s.id)) { s.id = nextFreeId(s.id, ids); n.renamed++; }
+    if (Array.isArray(s.styleModules)) {
+      s.styleModules = s.styleModules.map(ref => {
+        if (typeof ref !== "string") { n.missing++; return ref; }
+        const sm = srcMods[ref], em = App.modulesById[ref];
+        if (!sm) { if (!em) n.missing++; return ref; }
+        if (!em) { addModule(JSON.parse(JSON.stringify(sm))); modIds.add(ref); n.modsAdded++; return ref; }
+        if (JSON.stringify(em) === JSON.stringify(sm)) return ref;
+        if (!renamedMods[ref]) {
+          const nid = nextFreeId(ref, modIds); modIds.add(nid);
+          const copy = JSON.parse(JSON.stringify(sm)); copy.id = nid;
+          addModule(copy); renamedMods[ref] = nid; n.modsRenamed++;
+        }
+        return renamedMods[ref];
+      });
+    }
+    let target = fixed;
+    if (!target) {
+      target = coll.albums.find(x => x.id === a.id);
+      if (!target) {
+        const taken = albumIdSet();
+        target = { id: a.id && !taken.has(a.id) ? a.id : nextFreeId(idSlug(a.title), taken),
+                   title: a.title || a.id || "Álbum importado", songs: [] };
+        coll.albums.push(target);
+      }
+    } else if (!coll.albums.includes(target)) {
+      coll.albums.push(target);
+    }
+    target.songs.push(s);
+    ids.add(s.id);
+    n.imported++;
+  }));
+
+  const parts = [];
+  if (n.same) parts.push(n.same + (n.same === 1 ? " já estava" : " já estavam"));
+  if (n.renamed) parts.push(nPlural(n.renamed, "renomeada", "renomeadas") + " (id repetido)");
+  if (n.modsAdded) parts.push(nPlural(n.modsAdded, "módulo trazido", "módulos trazidos"));
+  if (n.modsRenamed) parts.push(nPlural(n.modsRenamed, "módulo renomeado", "módulos renomeados"));
+  if (n.missing) parts.push(nPlural(n.missing, "citado que não existe", "citados que não existem"));
+  const tail = parts.length ? " · " + parts.join(" · ") : "";
+  if (!n.imported) { toast("Nada importado" + tail); return; }
+  await afterEdit(nPlural(n.imported, "faixa importada", "faixas importadas") + tail);
+}
+
+document.getElementById("tracks-input").addEventListener("change", e => {
+  if (e.target.files[0]) readTracksFile(e.target.files[0]);
+  e.target.value = "";
+});
+// So avisa ao fechar a aba se o rascunho NAO esta gravado (a gravacao falhou).
+window.addEventListener("beforeunload", e => {
+  if (App.unsavedInMemory) { e.preventDefault(); e.returnValue = ""; }
+});
 
 /* ===================================================================
    Ligacao de eventos + boot

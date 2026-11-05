@@ -155,9 +155,10 @@ Achado em 2026-10-29 nos `.md` que o dono exportou: o export de **faixa** sai co
 **Em trabalho (0.10.0, 2026-10-31, DEC-027):** as três peças em `kit-musica/` — `BLOCO-SUNO.md` (bloco para Instruções e CEREBRO, não Instruções inteiras: o KCM tem teto), `macetes-suno`, `revisar-faixa`. Carta 01 ao KCM com o mapa para o nicho Música. **Gatilho:** sem resposta do KCM até o primeiro projeto de música novo do dono, o projeto usa o kit à mão (`kit-musica/README.md`, «Como usar hoje») e o que faltar volta como feedback.
 **O KCM leu a carta 01 (2026-10-31, aviso `../notas-arquivadas/261031-kcm-leu-01.md`):** foi para a i-N25 deles, cujo próximo passo é analisar o eixo «Produção: tocada / gerada por IA» com o teto das Instruções medido; o feedback ao kit foi para a i-N76; o Cancioneiro entrou no livro de leitura. A resposta vem pela carta 02, sem data. O gatilho acima continua valendo.
 
-### i-040 🔨 Curadoria no app: excluir, exportar e importar faixas
+### i-040 ✅ Curadoria no app: excluir, exportar e importar faixas
 `[relatado pelo dono, 2026-10-29, nota 261029-1825.txt]` Exportar uma faixa como `.json` (além do `.md`); excluir uma faixa; importar faixas para o acervo aberto — todas ou as escolhidas de outro `.json` de álbum, ou uma faixa exportada solta; mudar a ordem e levar faixas de um álbum a outro. Leva o app de leitor a editor leve: pede análise antes de spec, porque mexe na fonte de verdade (DEC-004, DEC-022 — hoje a cópia no navegador é cache do arquivo; editar nela cria um acervo que só existe ali até «Baixar .json»). Ids repetidos e módulos citados na importação também. Faria o reagrupamento da i-038 pela tela.
 **Decidida (2026-11-02, DEC-028):** análise `meta/analises/261102-ANALISE-curadoria-no-app.md`, F1 + G1 em três entregas. **Entrega 1 feita (0.11.0):** exportar faixa como `.json` (spec `meta/specs/261102-exportar-faixa-json.md`). A entrega 2 é a i-041; a 3 é o resto desta ideia (excluir, reordenar, mover, novo álbum, importar faixas), num rascunho marcado.
+**Entregue (0.13.0, 2026-11-05):** a entrega 3, spec `meta/specs/261105-curadoria-pela-tela.md`, WO 0024 — modo «editar», ↑ ↓, mover, novo álbum, excluir, importar faixas, rascunho com «Baixar .json» pelo nome de origem. Fechar a aba não avisa (DEC-029).
 
 ### i-041 ✅ Mais de um acervo guardado no navegador
 `[relatado pelo dono, 2026-10-29, nota 261029-1825.txt]` Hoje a DEC-022 guarda só o último importado. Com os acervos convertidos (Rainha da Preguiça, os álbuns de `Albuns/`), trocar de acervo obriga a importar de novo. Medida: a Rainha da Preguiça ocupa ~955 mil caracteres na cópia; o `localStorage` costuma dar ~5 MB por site — dois ou três acervos grandes cabem, mais que isso pede IndexedDB. Anda junto com a i-040.
@@ -170,9 +171,19 @@ Achado na conversão BR: três faixas mudam de andamento de propósito. A DEC-02
 ### i-043 💡 Gravar direto no arquivo do acervo (File System Access)
 Achado na análise da curadoria (2026-11-02, opção F4): no Chrome e no Edge o app pode abrir o `.json` com permissão de gravar e «Salvar» no mesmo arquivo, sem passar por Downloads. Não existe no Firefox nem no Safari, e a permissão é pedida de novo a cada sessão. **Gatilho:** depois da entrega 3 da curadoria (DEC-028), se a sonda mostrar a API no navegador do dono — entra como «Salvar no arquivo» onde existir, com «Baixar» onde não.
 **Medido (2026-11-04, sonda):** no Chrome 156 do dono existem as três APIs — `showSaveFilePicker`, `showOpenFilePicker` e `getAsFileSystemHandle` (arrastar com permissão de gravar). Falta só a entrega 3.
+**Gatilho atingido (2026-11-05):** a entrega 3 está pronta (0.13.0). Com ela, o passo que sobra é baixar e substituir o arquivo; gravar direto tira esse passo.
 
 ### i-044 💡 A barra de controles não some quando não há acervo
 Achado no teste da entrega 2 (2026-11-05): o CSS `.controls { display: flex }` vence o atributo `hidden` que o `render()` põe na barra quando não há acervo, então os filtros vazios ficam na tela no estado inicial e depois de esquecer todos. Já era assim antes da 0.12.0. O conserto provável é uma linha (`.controls[hidden] { display: none; }`), mas muda o que o dono vê ao abrir o app vazio — conferir na tela antes.
+
+### i-045 💡 Cabeçalho compacto
+`[relatado pelo dono, 2026-11-05]` A barra do topo está «muito folgada»; deixá-la quase colada às bordas dos botões. Medido nas capturas dele (Chrome, janela de 720 px de altura): o cabeçalho é fixo (`position: sticky`) e ocupa uns 85 px. Objetivo dito por ele: uma interface «bonita, profissional, intuitiva». Faz parte da frente de interface (i-044 a i-047), que vem **depois** das funcionalidades em curso, por pedido dele, e começa por um turno de pesquisa.
+
+### i-046 💡 Filtros que acompanham a rolagem, e visões do acervo
+`[relatado pelo dono, 2026-11-05]` A barra «Álbum · Estado · Uso · buscar» some ao rolar uma lista grande (nas capturas, só o cabeçalho fica fixo). Ele quer que ela fique fixa ou que se possa chamá-la. Inspirações citadas: o controle e a organização de e-commerce e de tabelas, e de Notion e Airtable, com visões (lista, tabela) e opções melhores. Pede pesquisa antes de spec.
+
+### i-047 💡 Painel lateral com abas
+`[relatado pelo dono, 2026-11-05]` Painéis que abrem pela lateral direita, com etiquetas no estilo de «bookmarks». Exemplo dele: os acervos da entrega 2 também numa barra lateral, além da janela. Junto da i-046 na pesquisa. O arrastar cartões para reordenar (fora da entrega 3) entra nesta frente.
 
 ## Feedback para o Kit
 

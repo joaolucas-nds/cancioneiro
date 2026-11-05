@@ -1,6 +1,7 @@
 # SPEC — Curadoria pela tela (curadoria, entrega 3)
 
-> **Status:** Pronta para WO (0.13.0) — com um desvio da análise para o dono ver (item 2, «fechar a aba»)
+> **Status:** Pronta — aplicação pela `meta/workorders/261105-wo0024-curadoria-pela-tela.md` (0.13.0). O desvio
+> «fechar a aba não avisa» foi aceito pelo dono em 2026-11-05 (DEC-029).
 > **Decidida em:** 2026-11-02 pelo dono: F1 + G1, entregas 1 → 2 → 3, o `.json` curado manda sobre os conversores
 > (análise `meta/analises/261102-ANALISE-curadoria-no-app.md`, DEC-028). As escolhas abaixo são técnicas, dentro dela.
 > **Data:** 2026-11-05 (data de criação; não muda depois)
@@ -113,7 +114,7 @@ renomeados · K citados que não existem». Sem saneamento mudo (FIX-006). O arq
 
 | # | Critério |
 |---|---|
-| C1 | Com «editar» desligado, o cartão e a linha de origem são idênticos à 0.12.0 (mesmos botões, na mesma ordem). |
+| C1 | Com «editar» desligado, o cartão é idêntico à 0.12.0 (mesmos botões, na mesma ordem), e a linha de origem só ganha o próprio «editar». (Corrigido na implementação: a primeira versão dizia «idênticos» também para a linha de origem, o que não pode valer, porque o interruptor mora nela.) |
 | C2 | Ligado: ↑ ↓ «mover…» «excluir» em cada cartão e «importar faixas…» na linha de origem; ↑ desligado na primeira faixa de cada álbum e ↓ na última. |
 | C3 | ↑/↓ troca a ordem no rascunho; com um filtro ligado, a troca segue a ordem completa do álbum; a posição da rolagem se mantém. |
 | C4 | Mover para outro álbum: a faixa vai para o fim dele; a marca «usei» e os módulos ligados vão junto. |
@@ -133,6 +134,34 @@ renomeados · K citados que não existem». Sem saneamento mudo (FIX-006). O arq
 | C18 | O cabeçalho diz `v0.13.0`; nenhum erro de página; os testes das entregas 1 e 2 continuam passando (com a versão nova). |
 
 **Prova de vida:** o mesmo teste no app da 0.12.0 reprova (no mínimo C2 e C12).
+
+## Resultado (medido pelo chat em 2026-11-05, Chromium headless, `file://`, janela de 1200×700, app de chegada da WO 0024)
+
+**19 de 19 conferências**, cobrindo os 18 critérios (C18 em duas). Acervo de teste com dois álbuns (`alb-a` com 4
+faixas, `alb-b` com 2) e os 27 módulos do demo.
+
+| # | O que foi conferido | Resultado |
+|---|---|---|
+| C1 | rodapé `marcar usei · exportar .md · exportar .json`; origem `editar · acervos (1) · esquecer` | OK |
+| C2 | ↑ desligado na primeira, ↓ na última de cada álbum; «importar faixas…» na origem; `aria-pressed="true"` | OK |
+| C3 | ↓ e ↑ trocam no rascunho; com a busca mostrando só `a1`, a troca segue a ordem completa; troca na mesma linha não rola a página; faixa que desce para fora da tela volta para a vista | OK |
+| C4–C6 | mover para `alb-b` leva a marca e os módulos ligados; «Álbum Novo» vira `album-novo` e depois `album-novo-2`; a última faixa que sai remove «Álbum A», e o toast diz | OK, 3 de 3 |
+| C7 | excluir abre a confirmação; cancelar não muda; excluir tira a faixa e a marca | OK |
+| C8–C11 | a faixa exportada volta a `alb-b`; `alb-z` é criado com o título; `a1` idêntica pula, `a1` com outra letra vira `a1-2`; módulo novo entra, o idêntico não duplica, o diferente vira `<id>-2` e é citado, o «fantasma» é contado; desmarcar `z2` deixa ela de fora; cancelar não muda | OK, 4 de 4 |
+| C12 | 13 operações = 13 alterações; a marca aparece com «editar» desligado; recarregar mantém a ordem e a contagem | OK |
+| C13 | o download sai como `teste.json`, zera a contagem (também no banco), é igual ao rascunho, passa no esquema e reimporta sem pedir confirmação | OK |
+| C14 | esquecer e reimportar com 13 alterações abrem a confirmação; cancelar mantém tudo | OK |
+| C15 | `beforeunload` não é cancelado com o rascunho gravado; é cancelado depois de uma gravação que falhou (simulada), e o toast avisa | OK |
+| C16 | sem `indexedDB`, ↓ e recarregar mantêm a ordem e a contagem pelo `localStorage` | OK |
+| C17 | chave `_` posta na coleção não sai no `.json`; `kit-state-game` intacta | OK |
+| C18 | `v0.13.0`; nenhum erro de página; entregas 1 e 2 seguem em 15 de 15 e 25 de 25 | OK |
+
+**Prova de vida, medida:** no app da 0.12.0 o teste para no C1, porque o cartão de lá não tem `data-id` nem os
+botões do modo «editar».
+
+**Achado no caminho:** a primeira versão rolava a página a cada ↑ ↓, porque `scrollIntoView({block: "nearest"})`
+rola sempre que o cartão não cabe inteiro na janela, e um cartão costuma ser mais alto que ela. Agora só rola quando o
+cartão movido sai da tela. O C3 mede os dois casos.
 
 ## Fora de escopo
 

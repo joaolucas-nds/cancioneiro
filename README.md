@@ -2,7 +2,7 @@
 
 Ferramenta local para **organizar, copiar e variar** prompts de música gerados por IA (Suno hoje; agnóstica por design), a partir de um **acervo de canções em JSON canônico**.
 
-> **Estado:** v0.12.0 — ferramenta em uso. Lê e guarda vários acervos, copia por campo, troca módulos de estilo, ajusta o BPM, **mede cada prompt contra os limites do Suno**, exporta Markdown, exporta uma faixa como `.json` e **entrega o prompt para chats gerarem canções no esquema**. Publicada no GitHub Pages. Ver `meta/ROADMAP.md`.
+> **Estado:** v0.13.0 — ferramenta em uso. Lê, guarda e edita vários acervos, copia por campo, troca módulos de estilo, ajusta o BPM, **mede cada prompt contra os limites do Suno**, exporta Markdown, exporta uma faixa como `.json` e **entrega o prompt para chats gerarem canções no esquema**. Publicada no GitHub Pages. Ver `meta/ROADMAP.md`.
 
 ## O problema
 
@@ -38,6 +38,7 @@ cancioneiro/
 4. Ligue/desligue **módulos de estilo** por camada para gerar variações — o Style recompõe ao vivo. Para mudar o andamento, use o campo de **BPM** do cartão (ou um chip da camada Andamento, que é atalho para ele): o número muda em todo o Style, nunca aparecem dois. O Suno trata BPM como aproximação.
 5. Leia a linha embaixo de cada campo antes de copiar: **vermelho** = o Suno vai cortar o texto (passou do limite, ele trunca sem avisar); **âmbar** = vai funcionar, mas pior (tags demais, ou negação «no X» que rende mais no campo Exclude). Com os módulos abertos, cada chip mostra quantas tags ele põe ou tira (`+2`, `−2`, ou `0` quando não muda nada) — use isso para decidir o que desligar.
 6. Exporte em `.md` (faixa, álbum ou acervo inteiro) se precisar do formato legível. Uma faixa também sai em `.json` (*exportar .json* no cartão): é um acervo de uma faixa só, com os módulos que ela usa, para mandar a um chat ou juntar a outro acervo.
+7. Para reorganizar, ligue *editar* na linha de origem: cada cartão ganha ↑ ↓, *mover…* e *excluir*, e *importar faixas…* traz faixas de outro `.json`. As mudanças ficam num rascunho no navegador; *Baixar .json* baixa com o nome do arquivo original — substitua o antigo por ele, e ele passa a ser a fonte.
 
 ## Validar o acervo
 
@@ -75,7 +76,7 @@ No app, clique em **Prompt**, escreva o seu pedido e copie: o prompt vai inteiro
 
 ## Fonte de verdade
 
-O acervo canônico são **arquivos JSON** no esquema: os exemplos versionados em `data/`, e o acervo pessoal fora do repo (DEC-026). O navegador guarda **cópias dos acervos importados** (IndexedDB) e, no localStorage, as marcações por acervo e a estrutura do cartão — cache, nunca a fonte: a linha de origem diz de onde a cópia veio e quando, e *esquecer* a apaga sem tocar no arquivo. Ver `meta/DECISIONS.md` (DEC-004, DEC-022, DEC-028).
+O acervo canônico são **arquivos JSON** no esquema: os exemplos versionados em `data/`, e o acervo pessoal fora do repo (DEC-026). O navegador guarda **cópias dos acervos importados** (IndexedDB) e, no localStorage, as marcações por acervo e a estrutura do cartão — cache, nunca a fonte: a linha de origem diz de onde a cópia veio e quando, e *esquecer* a apaga sem tocar no arquivo. Com *editar*, a cópia vira rascunho até você baixar o `.json` e substituir o arquivo. Ver `meta/DECISIONS.md` (DEC-004, DEC-022, DEC-028, DEC-029).
 
 ## Conhecimento do Suno
 

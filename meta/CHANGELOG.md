@@ -4,6 +4,24 @@
 
 ---
 
+## [0.13.0] — 2026-11-05
+
+Terceira e última entrega da curadoria no app (i-040, DEC-028): editar o acervo pela tela.
+
+### Added
+- **Modo «editar»**, na linha de origem: liga a curadoria. Desligado, o cartão fica como antes. Ligado, cada cartão ganha ↑, ↓, «mover…» (para outro álbum ou para um álbum novo) e «excluir» (com confirmação), e a linha de origem ganha «importar faixas…».
+- **Rascunho:** cada operação grava a cópia do acervo no navegador e soma uma alteração. A linha de origem mostra «alterado: N alterações não baixadas» com o botão «Baixar .json», que baixa com o **nome do arquivo de origem**, para substituir o antigo, e zera a contagem. Esquecer ou reimportar com alterações pendentes pedem confirmação.
+- **Importar faixas** de outro `.json`, inclusive uma faixa exportada solta: uma janela lista as faixas, todas marcadas, e o destino (por padrão, o álbum de origem de cada uma). Faixa idêntica é pulada; mesmo id com conteúdo diferente entra com sufixo (`-2`). Módulo citado: o que falta entra; o diferente entra com sufixo, e a faixa passa a citá-lo; o que não existe em lugar nenhum fica citado. O toast conta cada caso.
+
+### Changed
+- «Baixar .json» de um acervo guardado sai com o nome do arquivo de origem, não com o título.
+- Álbum que fica sem faixa sai do acervo.
+- Fechar a aba não avisa: o rascunho já está gravado. Só avisa se a gravação no navegador falhar (DEC-029).
+
+Spec `meta/specs/261105-curadoria-pela-tela.md`: 19 de 19 conferências dos 18 critérios no Chromium headless, com prova de vida no app da 0.12.0; os testes das entregas 1 e 2 seguem em 15 de 15 e 25 de 25.
+
+---
+
 ## [0.12.0] — 2026-11-05
 
 Segunda das três entregas da curadoria no app (i-041, DEC-028): vários acervos guardados no navegador.
