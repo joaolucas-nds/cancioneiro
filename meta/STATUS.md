@@ -3,7 +3,7 @@
 > **O agora.** O que funciona, o que está em progresso, o que está quebrado, backlog curto.
 > Rolante: item resolvido sai daqui e vai para o CHANGELOG. Médio/longo prazo vive no ROADMAP.
 
-**Versão atual:** 0.16.0 · **Fase:** 3a, 3a.2, o BPM da 3b, o prompt-modelo e as conveniências de uso concluídos e conferidos · os álbuns antigos convertidos (i-008, fora do repo) · curadoria no app concluída nas três entregas (DEC-028, DEC-029) · frente de interface na I3 de quatro (DEC-030 a DEC-032) · kit de música lido pelo KCM, à espera da resposta (i-039)
+**Versão atual:** 0.16.0 · **Fase:** 3a, 3a.2, o BPM da 3b, o prompt-modelo e as conveniências de uso concluídos e conferidos · os álbuns antigos convertidos (i-008, fora do repo) · curadoria no app concluída nas três entregas (DEC-028, DEC-029) · frente de interface com a I3 conferida e a I4 em spec (DEC-030 a DEC-032) · kit de música lido pelo KCM, à espera da resposta (i-039)
 
 ---
 
@@ -11,8 +11,9 @@
 
 - **I2 conferida na tela pelo dono** (roteiro OK `[relatado pelo dono]`): lista e detalhe (0.15.0) estão fechados.
 - **I3, organizar (0.16.0):** protótipo no canvas «Cancioneiro: nova interface» (fileira da I3), spec `meta/specs/261106-organizar.md` e os três pontos decididos pelo dono como recomendados (DEC-032): arrastar com filtro pela regra da próxima visível, Cartões só com o «⋯», seleção no celular pelo «⋯». 15 de 15 critérios no Chromium headless, testados pelo chat.
-- **WO 0027 aplicada e empurrada** (`6a07bfd`, 0.16.0): validação verde; falta só a conferência da I3 na tela pelo dono.
-- **WO 0028 (I3 conferida, só STATUS) recusada pelo Code:** o cabeçalho não traz «Âncoras lidas em». Nada aplicado; falta o chat reemitir a WO com o campo. A pendência «Conferir a I3 na tela» segue no STATUS até lá.
+- **WO 0027 aplicada e empurrada** (`6a07bfd`, 0.16.0): validação verde. **I3 conferida na tela pelo dono** (os 11 itens do roteiro OK `[relatado pelo dono, 2026-11-06]`): organizar está fechado.
+- **WO 0028 recusada pelo Code** (cabeçalho sem «Âncoras lidas em») e reemitida pelo chat como WO 0029, com o campo.
+- **I4, salvar no arquivo:** protótipo no canvas (fileira da I4), spec `meta/specs/261106-salvar-no-arquivo.md` em rascunho, com cinco pontos para o dono, e a sonda `../261106-sonda-i4-salvar.html` para ele rodar no Chrome antes de decidir.
 - **Este bloco substitui o anterior, da WO 0026** (I2). O que ele dizia está no CHANGELOG [0.15.0], na spec `meta/specs/261106-lista-e-detalhe.md` e em `logs/2026-11-06.md` (Conversas 1 a 3).
 
 ## Funciona (pronto)
@@ -31,7 +32,7 @@
 - **Exportar faixa como `.json`** (0.11.0, DEC-028): botão no rodapé do cartão; a faixa sai como acervo — o álbum de origem (id e título), a faixa e os módulos que ela cita — e importa como qualquer acervo. Sai o dado do acervo, não os módulos ligados nem o BPM da tela; o toast conta os módulos e os citados que não existem. Conferido na tela pelo dono em 2026-11-04.
 - **Vários acervos no navegador** (0.12.0, DEC-028): cada importado fica no IndexedDB pelo nome do arquivo; o seletor de acervo, na barra, abre ou esquece cada um; reabre no último aberto; marcas «usei» por acervo. Sem IndexedDB, guarda só o último, como antes.
 - **Curadoria pela tela** (0.13.0, DEC-028, DEC-029): mover, novo álbum, excluir e importar faixas num rascunho gravado no navegador; «● N alterações não salvas» com «Salvar .json» pelo nome de origem. Desde a 0.16.0, sem o interruptor «editar».
-- **Organizar** (0.16.0, DEC-030, DEC-032): arrastar pela alça ⋮⋮ na Lista (com filtro, antes da próxima visível) e para os álbuns da lateral ou «+ Novo álbum»; o «⋯» de cada faixa (linha, detalhe e cartão) com Mover, Subir, Descer, Exportar e Excluir, e `Alt+↑`/`Alt+↓`; caixas e barra de lote; «Desfazer» e `Ctrl+Z` da última operação; soltar o `.json` sobre um álbum importa faixas nele. Só com cópia guardada no navegador. A SortableJS 1.15.7 vai embutida, com o hash no `validate.py`.
+- **Organizar** (0.16.0, DEC-030, DEC-032): arrastar pela alça ⋮⋮ na Lista (com filtro, antes da próxima visível) e para os álbuns da lateral ou «+ Novo álbum»; o «⋯» de cada faixa (linha, detalhe e cartão) com Mover, Subir, Descer, Exportar e Excluir, e `Alt+↑`/`Alt+↓`; caixas e barra de lote; «Desfazer» e `Ctrl+Z` da última operação; soltar o `.json` sobre um álbum importa faixas nele. Só com cópia guardada no navegador. A SortableJS 1.15.7 vai embutida, com o hash no `validate.py`. Conferido na tela pelo dono em 2026-11-06.
 - **Lista e detalhe** (0.15.0, DEC-030, DEC-031): Lista (padrão) ou Cartões; uma linha por faixa com Style, Lyrics, ✓ e a saúde do prompt; o cartão de hoje ao lado, com ‹ ›, setas e `#faixa=<id>` no endereço; a lateral de álbuns e acervos a partir de 1280 px; no celular, o detalhe em tela própria com os botões de copiar no pé.
 - **Barra única** (0.14.0, DEC-030): fixa, de 48 px; seletor de acervo como menu, busca com `/`, Filtros num painel com etiquetas removíveis e «N de M», rascunho e o «⋯» com Importar, Importar faixas, Baixar, Exportar .md, Prompt para chats, Baixar exemplo e Estrutura do cartão. No celular, 51 px, botões de 44 px, a busca numa linha própria e o rascunho no pé.
 - **Prompt-modelo** (`schema/PROMPT-PARA-CHATS.md`, DEC-021, DEC-023): contrato de módulo, style com 6 a 8 tags e até 10 com os módulos ligados; pede o JSON como arquivo e, sem arquivo, em bloco de código. Dois retestes em 2026-10-29: 6 de 6 faixas dentro do contrato e do orçamento, nos dois.
@@ -49,12 +50,12 @@
 
 ## Pendências do dono
 
-- **Conferir a I3 na tela** — roteiro na conversa de 2026-11-06 (WO 0027), depois do push, no computador e no celular.
+- **Rodar a sonda da I4 e decidir os cinco pontos** — abrir `..\261106-sonda-i4-salvar.html` no Chrome, seguir os passos da página e salvar o relatório na pasta-pai; os pontos estão no fim de `meta/specs/261106-salvar-no-arquivo.md`.
 - **Instalar o validador de esquema nesta máquina.** Sem `jsonschema` e `referencing`, o `validate.py` só confere sintaxe e diz `ESQUEMA NAO CONFERIDO` na última linha. Uma vez, no CMD: `pip install jsonschema referencing --break-system-packages`. Depois, `python3 scripts/validate.py` deve terminar em `Tudo conforme ao esquema.`
 
 ## Backlog curto (próximas ações concretas)
 
-1. **I4 — Salvar no arquivo** (i-043, DEC-030) — protótipo no canvas, depois spec: gravar o rascunho direto no `.json` de origem onde o navegador deixar, sem baixar e substituir à mão.
+1. **I4 — Salvar no arquivo** (i-043, DEC-030) — protótipo e spec prontos (`meta/specs/261106-salvar-no-arquivo.md`); faltam a sonda e os cinco pontos do dono, depois a implementação pelo chat e a WO (0.17.0).
 2. **Organizar os álbuns** (i-049) — renomear, reordenar na lateral, juntar dois; candidata depois da I4.
 3. **Rampa de BPM** (i-042) — três faixas BR reprovam no `validate.py` por mudarem de andamento de propósito.
 4. **Pesquisar outras plataformas de música por IA** (i-032) — um turno de pesquisa antes de qualquer mudança de esquema.
