@@ -12,6 +12,7 @@
 - **I2 conferida na tela pelo dono** (roteiro OK `[relatado pelo dono]`): lista e detalhe (0.15.0) estão fechados.
 - **I3, organizar (0.16.0):** protótipo no canvas «Cancioneiro: nova interface» (fileira da I3), spec `meta/specs/261106-organizar.md` e os três pontos decididos pelo dono como recomendados (DEC-032): arrastar com filtro pela regra da próxima visível, Cartões só com o «⋯», seleção no celular pelo «⋯». 15 de 15 critérios no Chromium headless, testados pelo chat.
 - **WO 0027 aplicada e empurrada** (`6a07bfd`, 0.16.0): validação verde; falta só a conferência da I3 na tela pelo dono.
+- **WO 0028 (I3 conferida, só STATUS) recusada pelo Code:** o cabeçalho não traz «Âncoras lidas em». Nada aplicado; falta o chat reemitir a WO com o campo. A pendência «Conferir a I3 na tela» segue no STATUS até lá.
 - **Este bloco substitui o anterior, da WO 0026** (I2). O que ele dizia está no CHANGELOG [0.15.0], na spec `meta/specs/261106-lista-e-detalhe.md` e em `logs/2026-11-06.md` (Conversas 1 a 3).
 
 ## Funciona (pronto)
