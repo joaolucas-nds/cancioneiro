@@ -1,6 +1,6 @@
 # SPEC — Lista e detalhe (frente de interface, entrega I2)
 
-> **Status:** Proposta — espera o dono decidir os três pontos do fim
+> **Status:** Pronta — aplicação pela `meta/workorders/261106-wo0026-lista-e-detalhe.md` (0.15.0, DEC-031)
 > **Decidida em:** a frente, em 2026-11-05 (DEC-030: B, SortableJS embutido, sem o interruptor «editar», I1 → I2 → I3 → I4). Esta é a I2.
 > **Data:** 2026-11-06 (data de criação; não muda depois)
 > **Ideias de origem:** i-046 (as visões) e i-047 (a lateral).
@@ -157,6 +157,49 @@ de antes estão em Cartões.» Some em «entendi» e não volta (`tour15` em `ca
 
 **Prova de vida:** o mesmo teste no app da 0.14.0 reprova (no mínimo C1, C2 e C7).
 
+## Resultado (medido pelo chat em 2026-11-06, Chromium headless, `file://`, app de chegada da WO 0026)
+
+**15 de 15 critérios.** Acervo de teste: as três faixas do `data/demo.json` e faixas feitas para cada nível de saúde
+(10 tags, 12 tags, Lyrics acima de 5.000, Style perto de 1.000), em três álbuns, 19 faixas; outro com 300, para o C15.
+
+| # | O que foi conferido | Resultado |
+|---|---|---|
+| C1 | sem `view`, abre em Lista; Cartões sobrevive ao recarregar; em Cartões, a 1279 px, o `<main>` é idêntico ao da 0.14.0 | OK |
+| C2 | as 19 linhas na ordem do acervo; com Estado «gerada», o número de linhas bate com o «N de M»; 44 px cada | OK |
+| C3 | rolando dentro do álbum B, o cabeçalho dele fica rente ao pé do `#top` (1 px de folga) | OK |
+| C4 | depois de ligar um módulo e subir 5 BPM no detalhe, «Style» da linha copia o mesmo texto do «copiar» do cartão, com «80 bpm»; «Lyrics» copia a Lyrics; nenhum dos dois leva rótulo nem título | OK |
+| C5 | nas 19 faixas, o nível da linha é o pior `.q` do cartão; 10 tags dá «● tudo dentro» (o falso positivo) | OK |
+| C6 | o ✓ marca e desmarca; com Uso «só usados», sobra só a faixa marcada | OK |
+| C7 | o detalhe tem o mesmo HTML que `renderCard`; «Álbum A · 4 de 4»; › vai à primeira do álbum B e ‹ volta; × e `Esc` fecham e devolvem o foco ao título | OK |
+| C8 | `↓` e `↑` no título andam e o detalhe acompanha; com o foco na busca, `↓` não muda a faixa | OK |
+| C9 | `#faixa=t-doze` no endereço; recarregar reabre; × não sai do app; o «Voltar» fecha; um id inexistente, trocado no endereço ou recarregado, some sem erro | OK |
+| C10 | a 1366, «Todas as faixas» (19) e os três álbuns; com Estado «gerada», as contagens batem; clicar no álbum B filtra, põe a etiqueta e marca; «Todas» tira; os dois acervos guardados aparecem e o outro abre; a 1279, a lateral some | OK |
+| C11 | a 1366, 1024 e 800 px, com o detalhe aberto: sem rolagem lateral; o detalhe ao lado nas duas primeiras e por cima a 800; o título com pelo menos 160 px | OK |
+| C12 | a 390×844: linhas de 64 px ou mais, ✓ de 44×44; o detalhe cobre a tela, com o pé; «Copiar Style» copia o recomposto, «Título» o título; o «←» e o «Voltar» do navegador devolvem a mesma rolagem | OK |
+| C13 | com «editar», ↑ no detalhe sobe a faixa e o detalhe fica nela; «excluir» fecha o detalhe e leva o foco a uma linha; o rascunho conta cada operação | OK |
+| C14 | +5 BPM e três módulos no detalhe: a linha mostra «80 bpm» e a saúde nova; é o mesmo elemento (não redesenhou) e a rolagem não mudou | OK |
+| C15 | a Lista de 300 faixas desenha em cerca de 50 ms (média de 5); `v0.15.0`; nenhum erro de página | OK |
+
+**Prova de vida, medida:** no app da 0.14.0 o teste para no começo, antes do C1, porque o aviso da 0.15.0 e a Lista não
+existem lá.
+
+**Regressão:** os testes das entregas 1 a 3 e da I1 seguem em 15 de 15, 25 de 25, 19 de 19 e 14 de 14. Os três que medem
+o cartão (exportar, curadoria e I1) rodam com a visão Cartões e o aviso novo já vistos, por um invólucro que semeia
+`cancioneiro:ui` uma vez por aba. O dos acervos roda na Lista: conta linhas além de cartões, numa mudança de duas linhas.
+
+**Onde a implementação saiu da spec:**
+- **O Estado também cede** quando a lista fica com menos de 600 px. Sem isso, a 960 px com o detalhe aberto, a lista tem
+  560 px e o título ficaria com 126; a ordem de saída é Idioma, BPM, Estado. O estado continua no detalhe.
+- **O nome «Cancioneiro» sai da barra abaixo de 1180 px**, para caber Lista | Cartões; a versão segue no «⋯». A 1024 px,
+  com rascunho e «editar», o C11 da I1 continua passando.
+- **A lateral lê os acervos guardados só quando está visível e algo mudou** (o aberto, quantos, a data). Ler a cada
+  troca de origem trazia os acervos inteiros do banco e deixava o teste dos acervos instável.
+- **Clicar no resto da linha também abre** o detalhe (o mouse); o teclado usa o título.
+- **A faixa usada fica em cor suave, não transparente:** a transparência derrubaria o contraste dos botões da linha.
+
+**O que a revisão visual pegou:** no celular, com o detalhe aberto, o aviso de baixo cobria os botões de copiar; ele
+sobe para cima deles.
+
 ## Fora de escopo
 
 - **A I3:** a alça ⋮⋮, o arrastar, as caixas de seleção e o lote, o «⋯» por faixa, «+ Novo álbum», soltar na lateral, o
@@ -180,6 +223,9 @@ de antes estão em Cartões.» Some em «entendi» e não volta (`tour15` em `ca
   desenhar por álbum à medida que aparece.
 
 ## Pontos para o dono decidir
+
+**Decididos pelo dono em 2026-11-06, os três como recomendados** (DEC-031): Lista por padrão, celular sem gaveta,
+o título da linha abre o detalhe.
 
 1. **A visão que abre sem escolha guardada:** **Lista (recomendada)**, porque é o ganho da I2; ou Cartões, que é o
    costume.

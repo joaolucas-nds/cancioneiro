@@ -182,13 +182,13 @@ Achado no teste da entrega 2 (2026-11-05): o CSS `.controls { display: flex }` v
 `[relatado pelo dono, 2026-11-05]` A barra do topo está «muito folgada»; deixá-la quase colada às bordas dos botões. Medido nas capturas dele (Chrome, janela de 720 px de altura): o cabeçalho é fixo (`position: sticky`) e ocupa uns 85 px. Objetivo dito por ele: uma interface «bonita, profissional, intuitiva». Faz parte da frente de interface (i-044 a i-047), que vem **depois** das funcionalidades em curso, por pedido dele, e começa por um turno de pesquisa.
 **Entregue (0.14.0, I1, DEC-030):** uma barra única, fixa, de 48 px (no celular, 51), no lugar do cabeçalho, da barra de filtros e da linha de origem.
 
-### i-046 🔨 Filtros que acompanham a rolagem, e visões do acervo
+### i-046 ✅ Filtros que acompanham a rolagem, e visões do acervo
 `[relatado pelo dono, 2026-11-05]` A barra «Álbum · Estado · Uso · buscar» some ao rolar uma lista grande (nas capturas, só o cabeçalho fica fixo). Ele quer que ela fique fixa ou que se possa chamá-la. Inspirações citadas: o controle e a organização de e-commerce e de tabelas, e de Notion e Airtable, com visões (lista, tabela) e opções melhores. Pede pesquisa antes de spec.
-**Em andamento (DEC-030):** os filtros fixos, num painel, com etiquetas removíveis e «N de M», entraram na I1 (0.14.0). As visões (Lista e Cartões, com o detalhe à direita) são a I2.
+**Entregue (DEC-030, DEC-031):** os filtros fixos, num painel, com etiquetas removíveis e «N de M», entraram na I1 (0.14.0); as visões Lista e Cartões, com o detalhe à direita, na I2 (0.15.0). A tabela no estilo Airtable (opção C da análise) e ordenar por coluna ficaram de fora; voltam como ideia se fizerem falta.
 
-### i-047 💡 Painel lateral com abas
+### i-047 🔨 Painel lateral com abas
 `[relatado pelo dono, 2026-11-05]` Painéis que abrem pela lateral direita, com etiquetas no estilo de «bookmarks». Exemplo dele: os acervos da entrega 2 também numa barra lateral, além da janela. Junto da i-046 na pesquisa. O arrastar cartões para reordenar (fora da entrega 3) entra nesta frente.
-**Planejada (DEC-030):** a lateral de álbuns e acervos é a I2 (0.15.0).
+**Em andamento (DEC-030, DEC-031):** a lateral de álbuns e acervos entrou na I2 (0.15.0), à esquerda e sem abas, a partir de 1280 px; o detalhe da faixa é o painel da direita. Em aberto: as abas no estilo de «bookmarks» do pedido e a lateral no celular (sem gaveta, por decisão do dono).
 
 ### i-048 💡 Edição e organização com UX de verdade, arrastando onde for útil
 `[relatado pelo dono, 2026-11-05]` A estrutura para «edição, controle e organização das faixas, acervos e tudo mais» não está prática nem intuitiva, e falta muito UX/UI. Ele pede estudo e planejamento antes, e praticidades como **arrastar objetos** onde for possível, útil e interessante: cartões entre posições e álbuns, faixas para um acervo, arquivos para a tela. Junta-se às i-044 a i-047, numa frente só (análise `meta/analises/261105-ANALISE-frente-de-interface.md`).

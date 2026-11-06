@@ -197,6 +197,110 @@
 
   .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
 
+  /* ---- Lista e detalhe (I2, DEC-030 — spec meta/specs/261106-lista-e-detalhe.md) ----
+     .shell poe lado a lado a lateral (#side), o miolo (#main) e o detalhe (#detail).
+     A lateral e o detalhe ficam fixos abaixo do topo; --top-h e a altura medida
+     do #top (48 px sem etiquetas, 84 com), nunca um numero escrito aqui. */
+  :root { --top-h: 48px; }
+  .shell { display: flex; align-items: flex-start; }
+  .shell > main { flex: 1 1 auto; min-width: 0; }
+  body.view-list main { max-width: none; margin: 0; padding: 0 0 32px; container-type: inline-size; container-name: lista; }
+  body.view-list .album { margin: 0; }
+  body.view-list .album-head { position: sticky; top: var(--top-h); z-index: 3; background: var(--paper);
+    margin: 0; padding: 14px 16px 8px; border-bottom: 1px solid var(--ink); }
+  body.view-list .album-head h2 { font-size: 18px; }
+  body.view-list .album-desc { margin: 6px 16px 8px; }
+
+  .rows { list-style: none; margin: 0; padding: 0; }
+  .row { display: flex; align-items: center; gap: 8px; height: 44px; box-sizing: border-box;
+    padding: 0 12px 0 16px; border-bottom: 1px solid var(--line); cursor: pointer; }
+  .row.is-open { background: var(--paper-2); }
+  .row-open { flex: 1 1 auto; min-width: 160px; height: 36px; padding: 0; border: 0; background: transparent;
+    text-align: left; font-weight: 600; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .row-open:hover { color: var(--ember); }
+  .row.used .row-open, .row.used .row-meta { color: var(--ink-soft); }
+  /* No computador, os quatro campos sao colunas da linha; no celular, uma linha de texto. */
+  .row-meta { display: contents; }
+  .row-state { flex: none; width: 64px; }
+  .row-lang { flex: none; width: 90px; font-size: 12px; color: var(--ink-soft); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .row-bpm { flex: none; width: 58px; font-size: 12px; color: var(--ink-soft); white-space: nowrap; }
+  .row-health { flex: none; width: 150px; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .row-health.ok { color: var(--moss); }
+  .row-health.warn { color: var(--amber); font-weight: 600; }
+  .row-health.over { color: var(--ember); font-weight: 700; }
+  .row-copy { flex: none; min-width: 60px; height: 28px; padding: 0 8px; font-size: 12px; }
+  .row-copy.copied { background: var(--moss); color: #fff; border-color: var(--moss); }
+  .row-used { flex: none; width: 28px; height: 28px; padding: 0; font-size: 12px; color: var(--ink-soft); }
+  .row-used[aria-pressed="true"] { background: var(--moss); border-color: var(--moss); color: #fff; }
+  /* As colunas cedem antes do titulo, que nunca fica com menos de 160 px. */
+  @container lista (max-width: 760px) { .row-lang { display: none; } }
+  @container lista (max-width: 660px) { .row-bpm { display: none; } }
+  @container lista (max-width: 600px) { .row-state { display: none; } }
+
+  .side { display: none; flex: 0 0 232px; width: 232px; box-sizing: border-box; position: sticky; top: var(--top-h);
+    height: calc(100vh - var(--top-h)); overflow: auto; padding: 12px 8px; border-right: 1px solid var(--line); }
+  @media (min-width: 1280px) { .side { display: block; } }
+  .side-head { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); padding: 4px 8px; }
+  .side-head + .side-list { margin-bottom: 18px; }
+  .side-list { list-style: none; margin: 0; padding: 0; }
+  .side-item { width: 100%; display: flex; align-items: center; gap: 8px; padding: 7px 8px; border: 0; border-radius: 6px;
+    background: transparent; text-align: left; }
+  .side-item .t { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .side-item .n { color: var(--ink-soft); font-size: 12px; }
+  .side-item[aria-current="true"] { background: var(--paper-2); font-weight: 600; color: var(--ink); }
+  .side-item.empty-album { color: var(--ink-soft); }
+
+  .detail { flex: 0 0 auto; width: clamp(400px, 34vw, 520px); box-sizing: border-box; position: sticky; top: var(--top-h);
+    height: calc(100vh - var(--top-h)); display: flex; flex-direction: column; border-left: 1px solid var(--line); background: var(--paper); }
+  .detail-head { flex: none; height: 44px; display: flex; align-items: center; gap: 4px; padding: 0 8px 0 16px;
+    border-bottom: 1px solid var(--line); }
+  .detail-ctx { flex: 1; min-width: 0; font-size: 12px; color: var(--ink-soft); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .dbtn { flex: none; width: 32px; height: 32px; padding: 0; border-color: transparent; background: transparent; font-size: 16px;
+    display: inline-flex; align-items: center; justify-content: center; }
+  .dbtn:disabled { opacity: .35; cursor: default; }
+  .dbtn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .detail-back, .detail-foot { display: none; }
+  .detail-body { flex: 1; overflow: auto; overscroll-behavior: contain; padding: 12px; }
+  /* 720 a 959 px: o detalhe abre por cima da lista, a direita. */
+  @media (min-width: 720px) and (max-width: 959px) {
+    .detail { position: fixed; right: 0; top: var(--top-h); bottom: 0; height: auto; width: min(480px, calc(100vw - 48px));
+      z-index: 12; box-shadow: -12px 0 32px rgba(35,32,27,.18); }
+  }
+  .view-switch { display: flex; flex-shrink: 0; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .view-switch button { border: 0; border-radius: 0; background: transparent; }
+  .view-switch button + button { border-left: 1px solid var(--line); }
+  .view-switch button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+  .pop [role="menuitemradio"] { text-align: left; border: 0; background: transparent; height: auto; padding: 9px 10px; border-radius: 8px; }
+  .pop [role="menuitemradio"][aria-checked="true"] { font-weight: 600; }
+  .pop [role="menuitemradio"][aria-checked="true"]::before { content: "✓ "; }
+  /* A barra ganhou «Lista | Cartoes»: abaixo de 1180 px o nome sai (a versao segue no «⋯»). */
+  @media (max-width: 1179px) { .brand { display: none; } }
+
+  @media (max-width: 719px) {
+    .view-switch { display: none; }
+    .row { height: auto; min-height: 64px; padding: 6px 4px 6px 16px; display: grid;
+      grid-template-columns: minmax(0, 1fr) 44px; grid-template-areas: "t u" "m u"; column-gap: 4px; row-gap: 2px; }
+    .row-open { grid-area: t; height: auto; min-width: 0; font-size: 15px; }
+    .row-meta { grid-area: m; display: block; font-size: 12px; color: var(--ink-soft); overflow: hidden;
+      text-overflow: ellipsis; white-space: nowrap; }
+    .row-meta > span { display: inline !important; width: auto; }
+    .row-meta > span + span::before { content: " · "; color: var(--ink-soft); font-weight: 400; }
+    .row-meta .badge { border: 0; background: none; padding: 0; font-size: 12px; }
+    .row-copy { display: none; }
+    .row-used { grid-area: u; width: 44px; height: 44px; }
+    .detail { position: fixed; inset: 0; width: auto; height: auto; z-index: 20; border: 0; }
+    .detail-head { height: 52px; padding: 0 4px; }
+    .dbtn { width: 44px; height: 44px; }
+    .detail-back { display: inline-flex; }
+    .detail-close { display: none; }
+    .detail-body { padding: 12px 12px 16px; }
+    .detail-foot { display: flex; flex: none; gap: 8px; padding: 10px 12px 16px; border-top: 1px solid var(--line); background: var(--paper); }
+    .detail-foot button { flex: 1; height: 48px; font-size: 15px; }
+    .detail-foot #detail-copy-title { flex: 0 0 72px; }
+    body.detail-open .bar-draft { z-index: 25; bottom: 84px; }
+    body.detail-open .toast { bottom: 84px; }
+  }
+
   /* ---- Cartao de cancao ---- */
   .card {
     background: var(--paper-2); border: 1px solid var(--line);
@@ -395,7 +499,7 @@
     <h1>Cancioneiro</h1>
     <!-- Versao: a mesma do topo do meta/CHANGELOG.md. O scripts/validate.py confere
          que app, CHANGELOG, README e STATUS dizem a mesma (i-027). -->
-    <span class="version" data-role="app-version">v0.14.0</span>
+    <span class="version" data-role="app-version">v0.15.0</span>
   </div>
   <div class="pop-wrap" id="acervo-wrap">
     <button type="button" id="acervo-btn" class="acervo-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="acervo-pop" title="Os acervos guardados neste navegador">
@@ -445,6 +549,10 @@
       </div>
     </div>
   </div>
+  <div class="view-switch" id="view-switch" role="group" aria-label="Visão">
+    <button type="button" id="view-list" aria-pressed="true">Lista</button>
+    <button type="button" id="view-cards" aria-pressed="false">Cartões</button>
+  </div>
   <div class="bar-space"></div>
   <div class="bar-draft" id="bar-draft" hidden>
     <span class="dot" aria-hidden="true"></span>
@@ -466,6 +574,9 @@
       <button type="button" role="menuitem" id="layout-btn" title="Estrutura do cartão: ordem e blocos visíveis">Estrutura do cartão</button>
       <button type="button" role="menuitem" class="mobile-only" id="menu-edit" hidden>Ligar editar</button>
       <button type="button" role="menuitem" class="mobile-only" id="menu-import-tracks" hidden>Importar faixas…</button>
+      <div class="pop-sep mobile-only"></div>
+      <button type="button" role="menuitemradio" class="mobile-only" id="menu-view-list" aria-checked="true">Visão: Lista</button>
+      <button type="button" role="menuitemradio" class="mobile-only" id="menu-view-cards" aria-checked="false">Visão: Cartões</button>
     </div>
   </div>
   <input type="file" id="file-input" accept=".json,application/json" hidden>
@@ -475,9 +586,17 @@
   <span class="chips-list" id="chips-list"></span>
   <button type="button" class="link" id="chips-clear">Limpar tudo</button>
 </div>
+<div class="tour" id="tour15" role="status" hidden>Nova visão em lista: clique numa faixa para ver o cartão ao lado. Os cartões de antes estão em <b>Cartões</b>. <button type="button" class="link" id="tour15-ok">entendi</button></div>
 <div class="tour" id="tour" role="status" hidden>Prompt, Exemplo, Importar, Baixar e Exportar agora ficam em <b>⋯</b>, no canto direito da barra. <button type="button" class="link" id="tour-ok">entendi</button></div>
 </div>
 
+<div class="shell" id="shell">
+<nav class="side" id="side" aria-label="Álbuns e acervos" hidden>
+  <div class="side-head">Álbuns</div>
+  <ul class="side-list" id="side-albums"></ul>
+  <div class="side-head">Acervos neste navegador</div>
+  <ul class="side-list" id="side-acervos"></ul>
+</nav>
 <main id="main">
   <div class="empty" id="empty">
     <p><strong>Nenhum acervo carregado.</strong></p>
@@ -485,6 +604,22 @@
     (ex.: <code>data/demo.json</code>). Cada acervo importado fica guardado neste navegador.</p>
   </div>
 </main>
+<aside class="detail" id="detail" aria-label="Detalhe da faixa" hidden>
+  <div class="detail-head">
+    <button type="button" class="dbtn detail-back" id="detail-back" aria-label="Voltar à lista"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12.5 4.5 7 10l5.5 5.5"/></svg></button>
+    <span class="detail-ctx" id="detail-ctx"></span>
+    <button type="button" class="dbtn" id="detail-prev" aria-label="Faixa anterior">‹</button>
+    <button type="button" class="dbtn" id="detail-next" aria-label="Próxima faixa">›</button>
+    <button type="button" class="dbtn detail-close" id="detail-close" aria-label="Fechar o detalhe">×</button>
+  </div>
+  <div class="detail-body" id="detail-body"></div>
+  <div class="detail-foot" id="detail-foot">
+    <button type="button" class="btn-primary" id="detail-copy-style">Copiar Style</button>
+    <button type="button" id="detail-copy-lyrics">Copiar Lyrics</button>
+    <button type="button" id="detail-copy-title" aria-label="Copiar o título">Título</button>
+  </div>
+</aside>
+</div>
 
 <div class="toast" id="toast"></div>
 
@@ -749,6 +884,7 @@ function setCollection(json) {
   App.bpm = {};
   App.modulesById = {};
   (json.styleModules || []).forEach(m => { App.modulesById[m.id] = m; });
+  closeDetail({ noFocus: true });   // I2: a faixa aberta era do acervo anterior
   populateAlbumFilter();
   render();
 }
@@ -979,6 +1115,7 @@ function refreshCardStyle(song, card) {
   if (mods && mods.syncChips) mods.syncChips();
   const ctl = card.querySelector(".bpm-ctl");
   if (ctl && ctl.sync) ctl.sync();
+  updateRow(song);   // I2: o BPM e a saude da linha desta faixa, sem redesenhar a Lista
 }
 
 /** O controle de BPM do cartao (DEC-020): campo numerico, -5/+5 e "voltar a N".
@@ -1159,7 +1296,13 @@ function songMatches(song, f) {
 
 function render() {
   const main = document.getElementById("main");
-  if (!App.collection) { document.getElementById("chips").hidden = true; updateBar(); return; }
+  if (!App.collection) {
+    document.getElementById("chips").hidden = true;
+    document.getElementById("side").hidden = true;
+    closeDetail({ noFocus: true });
+    updateBar();
+    return;
+  }
 
   const f = currentFilters();
   main.innerHTML = "";
@@ -1188,10 +1331,18 @@ function render() {
     });
     sec.querySelector(".album-head").appendChild(albMd);
 
-    const grid = document.createElement("div");
-    grid.className = "cards";
-    songs.forEach(song => grid.appendChild(renderCard(song)));
-    sec.appendChild(grid);
+    // I2: na Lista, uma linha por faixa; em Cartoes, a grade de sempre.
+    if (currentView() === "list") {
+      const rows = document.createElement("ul");
+      rows.className = "rows";
+      songs.forEach(song => rows.appendChild(renderRow(song)));
+      sec.appendChild(rows);
+    } else {
+      const grid = document.createElement("div");
+      grid.className = "cards";
+      songs.forEach(song => grid.appendChild(renderCard(song)));
+      sec.appendChild(grid);
+    }
     main.appendChild(sec);
   });
 
@@ -1204,7 +1355,9 @@ function render() {
   const all = (App.collection.albums || []).reduce((n, a) => n + (a.songs || []).length, 0);
   document.getElementById("stats").textContent = nPlural(all, "faixa", "faixas");
   renderChips(f, shown, all);
+  renderSide(f);
   updateBar();
+  if (currentView() === "list") { afterListRender(); openFromHash(); }
 }
 
 /* ===================================================================
@@ -1896,6 +2049,7 @@ function fmtDate(iso) {
 function setOrigin(text, forgettable) {
   if (text !== undefined) { App.originText = text; App.originForget = !!forgettable; }
   updateBar();
+  renderSideAcervos();   // I2: abrir, importar ou esquecer muda a lista da lateral
 }
 const savedOrigin = (source, savedAt) =>
   setOrigin("importado de " + source + " em " + fmtDate(savedAt) + " · guardado neste navegador", true);
@@ -2182,7 +2336,8 @@ function rerender(focusId) {
   render();
   window.scrollTo(0, y);
   if (focusId) {
-    const c = document.querySelector('.card[data-id="' + CSS.escape(focusId) + '"]');
+    // I2: no miolo, a linha (Lista) ou o cartao (Cartoes); o do detalhe nao conta.
+    const c = document.querySelector('#main [data-id="' + CSS.escape(focusId) + '"]');
     if (!c) return;
     const r = c.getBoundingClientRect();
     if (r.bottom < 0 || r.top > window.innerHeight) c.scrollIntoView({ block: "start" });
@@ -2572,7 +2727,7 @@ document.getElementById("more-btn").addEventListener("click", () => { dismissTou
 // Item de menu escolhido fecha o painel (a acao do item ja rodou: o ouvinte
 // dele dispara antes, no proprio botao).
 ["acervo-pop", "more-pop"].forEach(id => document.getElementById(id).addEventListener("click", e => {
-  if (e.target.closest('[role="menuitem"]')) closePopovers(false);
+  if (e.target.closest('[role="menuitem"], [role="menuitemradio"]')) closePopovers(false);
 }));
 document.addEventListener("pointerdown", e => {
   if (!openPop) return;
@@ -2613,6 +2768,346 @@ function dismissTour() {
 }
 document.getElementById("tour").hidden = !!App.ui.tour14;
 document.getElementById("tour-ok").addEventListener("click", dismissTour);
+
+/* ===================================================================
+   Lista e detalhe (I2, DEC-030 — spec meta/specs/261106-lista-e-detalhe.md)
+   A visao Lista desenha uma linha por faixa; o detalhe, a direita, mostra o
+   cartao de hoje (renderCard, sem mudanca). A lateral filtra por album e troca
+   de acervo. A visao fica em App.ui.view ("list" | "cards"); sem escolha, Lista.
+   =================================================================== */
+function currentView() { return App.ui.view === "cards" ? "cards" : "list"; }
+
+/** Liga a visao escolhida: classes do body, botoes da barra e itens do «⋯». */
+function syncView() {
+  const v = currentView();
+  document.body.classList.toggle("view-list", v === "list");
+  document.body.classList.toggle("view-cards", v === "cards");
+  document.getElementById("view-list").setAttribute("aria-pressed", v === "list" ? "true" : "false");
+  document.getElementById("view-cards").setAttribute("aria-pressed", v === "cards" ? "true" : "false");
+  document.getElementById("menu-view-list").setAttribute("aria-checked", v === "list" ? "true" : "false");
+  document.getElementById("menu-view-cards").setAttribute("aria-checked", v === "cards" ? "true" : "false");
+}
+function setView(v) {
+  if (currentView() === v) return;
+  App.ui.view = v;
+  saveUiState();
+  if (v === "cards") closeDetail({ noFocus: true });
+  syncView();
+  render();
+}
+
+const HEALTH_MARK = { ok: "●", warn: "▲", over: "■" };
+/** Resumo do painel de qualidade para a linha: o PIOR nivel entre as marcas que o
+    cartao mostraria (as mesmas funcoes e a mesma visibilidade de blocos), e uma
+    frase curta. O nivel neutro (9 e 10 tags) conta como dentro. */
+function songHealth(song) {
+  const levels = [], notes = [];
+  const collect = el => el.querySelectorAll(".q").forEach(q => levels.push(q.classList[1]));
+  const lenNote = (n, lim, name, warnText) => {
+    const lv = lengthLevel(n, lim);
+    if (lv === "over") notes.push(["over", name + " passa de " + fmt(lim.max)]);
+    else if (lv === "warn") notes.push(["warn", warnText]);
+  };
+  if (!isHidden("style")) {
+    const st = recomposedStyle(song);
+    collect(styleQuality(st, song.lyrics, baseTagCount(song)));
+    lenNote(st.length, QUALITY_LIMITS.style, "Style", "Style perto de " + fmt(QUALITY_LIMITS.style.max));
+    const t = countTags(st), L = QUALITY_LIMITS.tags;
+    if (t < L.vague || t > L.many) notes.push(["warn", "Style " + t + " tags"]);
+    if (!isHidden("exclude")) findNegations(st, song.lyrics).forEach(n => notes.push(["warn", "«" + n + "» no Exclude"]));
+  }
+  if (!isHidden("lyrics")) {
+    const ly = song.lyrics || "";
+    collect(lengthQuality(ly, QUALITY_LIMITS.lyrics, "", ""));
+    lenNote(ly.length, QUALITY_LIMITS.lyrics, "Lyrics", "Lyrics acima de " + fmt(QUALITY_LIMITS.lyrics.warn));
+  }
+  if (!isHidden("exclude") && song.excludeStyles && song.excludeStyles.length) {
+    const ex = song.excludeStyles.join(", ");
+    collect(lengthQuality(ex, QUALITY_LIMITS.exclude, "", ""));
+    lenNote(ex.length, QUALITY_LIMITS.exclude, "Exclude", "Exclude perto de " + fmt(QUALITY_LIMITS.exclude.max));
+  }
+  const level = levels.includes("over") ? "over" : levels.includes("warn") ? "warn" : "ok";
+  const note = notes.find(n => n[0] === level);
+  return { level, text: level === "ok" ? "tudo dentro" : (note ? note[1] : "pede atenção") };
+}
+function fillHealth(el, song) {
+  const h = songHealth(song);
+  el.className = "row-health " + h.level;
+  el.dataset.level = h.level;
+  el.textContent = HEALTH_MARK[h.level] + " " + h.text;
+  el.title = h.text;
+}
+const bpmText = song => { const v = currentBpm(song); return v ? v + " bpm" : "—"; };
+
+/** Uma linha da Lista. Os botoes copiam SO o conteudo (regra de dominio): o
+    rotulo fica no botao e no aria-label. O Style e recomposto na hora do clique,
+    com os modulos e o BPM da sessao, como o «copiar» do cartao (FIX-007). */
+function renderRow(song) {
+  const li = document.createElement("li");
+  li.className = "row" + (isUsed(song.id) ? " used" : "");
+  li.dataset.id = song.id;
+  const open = document.createElement("button");
+  open.type = "button"; open.className = "row-open"; open.textContent = song.title;
+  open.setAttribute("aria-controls", "detail"); open.setAttribute("aria-expanded", "false");
+  open.addEventListener("click", () => openDetail(song.id));
+  li.appendChild(open);
+  const meta = document.createElement("span"); meta.className = "row-meta";
+  const cell = (cls, text) => { const s = document.createElement("span"); s.className = cls; if (text !== undefined) s.textContent = text; meta.appendChild(s); return s; };
+  const st = cell("row-state");
+  const b = document.createElement("span"); b.className = "badge state"; b.textContent = song.state; st.appendChild(b);
+  cell("row-lang", song.language || "");
+  cell("row-bpm", bpmText(song));
+  fillHealth(cell("row-health"), song);
+  li.appendChild(meta);
+  const copyBtn = (role, label, what, get) => {
+    const c = document.createElement("button");
+    c.type = "button"; c.className = "row-copy"; c.dataset.role = role; c.textContent = label;
+    c.setAttribute("aria-label", "Copiar " + what + " de " + song.title);
+    c.addEventListener("click", () => copyText(get(), c));
+    li.appendChild(c);
+  };
+  copyBtn("row-style", "Style", "o Style", () => recomposedStyle(song));
+  copyBtn("row-lyrics", "Lyrics", "a Lyrics", () => song.lyrics || "");
+  const u = document.createElement("button");
+  u.type = "button"; u.className = "row-used"; u.textContent = "✓";
+  u.setAttribute("aria-pressed", isUsed(song.id) ? "true" : "false");
+  u.setAttribute("aria-label", "Usei " + song.title);
+  u.title = "Marcar ou desmarcar «usei»";
+  u.addEventListener("click", () => {
+    toggleUsed(song.id);
+    const y = window.scrollY; render(); window.scrollTo(0, y);
+    const again = document.querySelector('#main li.row[data-id="' + CSS.escape(song.id) + '"] .row-used');
+    if (again) again.focus({ preventScroll: true });
+  });
+  li.appendChild(u);
+  // Clique no resto da linha (estado, BPM, saude) tambem abre; o teclado usa o titulo.
+  li.addEventListener("click", e => { if (!e.target.closest("button")) openDetail(song.id); });
+  return li;
+}
+
+/** O que muda no cartao (modulo, BPM) chega a linha sem redesenhar a Lista. */
+function updateRow(song) {
+  const li = document.querySelector('#main li.row[data-id="' + CSS.escape(song.id) + '"]');
+  if (!li) return;
+  li.querySelector(".row-bpm").textContent = bpmText(song);
+  fillHealth(li.querySelector(".row-health"), song);
+}
+
+const rowButtons = () => [...document.querySelectorAll("#main .row-open")];
+const rowIds = () => [...document.querySelectorAll("#main li.row")].map(li => li.dataset.id);
+const rowButton = id => document.querySelector('#main li.row[data-id="' + CSS.escape(id) + '"] .row-open');
+function hashId() {
+  const m = /^#faixa=(.+)$/.exec(location.hash);
+  if (!m) return null;
+  try { return decodeURIComponent(m[1]); } catch (e) { return null; }
+}
+function clearHash() { if (location.hash) history.replaceState(null, "", location.pathname + location.search); }
+
+/** Abre (ou troca) a faixa do detalhe. A primeira abertura empilha #faixa=<id>
+    no historico, para o «Voltar» fechar; trocar com ‹ › so substitui. Aberto
+    pelo endereco (recarregar), nada e empilhado: fechar so limpa o endereco. */
+function openDetail(id, opts = {}) {
+  if (currentView() !== "list" || !locateSong(id)) return;
+  const was = App.detailId;
+  App.detailId = id;
+  const h = "#faixa=" + encodeURIComponent(id);
+  if (!opts.fromHistory) {
+    if (!was && !opts.fromHash) { history.pushState(null, "", h); App.detailPushed = true; }
+    else if (location.hash !== h) history.replaceState(null, "", h);
+  }
+  document.getElementById("detail").hidden = false;
+  document.body.classList.add("detail-open");
+  renderDetail();
+  if (!was && isMobile()) document.getElementById("detail-back").focus();
+}
+function closeDetail(opts = {}) {
+  const id = App.detailId;
+  if (!id) return;
+  App.detailId = null; App.detailHtml = null;
+  document.getElementById("detail").hidden = true;
+  document.body.classList.remove("detail-open");
+  document.getElementById("detail-body").textContent = "";
+  markOpenRow();
+  if (opts.fromHistory) App.detailPushed = false;
+  else if (App.detailPushed) { App.detailPushed = false; history.back(); }
+  else clearHash();
+  if (!opts.noFocus) { const b = rowButton(id); if (b) b.focus({ preventScroll: true }); }
+}
+function markOpenRow() {
+  document.querySelectorAll("#main li.row").forEach(li => {
+    const on = li.dataset.id === App.detailId;
+    li.classList.toggle("is-open", on);
+    if (on) li.setAttribute("aria-current", "true"); else li.removeAttribute("aria-current");
+    li.querySelector(".row-open").setAttribute("aria-expanded", on ? "true" : "false");
+  });
+}
+/** Redesenha o detalhe. Se o cartao novo sai igual ao que foi desenhado, o atual
+    fica (e com ele o que a pessoa abriu, como os modulos); senao, troca. */
+function renderDetail() {
+  const id = App.detailId, loc = id && locateSong(id);
+  if (!loc) return;
+  const song = loc.album.songs[loc.index];
+  const body = document.getElementById("detail-body");
+  const fresh = renderCard(song), html = fresh.outerHTML;
+  const same = App.detailShown === id;
+  if (!(same && App.detailHtml === html && body.firstChild)) {
+    const y = same ? body.scrollTop : 0;
+    body.textContent = ""; body.appendChild(fresh); body.scrollTop = y;
+    App.detailHtml = html; App.detailShown = id;
+  }
+  const ids = rowIds(), i = ids.indexOf(id);
+  const inAlbum = (loc.album.songs || []).filter(s => ids.includes(s.id));
+  App.detailPos = i;
+  document.getElementById("detail-ctx").textContent = loc.album.title + " · " +
+    (i >= 0 ? (inAlbum.findIndex(s => s.id === id) + 1) + " de " + inAlbum.length : "fora do filtro");
+  document.getElementById("detail-prev").disabled = i <= 0;
+  document.getElementById("detail-next").disabled = i < 0 || i >= ids.length - 1;
+  markOpenRow();
+}
+function stepDetail(d) {
+  const ids = rowIds(), i = ids.indexOf(App.detailId);
+  if (i < 0 || !ids[i + d]) return;
+  openDetail(ids[i + d]);
+  const b = rowButton(ids[i + d]);
+  if (b && !isMobile()) { b.focus({ preventScroll: true }); b.scrollIntoView({ block: "nearest" }); }
+}
+/** ↑ / ↓ com o foco num titulo: vai ao titulo vizinho, atravessando albuns. */
+function stepRow(btn, d) {
+  const all = rowButtons(), next = all[all.indexOf(btn) + d];
+  if (!next) return;
+  next.focus();
+  next.scrollIntoView({ block: "nearest" });
+  if (App.detailId) openDetail(next.closest("li").dataset.id);
+}
+/** Fecho do render() na Lista: o detalhe acompanha a lista nova. A faixa aberta
+    que saiu do acervo (excluida) fecha o detalhe e leva o foco a linha seguinte. */
+function afterListRender() {
+  if (!App.detailId) return;
+  if (!locateSong(App.detailId)) {
+    const i = App.detailPos || 0;
+    closeDetail({ noFocus: true });
+    const all = rowButtons(), b = all[Math.min(i, all.length - 1)];
+    if (b) b.focus({ preventScroll: true });
+    return;
+  }
+  renderDetail();
+}
+/** Primeira Lista com acervo: um #faixa=<id> no endereco reabre aquela faixa. */
+function openFromHash() {
+  if (App.hashTried || !App.collection) return;
+  App.hashTried = true;
+  const id = hashId();
+  if (!id) return;
+  if (currentView() === "list" && locateSong(id)) openDetail(id, { fromHash: true });
+  else clearHash();
+}
+
+/** A lateral: «Todas as faixas» e os albuns, com a contagem que passa nos OUTROS
+    filtros (estado, uso, busca). Clicar poe o filtro de album, o mesmo do painel. */
+function renderSide(f) {
+  const side = document.getElementById("side");
+  side.hidden = !App.collection;
+  if (!App.collection) return;
+  const ul = document.getElementById("side-albums");
+  ul.textContent = "";
+  const item = (title, n, id) => {
+    const li = document.createElement("li");
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "side-item" + (n ? "" : " empty-album");
+    if ((f.album || "") === id) b.setAttribute("aria-current", "true");
+    const t = document.createElement("span"); t.className = "t"; t.textContent = title;
+    const c = document.createElement("span"); c.className = "n"; c.textContent = n;
+    b.appendChild(t); b.appendChild(c);
+    b.addEventListener("click", () => { document.getElementById("filter-album").value = id; render(); });
+    li.appendChild(b); ul.appendChild(li);
+  };
+  const albums = App.collection.albums || [];
+  const counts = albums.map(a => (a.songs || []).filter(s => songMatches(s, f)).length);
+  item("Todas as faixas", counts.reduce((x, y) => x + y, 0), "");
+  albums.forEach((a, i) => item(a.title, counts[i], a.id));
+}
+/** Os acervos guardados na lateral, como no seletor; o aberto marcado. Le o
+    banco so com a lateral visivel e quando algo mudou (aberto, quantos, data):
+    dbAll traz os acervos inteiros, e o setOrigin roda a cada troca. */
+const SIDE_MQ = window.matchMedia("(min-width: 1280px)");
+let sideKey = null;
+async function renderSideAcervos() {
+  if (!SIDE_MQ.matches) { sideKey = null; return; }
+  const key = [App.source, Store.count, App.savedAt, !!App.collection].join("|");
+  if (key === sideKey) return;
+  sideKey = key;
+  const ul = document.getElementById("side-acervos");
+  let recs = [];
+  if (Store.db) { try { recs = await dbAll(); } catch (e) { recs = []; } }
+  if (!recs.length && App.collection) recs = [{ source: App.source, title: App.collection.title, json: App.collection }];
+  recs.sort((a, b) => String(b.savedAt || "").localeCompare(String(a.savedAt || "")));
+  ul.textContent = "";
+  recs.forEach(r => {
+    const li = document.createElement("li");
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "side-item"; b.dataset.source = r.source || "";
+    const open = r.source === App.source;
+    if (open) b.setAttribute("aria-current", "true");
+    const t = document.createElement("span"); t.className = "t"; t.textContent = r.title || r.source;
+    const c = document.createElement("span"); c.className = "n";
+    c.textContent = open ? "aberto" : String(((r.json && r.json.albums) || []).reduce((n, a) => n + (a.songs || []).length, 0));
+    b.appendChild(t); b.appendChild(c);
+    if (!open) b.addEventListener("click", async () => {
+      let rec = null;
+      try { rec = await dbGet(r.source); } catch (e) { /* trata abaixo */ }
+      if (!rec || !openRecord(rec)) { toast("Não consegui abrir " + r.source); return; }
+      toast("Acervo aberto: " + (rec.json.title || rec.source) + moduleRefsNotice(rec.json));
+    });
+    li.appendChild(b); ul.appendChild(li);
+  });
+}
+
+if (SIDE_MQ.addEventListener) SIDE_MQ.addEventListener("change", () => renderSideAcervos());
+document.getElementById("view-list").addEventListener("click", () => setView("list"));
+document.getElementById("view-cards").addEventListener("click", () => setView("cards"));
+document.getElementById("menu-view-list").addEventListener("click", () => setView("list"));
+document.getElementById("menu-view-cards").addEventListener("click", () => setView("cards"));
+document.getElementById("detail-close").addEventListener("click", () => closeDetail());
+document.getElementById("detail-back").addEventListener("click", () => closeDetail());
+document.getElementById("detail-prev").addEventListener("click", () => stepDetail(-1));
+document.getElementById("detail-next").addEventListener("click", () => stepDetail(1));
+const detailSong = () => { const l = App.detailId && locateSong(App.detailId); return l ? l.album.songs[l.index] : null; };
+document.getElementById("detail-copy-style").addEventListener("click", e => { const s = detailSong(); if (s) copyText(recomposedStyle(s), e.currentTarget); });
+document.getElementById("detail-copy-lyrics").addEventListener("click", e => { const s = detailSong(); if (s) copyText(s.lyrics || "", e.currentTarget); });
+document.getElementById("detail-copy-title").addEventListener("click", e => { const s = detailSong(); if (s) copyText(s.title, e.currentTarget); });
+window.addEventListener("popstate", () => {
+  const id = hashId();
+  if (id && App.collection && locateSong(id)) openDetail(id, { fromHistory: true });
+  else {
+    closeDetail({ fromHistory: true });
+    if (id) clearHash();   // um #faixa= que nao existe neste acervo e ignorado, e o endereco fica limpo
+  }
+});
+document.addEventListener("keydown", e => {
+  const t = e.target;
+  if ((e.key === "ArrowDown" || e.key === "ArrowUp") && t && t.classList && t.classList.contains("row-open")) {
+    e.preventDefault(); stepRow(t, e.key === "ArrowDown" ? 1 : -1); return;
+  }
+  // Esc fecha o detalhe so quando nada na frente dele pede o Esc: um painel da
+  // barra (o ouvinte da I1 fecha primeiro), uma janela ou a busca do celular.
+  if (e.key === "Escape" && App.detailId && !openPop && !e.defaultPrevented && !document.querySelector("dialog[open]")
+      && !(t && t.id === "search" && isMobile())) {
+    e.preventDefault(); closeDetail();
+  }
+});
+// --top-h: a altura do #top, medida (48 px sem etiquetas, 84 com, mais o aviso).
+(() => {
+  const top = document.getElementById("top");
+  const set = () => document.documentElement.style.setProperty("--top-h", top.offsetHeight + "px");
+  set();
+  if ("ResizeObserver" in window) new ResizeObserver(set).observe(top);
+})();
+document.getElementById("tour15").hidden = !!App.ui.tour15;
+document.getElementById("tour15-ok").addEventListener("click", () => {
+  App.ui.tour15 = true; saveUiState();
+  document.getElementById("tour15").hidden = true;
+});
+syncView();
 
 // A abertura e assincrona (IndexedDB); a importacao espera por ela.
 const bootDone = boot();

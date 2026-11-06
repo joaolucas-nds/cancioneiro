@@ -476,3 +476,15 @@
 - **I1 (esta versão), spec `meta/specs/261105-barra-unica.md`:** barra fixa de no máximo 48 px (52 no celular) com o seletor de acervo como menu, a busca com a tecla `/`, os filtros num painel com etiquetas removíveis, o rascunho com «Salvar .json», «editar» e o «⋯» com os seis botões do antigo cabeçalho. A regra `[hidden]` passa a valer para o app todo. O cartão não muda.
 **Alternativas consideradas:** A, refinar o que existe (menos risco, mas não resolve os filtros nem o lugar da edição); C, uma tabela no estilo Airtable (boa para comparar, ruim para ler e copiar prompts longos); arrastar com código próprio (mais leve, mas foco, toque e rolagem são o que costuma quebrar); só caminhos sem arrastar (seguro, mas não atende ao pedido do dono); manter o interruptor «editar» (menos clique errado, mais um modo para lembrar).
 **Consequências:** (+) A I1 sozinha já devolve o espaço do topo e deixa os filtros à vista ao rolar. (+) Cada entrega é usável sozinha. (−) A I3 soma uns 45 KB de biblioteca: medir o tempo de abertura no `file://` antes e depois. (−) Com duas visões (Lista e Cartões), toda saída nova reverifica a regra de domínio nas duas. (−) Sem o interruptor, o clique errado fica mais fácil; é o «Desfazer» que segura isso, e o teste da I3 mede o falso positivo (soltar no mesmo lugar não conta alteração).
+
+## DEC-031 — I2: Lista por padrão, celular sem gaveta, título da linha abre o detalhe
+
+**Data:** 2026-11-06
+**Status:** aceita
+**Contexto:** A spec da I2 (`meta/specs/261106-lista-e-detalhe.md`) trouxe três pontos para o dono, e um deles contraria a análise da frente, que previa uma gaveta da lateral no celular. Decididos por ele em 2026-11-06, os três como recomendados.
+**Decisão:**
+- **Sem escolha guardada, o app abre em Lista.** Cartões continua a um clique, e a escolha fica no navegador.
+- **No celular, sem lateral nem gaveta.** O álbum se escolhe em Filtros, e o acervo, no seletor; a gaveta seria um terceiro caminho para o mesmo lugar, num quinto botão de uma barra de 390 px.
+- **Na Lista, o título da linha abre o detalhe.** Copiar o título fica no cartão do detalhe, como sempre; em Cartões, nada muda.
+**Alternativas consideradas:** abrir em Cartões (o costume); a gaveta da análise; o título copiar e um botão «abrir» à parte (mais um alvo por linha).
+**Consequências:** (+) A I2 entrega o ganho dela já na primeira abertura. (−) Quem copiava o título pelo clique na Lista passa a abrir o detalhe; o aviso da primeira abertura diz onde está cada coisa. (−) Se a gaveta fizer falta no celular, ela volta como ideia.

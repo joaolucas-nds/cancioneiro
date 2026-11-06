@@ -4,6 +4,27 @@
 
 ---
 
+## [0.15.0] — 2026-11-06
+
+Segunda entrega da frente de interface (I2, DEC-030, DEC-031): as faixas numa lista, com o cartão ao lado da escolhida. O cartão não muda.
+
+### Added
+- **Visão Lista** (a padrão) e **Cartões** (a de antes), num par de botões na barra; no celular, no «⋯». A escolha fica no navegador (`view` em `cancioneiro:ui`).
+- **A lista:** uma linha de 44 px por faixa, agrupada por álbum, com o cabeçalho do álbum fixo ao rolar. Colunas: título, estado, idioma, BPM, saúde e os botões **Style**, **Lyrics** e ✓ «usei». Os dois botões copiam só o conteúdo, o Style recomposto na hora, igual ao «copiar» do cartão.
+- **Saúde da faixa:** o pior nível do painel de qualidade do cartão, com marca e texto («● tudo dentro», «▲ Style 12 tags», «■ Lyrics passa de 5.000»).
+- **O detalhe à direita:** clicar no título abre o cartão de hoje ao lado da lista, com ‹ › para andar pela lista filtrada e × ou `Esc` para fechar. `↓` e `↑` no título andam de faixa. O endereço guarda a faixa (`#faixa=<id>`): recarregar reabre, e o «Voltar» do navegador fecha. Entre 720 e 959 px, o detalhe abre por cima da lista.
+- **A lateral** (a partir de 1280 px): os álbuns, com a contagem dos outros filtros (clicar filtra), e os acervos guardados (clicar abre).
+- **Celular:** linhas de 64 px com o ✓ de 44; o detalhe em tela cheia, com «Copiar Style», «Copiar Lyrics» e «Título» fixos no pé; voltar devolve a lista na mesma rolagem.
+- Um aviso de uma linha na primeira abertura diz onde está cada coisa (`tour15`).
+
+### Changed
+- Na Lista, clicar no título da faixa abre o detalhe; copiar o título fica no cartão, como antes. Em Cartões, nada muda.
+- Abaixo de 1180 px de largura, o nome «Cancioneiro» sai da barra para caber o par Lista | Cartões; a versão segue no «⋯».
+
+Spec `meta/specs/261106-lista-e-detalhe.md`: 15 de 15 critérios no Chromium headless, com prova de vida no app da 0.14.0; a Lista de 300 faixas desenha em cerca de 50 ms. Os testes das entregas 1 a 3 e da I1 seguem em 15 de 15, 25 de 25, 19 de 19 e 14 de 14, rodados em Cartões onde medem o cartão.
+
+---
+
 ## [0.14.0] — 2026-11-05
 
 Primeira entrega da frente de interface (I1, DEC-030): uma barra única no topo. O cartão não muda.
