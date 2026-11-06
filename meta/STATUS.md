@@ -12,6 +12,7 @@
 - **I1 conferida na tela pelo dono** (roteiro OK `[relatado pelo dono]`): a barra única (0.14.0) está fechada.
 - **I2, lista e detalhe (0.15.0):** protótipo no canvas «Cancioneiro: nova interface» (fileira da I2), spec `meta/specs/261106-lista-e-detalhe.md` e os três pontos decididos pelo dono como recomendados (DEC-031): Lista por padrão, celular sem gaveta, título da linha abre o detalhe. 15 de 15 critérios no Chromium headless, testados pelo chat.
 - **Este bloco substitui o anterior, da WO 0025** (I1). O que ele dizia está no CHANGELOG [0.14.0], na spec `meta/specs/261105-barra-unica.md` e em `logs/2026-11-05.md` (Conversas 8 a 10).
+- **WO 0026 aplicada pelo Code e empurrada (`36596e2`, 0.15.0):** 27 edições, os dez hashes de chegada conferidos, `validate.py` exit=0 (esquema não conferido: falta `jsonschema`), conversores OK. Falta só o dono conferir a I2 na tela.
 
 ## Funciona (pronto)
 
