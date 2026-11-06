@@ -25,7 +25,7 @@ O mínimo que já é útil: ler o acervo e copiar sem procurar.
 - ✅ Conveniências de uso: estrutura do cartão configurável, copiar título, arrastar o `.json`, acervo guardado no navegador, prompt que entrega arquivo, export de álbum com o Style da tela (DEC-022, DEC-023; i-030, i-033 a i-037) — 0.9.0, conferidas e retestadas pelo dono; ajustes de tela na 0.9.1 (DEC-025), vistos pelo dono.
 - ✅ Converter os álbuns antigos (i-008, DEC-026): a família BR na 0.9.1 (151 faixas) e `Albuns/` na 0.10.0 (205 faixas em 12 álbuns por cena de uso, i-038); os acervos ficam fora do repo.
 - ✅ Curadoria no app e vários acervos (i-040, i-041, DEC-028), em três entregas: ✅ exportar faixa como `.json` (0.11.0) · ✅ vários acervos no navegador (IndexedDB, marcas «usei» por acervo; 0.12.0) · ✅ curadoria pela tela (excluir, reordenar, mover, novo álbum, importar faixas) num rascunho, com «Baixar .json» pelo nome de origem (0.13.0, DEC-029).
-- 🔨 Frente de interface (i-043 a i-048, DEC-030), em quatro entregas: ✅ barra única, com o seletor de acervo, os filtros com etiquetas e o «⋯» (0.14.0) · ✅ lista e detalhe, com a lateral de álbuns e acervos (0.15.0) · ⬜ organizar: arrastar, «⋯» por faixa, lote, «Desfazer», sem o interruptor «editar» (0.16.0) · ⬜ salvar direto no arquivo (0.17.0, i-043).
+- 🔨 Frente de interface (i-043 a i-048, DEC-030), em quatro entregas: ✅ barra única, com o seletor de acervo, os filtros com etiquetas e o «⋯» (0.14.0) · ✅ lista e detalhe, com a lateral de álbuns e acervos (0.15.0) · ✅ organizar: arrastar, «⋯» por faixa, lote, «Desfazer», sem o interruptor «editar» (0.16.0) · ⬜ salvar direto no arquivo (0.17.0, i-043).
 **Marco:** conseguir usar a ferramenta de verdade numa rodada de geração no Suno.
 
 ## 🔨 Fase 3 — Qualidade de prompt e modularidade

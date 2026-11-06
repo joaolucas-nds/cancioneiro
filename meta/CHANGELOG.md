@@ -4,6 +4,28 @@
 
 ---
 
+## [0.16.0] — 2026-11-06
+
+Terceira entrega da frente de interface (I3, DEC-030, DEC-032): organizar o acervo sem ligar nada. O cartão não muda.
+
+### Added
+- **Arrastar pela alça ⋮⋮** de cada linha da Lista, dentro do álbum ou para outro, com o SortableJS 1.15.7 embutido no app (MIT, sem mudança; o `validate.py` confere o sha256). Com filtro ou busca ligados, a faixa cai logo antes da próxima visível, e o aviso diz onde («… foi para antes de «X»»). Soltar no mesmo lugar não conta alteração.
+- **Soltar sobre a lateral:** num álbum, a faixa vai para o fim dele; em «+ Novo álbum», que só aparece durante o arrastar, o app pede o título e cria o álbum com ela.
+- **O «⋯» de cada faixa**, na linha, no detalhe e no pé do cartão, com os mesmos itens: Mover para…, Subir, Descer, Exportar .md, Exportar .json e Excluir…. `Alt+↑` e `Alt+↓` no título sobem e descem.
+- **Várias de uma vez:** uma caixa por linha e uma por álbum (marca as visíveis), `Shift`+clique para o intervalo e uma barra de lote com Mover para…, Exportar .json (um acervo com as faixas, nos álbuns de origem e com os módulos citados), Marcar usei e Excluir….
+- **«Desfazer»** no aviso de cada operação, e `Ctrl+Z` fora dos campos de texto: volta o acervo, as marcas «usei» das excluídas e o número de alterações. Só a última; salvar e trocar de acervo esquecem a volta.
+- **Soltar um `.json` sobre um álbum** (o cabeçalho na lista, ou o nome na lateral) abre «importar faixas» com ele escolhido; fora dele, importa como acervo, como antes.
+- **Celular:** o «⋯» do detalhe e o toque na alça abrem uma folha de baixo; «Selecionar várias…» liga as caixas de 44 px e a barra de lote; tocar na linha marca. A alça só pega depois de segurar.
+
+### Changed
+- **Sem o interruptor «editar».** Organizar vale sempre que o acervo tem cópia guardada no navegador; sem ela (o exemplo do Pages), não há alça, e o «⋯» traz só os Exportar, com a explicação.
+- **«Importar faixas…»** mora no «⋯» da barra, também no computador.
+- O pé do cartão perde ↑ ↓, «mover…» e «excluir», e ganha o «⋯».
+
+Spec `meta/specs/261106-organizar.md`: 15 de 15 critérios no Chromium headless, com prova de vida no app da 0.15.0. Abrir um acervo de 205 faixas leva de 148 a 159 ms, até cerca de 30 ms a mais que a 0.15.0 nas mesmas rodadas (o limite era 100), e a Lista de 300 faixas desenha em cerca de 60 ms. Os testes das entregas 1 a 3, da I1 e da I2 seguem em 15 de 15, 25 de 25, 19 de 19, 14 de 14 e 15 de 15, com o «⋯» no lugar do «editar». O app passa de 158 KB para 239 KB, 45 KB deles da biblioteca.
+
+---
+
 ## [0.15.0] — 2026-11-06
 
 Segunda entrega da frente de interface (I2, DEC-030, DEC-031): as faixas numa lista, com o cartão ao lado da escolhida. O cartão não muda.

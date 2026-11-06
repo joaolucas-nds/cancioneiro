@@ -5,7 +5,7 @@ Uso:
     python3 scripts/validate.py              # valida todos os data/*.json
     python3 scripts/validate.py data/foo.json  # valida um arquivo
 
-Checa sete coisas:
+Checa oito coisas:
   1. Sintaxe JSON de todos os schemas e datasets.
   2. Conformidade estrutural de cada dataset contra collection.schema.json
      (requer o pacote 'jsonschema'; se ausente, faz so a checagem de sintaxe
@@ -21,10 +21,13 @@ Checa sete coisas:
      abaixo de «## Meu pedido» (DEC-021).
   7. Os limites da skill kit-musica/skills/revisar-faixa sao os do painel de
      qualidade do app (QUALITY_LIMITS): o kit nao envelhece separado (DEC-027).
+  8. A SortableJS embutida no app e a 1.15.7 sem mudanca: o sha256 do trecho
+     confere com o do Sortable.min.js do npm (DEC-030, DEC-032).
 
 Rode antes de commitar mudanca em data/ ou schema/ (ver CLAUDE.md).
 Saida: codigo 0 se tudo passou, 1 se houve erro.
 """
+import hashlib
 import json
 import re
 import sys
@@ -216,6 +219,36 @@ def check_kit():
     return 0
 
 
+SORTABLE_SHA256 = "bf4241bc73fef7f11c59a283a69fe8051cdd31c6d8ff5a2b9ba219e7831fcf76"
+SORTABLE_START = b"/* ---- SortableJS 1.15.7: da linha seguinte ate o fim deste script, o Sortable.min.js do npm sem mudanca ---- */\n"
+
+
+def check_sortable():
+    """A biblioteca de arrastar embutida e a SortableJS 1.15.7 sem mudanca (DEC-032).
+
+    O trecho vai da linha seguinte ao marcador ate o fim do script; o sha256 e o do
+    Sortable.min.js do pacote npm sortablejs@1.15.7 (medido em 2026-11-06). Trocar
+    de versao e decisao: muda o hash aqui, o comentario no app e a DEC.
+    """
+    try:
+        with open(os.path.join(ROOT, "app/index.html"), "rb") as f:
+            s = f.read().replace(b"\r\n", b"\n")   # um checkout com autocrlf poe CRLF; o hash e do arquivo em LF
+    except OSError as e:
+        print(f"ERRO na biblioteca: nao consegui ler app/index.html: {e}")
+        return 1
+    i = s.find(SORTABLE_START)
+    j = s.find(b"\n</script>", i) if i >= 0 else -1
+    if i < 0 or j < 0:
+        print("ERRO na biblioteca: o trecho da SortableJS nao esta no app/index.html")
+        return 1
+    got = hashlib.sha256(s[i + len(SORTABLE_START):j]).hexdigest()
+    if got != SORTABLE_SHA256:
+        print(f"ERRO na biblioteca: o sha256 da SortableJS embutida mudou ({got[:12]}..., esperado {SORTABLE_SHA256[:12]}...)")
+        return 1
+    print("OK  biblioteca: SortableJS 1.15.7 embutida sem mudanca")
+    return 0
+
+
 def main(argv):
     targets = argv[1:] or sorted(glob.glob(os.path.join(ROOT, "data", "*.json")))
     if not targets:
@@ -294,6 +327,8 @@ def main(argv):
     errors += check_prompt()
     # kit de musica: os limites da skill sao os do app (DEC-027)
     errors += check_kit()
+    # biblioteca de arrastar: a SortableJS 1.15.7 sem mudanca (DEC-032)
+    errors += check_sortable()
 
     print()
     if errors:

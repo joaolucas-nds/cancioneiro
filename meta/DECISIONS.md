@@ -488,3 +488,16 @@
 - **Na Lista, o título da linha abre o detalhe.** Copiar o título fica no cartão do detalhe, como sempre; em Cartões, nada muda.
 **Alternativas consideradas:** abrir em Cartões (o costume); a gaveta da análise; o título copiar e um botão «abrir» à parte (mais um alvo por linha).
 **Consequências:** (+) A I2 entrega o ganho dela já na primeira abertura. (−) Quem copiava o título pelo clique na Lista passa a abrir o detalhe; o aviso da primeira abertura diz onde está cada coisa. (−) Se a gaveta fizer falta no celular, ela volta como ideia.
+
+## DEC-032 — I3: arrastar com filtro pela próxima visível, Cartões só com o «⋯», seleção no celular pelo «⋯»; a SortableJS 1.15.7 embutida com o hash
+
+**Data:** 2026-11-06
+**Status:** aceita
+**Contexto:** A spec da I3 (`meta/specs/261106-organizar.md`) trouxe três pontos para o dono, decididos por ele em 2026-11-06, os três como recomendados. A DEC-030 deixou para a entrega que trouxesse a biblioteca o registro do hash.
+**Decisão:**
+- **Arrastar com filtro ou busca ligados é permitido.** A faixa solta cai logo antes da próxima faixa visível, na ordem completa do álbum (sem próxima, logo depois da anterior; sem nenhuma, no fim); as escondidas mantêm a ordem entre si. O aviso diz onde ela foi, e o «Desfazer» volta.
+- **Na visão Cartões, só o «⋯», sem arrastar.** A Lista é onde se organiza.
+- **No celular, a seleção começa por «Selecionar várias…» no «⋯».** Segurar a linha fica para a alça.
+- **A biblioteca:** o `Sortable.min.js` do pacote npm `sortablejs@1.15.7`, sem mudança, num `<script id="lib-sortable">` com a licença MIT acima; sha256 `bf4241bc73fef7f11c59a283a69fe8051cdd31c6d8ff5a2b9ba219e7831fcf76`, conferido pelo `scripts/validate.py` a cada execução. Trocar de versão é decisão, não acidente.
+**Alternativas consideradas:** desligar a alça com filtro ligado (mais previsível, menos à mão); arrastar também a grade de Cartões (impreciso com cartões de 700 px); segurar a linha para selecionar no celular, como nos apps de e-mail (o mesmo gesto da alça, a poucos milímetros); carregar a biblioteca de uma CDN (quebraria o `file://` sem rede).
+**Consequências:** (+) Organizar fica sempre à mão, sem o interruptor, com um caminho sem arrastar para tudo (o «⋯», WCAG 2.5.7). (+) O hash no `validate.py` torna visível qualquer mudança na biblioteca. (−) São 45 KB de código de terceiro no app; abrir 205 faixas ficou até cerca de 30 ms mais lento que na 0.15.0. (−) A SortableJS, no modo de arrastar que o app usa, engole o primeiro clique depois de soltar; o app desfaz isso com um clique sintético ao fim de cada arrastar (comentado em `dragEnd`), e uma versão nova pede reconferir. (−) Com filtro ligado, pode haver faixas escondidas entre a solta e a vizinha; o aviso e o «Desfazer» seguram.

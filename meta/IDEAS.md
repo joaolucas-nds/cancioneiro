@@ -190,9 +190,15 @@ Achado no teste da entrega 2 (2026-11-05): o CSS `.controls { display: flex }` v
 `[relatado pelo dono, 2026-11-05]` Painéis que abrem pela lateral direita, com etiquetas no estilo de «bookmarks». Exemplo dele: os acervos da entrega 2 também numa barra lateral, além da janela. Junto da i-046 na pesquisa. O arrastar cartões para reordenar (fora da entrega 3) entra nesta frente.
 **Em andamento (DEC-030, DEC-031):** a lateral de álbuns e acervos entrou na I2 (0.15.0), à esquerda e sem abas, a partir de 1280 px; o detalhe da faixa é o painel da direita. Em aberto: as abas no estilo de «bookmarks» do pedido e a lateral no celular (sem gaveta, por decisão do dono).
 
-### i-048 💡 Edição e organização com UX de verdade, arrastando onde for útil
+### i-048 ✅ Edição e organização com UX de verdade, arrastando onde for útil
 `[relatado pelo dono, 2026-11-05]` A estrutura para «edição, controle e organização das faixas, acervos e tudo mais» não está prática nem intuitiva, e falta muito UX/UI. Ele pede estudo e planejamento antes, e praticidades como **arrastar objetos** onde for possível, útil e interessante: cartões entre posições e álbuns, faixas para um acervo, arquivos para a tela. Junta-se às i-044 a i-047, numa frente só (análise `meta/analises/261105-ANALISE-frente-de-interface.md`).
-**Planejada (DEC-030):** é a I3 (0.16.0): arrastar pela alça, com o SortableJS embutido; o «⋯» por faixa como caminho sem arrastar; seleção em lote; «Desfazer»; o fim do interruptor «editar».
+**Entregue (DEC-030, DEC-032):** a I3 (0.16.0): arrastar pela alça, com a SortableJS embutida; o «⋯» por faixa como caminho sem arrastar; seleção em lote; «Desfazer»; o fim do interruptor «editar»; soltar o `.json` sobre um álbum. Ficaram de fora e viraram ideias próprias: organizar os álbuns (i-049) e arrastar uma faixa para outro acervo (i-050).
+
+### i-049 💡 Organizar os álbuns
+`[capturada pelo chat, 2026-11-06, na spec da I3]` Renomear um álbum, reordenar os álbuns arrastando na lateral e juntar dois. A I3 organiza as faixas; os álbuns só nascem (pelo «+ Novo álbum» ou pelo «Mover para…») e somem quando esvaziam. Fora da I3 por escopo.
+
+### i-050 💡 Arrastar uma faixa para outro acervo
+`[relatado pelo dono, 2026-11-05, na i-048]` Soltar uma faixa sobre outro acervo da lateral para copiá-la ou movê-la para ele. Mexe em dois rascunhos de uma vez (e em dois arquivos a salvar), e pede uma análise própria antes da spec. Hoje o caminho é exportar a faixa em `.json` e importá-la no outro acervo.
 
 ## Feedback para o Kit
 

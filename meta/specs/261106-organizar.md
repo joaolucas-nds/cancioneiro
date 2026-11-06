@@ -1,6 +1,6 @@
 # SPEC — Organizar (frente de interface, entrega I3)
 
-> **Status:** Proposta — espera o dono decidir os três pontos do fim
+> **Status:** Pronta — aplicação pela `meta/workorders/261106-wo0027-organizar.md` (0.16.0, DEC-032)
 > **Decidida em:** a frente, em 2026-11-05 (DEC-030: SortableJS 1.15.7 embutido, sem o interruptor «editar», com
 > «Desfazer»). Esta é a I3.
 > **Data:** 2026-11-06 (data de criação; não muda depois)
@@ -162,6 +162,56 @@ por último, o texto da saúde (a marca ●▲■ fica). O título nunca fica co
 
 **Prova de vida:** o mesmo teste no app da 0.15.0 reprova (no mínimo C1, C2 e C8).
 
+## Resultado (medido pelo chat em 2026-11-06, Chromium headless, `file://`, app de chegada da WO 0027)
+
+**15 de 15 critérios.** Acervo de teste: as três faixas do `data/demo.json` e faixas feitas a partir delas, em três
+álbuns, 15 faixas (no álbum C, metade «gerada», para os filtros); outro igual para trocar de acervo; e dois grandes, de
+205 e 300 faixas, para o C14.
+
+| # | O que foi conferido | Resultado |
+|---|---|---|
+| C1 | a barra e o «⋯» do celular sem «editar»; «Importar faixas…» no «⋯» da barra; o pé do cartão com «marcar usei», os dois Exportar e o «⋯», sem ↑ ↓, «mover…» nem «excluir» | OK |
+| C2 | arrastar a primeira faixa do álbum A pela alça para baixo da terceira muda a ordem (+1, aviso com «Desfazer»); outra, para o álbum B, cai onde soltou; soltar no mesmo lugar não muda a ordem, a contagem nem mostra aviso | OK |
+| C3 | com Estado «gerada», a faixa solta cai logo antes da próxima visível na ordem completa; as «ideia» escondidas mantêm a ordem entre si | OK |
+| C4 | soltar no álbum B da lateral leva a faixa ao fim dele; «+ Novo álbum» só fica visível durante o arrastar; soltar nele pede o título e cria o álbum com a faixa | OK |
+| C5 | o «⋯» da linha, do detalhe e do cartão têm os mesmos itens; Subir desligado na primeira e Descer na última; «Mover para…» abre a janela; «Excluir…» confirma; os dois Exportar saem iguais aos do cartão; `Alt+↑` e `Alt+↓` no título | OK |
+| C6 | a caixa marca; `Shift`+clique marca o intervalo; a caixa do álbum marca as visíveis e fica meio marcada com parte; «N faixas selecionadas»; × e `Esc` limpam; um filtro que esconde uma marcada a tira da seleção | OK |
+| C7 | «Mover para…» leva duas faixas juntas, na ordem, ao fim do álbum B; com duas de álbuns diferentes, «Exportar .json» sai um acervo com os dois álbuns de origem e só os módulos citados, que passa no esquema e importa de volta; «Marcar usei» marca as duas e vira «Desmarcar usei»; «Excluir…» confirma e tira as duas | OK |
+| C8 | excluir uma faixa marcada «usei» e clicar «Desfazer» volta a faixa, a marca e a contagem; depois de dois Descer, `Ctrl+Z` volta só o último; «Salvar .json» e trocar de acervo esquecem a volta; `Ctrl+Z` na busca não mexe no acervo | OK |
+| C9 | sem cópia guardada (o caso do exemplo do Pages): sem alça; o «⋯» só com os Exportar e a explicação; o lote com Mover e Excluir desligados | OK |
+| C10 | soltar um `.json` sobre o cabeçalho do álbum B, ou sobre ele na lateral, abre «importar faixas» com o B escolhido; fora deles, importa como acervo | OK |
+| C11 | a 390×844: as listas arrastáveis pegam só pela alça e, no toque, depois de segurar 250 ms (`delay`, `delayOnTouchOnly`); o «⋯» do detalhe abre a folha de baixo com «Selecionar várias…»; caixas de 44 px e a barra de lote; tocar na linha marca; × sai | OK |
+| C12 | a 1366, 1024 e 800 px, com o detalhe aberto: sem rolagem lateral, título com pelo menos 160 px; a barra de lote acima do rascunho e o aviso acima dela | OK |
+| C13 | o `<script id="lib-sortable">` traz a licença MIT e, da linha marcada até o fim, os 45.478 bytes do `Sortable.min.js` 1.15.7 (sha256 `bf4241bc…`); o `validate.py` diz `OK  biblioteca` e reprova uma cópia com «1.15.7» trocado por «1.15.8» dentro da biblioteca | OK |
+| C14 | abrir com 205 faixas, média de 5, em três rodadas: 148, 152 e 159 ms, contra 134, 151 e 127 ms da 0.15.0 nas mesmas rodadas (no pior caso, +32 ms; o limite era +100); a Lista de 300 faixas com alças desenha em cerca de 60 ms | OK |
+| C15 | `v0.16.0`; nenhum erro de página | OK |
+
+**Prova de vida, medida:** no app da 0.15.0 o C1 reprova e o teste para no C2, porque não há alça para arrastar.
+
+**Regressão:** os testes das entregas 1 a 3, da I1 e da I2 seguem em 15 de 15, 25 de 25, 19 de 19, 14 de 14 e 15 de 15.
+Os que ligavam «editar» passam pelo «⋯» (da linha, do cartão ou do detalhe); os que comparam o `<main>` dos Cartões com
+uma versão anterior tiram antes o «⋯» do pé, que é a única diferença. `validate.py` exit=0 com `jsonschema`, e os dois
+conversores OK.
+
+**Onde a implementação saiu da spec:**
+- **O app ficou com 239 KB**, não os cerca de 204 previstos: 45 KB da biblioteca e 35 KB do código e do CSS da I3
+  (seleção, menu, lote, «Desfazer», o arrastar para a lateral e para arquivos).
+- **A SortableJS engole o primeiro clique depois de soltar** (no modo de arrastar que o app usa, o mesmo no mouse e no
+  toque). Sem correção, o «mover» da janela do «+ Novo álbum» não respondia ao primeiro clique. O app dispara um clique
+  sintético ao fim de cada arrastar; está comentado em `dragEnd`.
+- **Tocar ou clicar na alça abre o «⋯»** da faixa. No celular, onde a linha não tem o «⋯», é por ela (e pelo detalhe)
+  que se chega ao menu.
+- **No celular, o detalhe continua aberto depois de Subir ou Descer**, na mesma faixa; o «←» volta à lista com a nova
+  ordem.
+- **«Mover para…» em lote pula as faixas que já estão no álbum de destino**, e diz «Nada a mover» se forem todas.
+- **Quando o acervo ganha a cópia guardada**, o app só põe as alças nas linhas, sem redesenhar a lista: o redesenho
+  dobrado custava cerca de 100 ms ao abrir 205 faixas.
+- **A barra de lote empurra o fim da lista**, para não cobrir as últimas linhas; no celular, a contagem e o × ficam numa
+  linha e as quatro ações na outra.
+
+**O que a revisão visual pegou:** a barra de lote cobria as duas últimas linhas da lista, e no celular o × caía sozinho
+numa terceira linha da barra e os rótulos quebravam em dois.
+
 ## Fora de escopo
 
 - **A I4:** salvar direto no arquivo (i-043).
@@ -185,6 +235,9 @@ por último, o texto da saúde (a marca ●▲■ fica). O título nunca fica co
   seleção, e a alça é extra.
 
 ## Pontos para o dono decidir
+
+**Decididos pelo dono em 2026-11-06, os três como recomendados** (DEC-032): arrastar com filtro pela regra da
+próxima visível, Cartões só com o «⋯», no celular a seleção entra pelo «⋯».
 
 1. **Arrastar com filtro ou busca ligados:** **permitir, com a regra do item 2 (recomendado):** a faixa cai antes da
    próxima visível, e o «Desfazer» cobre a surpresa. Ou desligar a alça enquanto houver filtro, deixando só o «⋯»
