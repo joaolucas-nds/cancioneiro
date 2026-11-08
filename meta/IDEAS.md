@@ -168,11 +168,12 @@ Achado em 2026-10-29 nos `.md` que o dono exportou: o export de **faixa** sai co
 ### i-042 💡 Rampa de BPM no style («95 BPM to 118 BPM»)
 Achado na conversão BR: três faixas mudam de andamento de propósito. A DEC-020 reprova dois BPM no `validate.py`, e o controle de BPM do cartão igualaria os dois números. Decidir: o controle não aparecer (ou avisar) quando o style tem uma rampa, e o `validate.py` aceitar o par ligado por «to»/«building to», sem perder o erro de autoria que a DEC-020 pega.
 
-### i-043 💡 Gravar direto no arquivo do acervo (File System Access)
+### i-043 ✅ Gravar direto no arquivo do acervo (File System Access)
 Achado na análise da curadoria (2026-11-02, opção F4): no Chrome e no Edge o app pode abrir o `.json` com permissão de gravar e «Salvar» no mesmo arquivo, sem passar por Downloads. Não existe no Firefox nem no Safari, e a permissão é pedida de novo a cada sessão. **Gatilho:** depois da entrega 3 da curadoria (DEC-028), se a sonda mostrar a API no navegador do dono — entra como «Salvar no arquivo» onde existir, com «Baixar» onde não.
 **Medido (2026-11-04, sonda):** no Chrome 156 do dono existem as três APIs — `showSaveFilePicker`, `showOpenFilePicker` e `getAsFileSystemHandle` (arrastar com permissão de gravar). Falta só a entrega 3.
 **Gatilho atingido (2026-11-05):** a entrega 3 está pronta (0.13.0). Com ela, o passo que sobra é baixar e substituir o arquivo; gravar direto tira esse passo.
 **Planejada (DEC-030):** é a I4 da frente de interface (0.17.0), depois de a I3 deixar o «Salvar» fácil de achar.
+**Entregue (0.17.0, I4, DEC-033):** «Salvar» grava no arquivo vinculado no Chrome e no Edge do computador; o vínculo nasce no primeiro «Salvar», ao importar pela janela ou ao soltar o arquivo; o app pergunta antes de gravar por cima de um arquivo mudado fora. Firefox, Safari e o celular baixam. Spec `meta/specs/261106-salvar-no-arquivo.md`.
 
 ### i-044 ✅ A barra de controles não some quando não há acervo
 Achado no teste da entrega 2 (2026-11-05): o CSS `.controls { display: flex }` vence o atributo `hidden` que o `render()` põe na barra quando não há acervo, então os filtros vazios ficam na tela no estado inicial e depois de esquecer todos. Já era assim antes da 0.12.0. O conserto provável é uma linha (`.controls[hidden] { display: none; }`), mas muda o que o dono vê ao abrir o app vazio — conferir na tela antes.
@@ -199,6 +200,9 @@ Achado no teste da entrega 2 (2026-11-05): o CSS `.controls { display: flex }` v
 
 ### i-050 💡 Arrastar uma faixa para outro acervo
 `[relatado pelo dono, 2026-11-05, na i-048]` Soltar uma faixa sobre outro acervo da lateral para copiá-la ou movê-la para ele. Mexe em dois rascunhos de uma vez (e em dois arquivos a salvar), e pede uma análise própria antes da spec. Hoje o caminho é exportar a faixa em `.json` e importá-la no outro acervo.
+
+### i-051 💡 Versionar os testes do navegador
+`[capturada pelo chat, 2026-11-06, na I4]` Os testes no Chromium headless de cada entrega (curadoria 1 a 3, I1 a I4) moram só na sessão do chat que os escreveu: a conversa seguinte não os tem, e a regressão da I4 teve de ser por fumaça (importar, lista, detalhe, «⋯», Cartões). Guardar em `tests/` (Playwright, Python) e rodar antes de cada WO de código. Pede decidir onde roda (a máquina do dono não tem Playwright) e o custo de manter.
 
 ## Feedback para o Kit
 

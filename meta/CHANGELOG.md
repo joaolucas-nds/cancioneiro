@@ -4,6 +4,27 @@
 
 ---
 
+## [0.17.0] — 2026-11-06
+
+Quarta e última entrega da frente de interface (I4, DEC-030, DEC-033): «Salvar» grava no próprio `.json`, onde o navegador deixa. Fecha a i-043.
+
+### Added
+- **«Salvar» grava no arquivo** no Chrome e no Edge do computador. No primeiro «Salvar» de um acervo, a janela do sistema vem com o nome do arquivo de origem; o acervo fica vinculado àquele arquivo, e os próximos «Salvar» gravam sem janela. Ao reabrir o app, o navegador pede uma vez a permissão de editar.
+- **`Ctrl+S` (`⌘S`)** salva, até dentro de um campo de texto, e não abre mais o «salvar página» do navegador. Sem alterações, não faz nada.
+- **O ▾ ao lado de «Salvar»:** Salvar no arquivo, Salvar em outro arquivo… (vincula ao escolhido) e Baixar .json (uma cópia em Downloads; com vínculo, o rascunho continua não salvo).
+- **Importar pela janela do sistema** («Importar .json…» e «Importar outro .json…») e soltar o arquivo na tela já vinculam o acervo ao arquivo.
+- **Arquivo mudado fora do app:** antes de gravar, o app compara a data e o tamanho do arquivo com os da última leitura ou gravação e pergunta: Cancelar, Salvar em outro arquivo… ou Substituir mesmo assim. Arquivo sumido: avisa e oferece salvar em outro.
+- **O vínculo no seletor de acervo** («Vinculado a X», ou «Sem vínculo») e **Desvincular do arquivo**. Esquecer o acervo apaga o vínculo junto.
+- Depois de gravar, a barra mostra «✓ Salvo no arquivo às HH:MM».
+
+### Changed
+- **«Desfazer» continua valendo depois de salvar** (revê a DEC-032): desfazer devolve o rascunho a «1 alteração não salva». Vale também para o «Salvar .json» que baixa.
+- Firefox, Safari e o celular continuam com «Salvar .json», que baixa como antes; o seletor de acervo diz por quê.
+
+Spec `meta/specs/261106-salvar-no-arquivo.md`: 14 de 14 critérios no Chromium headless (em `http://127.0.0.1`, com as janelas do sistema trocadas por arquivos da pasta privada do navegador), com prova de vida no app da 0.16.0. Abrir 205 faixas leva de 1 a 34 ms a mais que a 0.16.0 nas mesmas rodadas (o limite era 50); gravar 205 faixas (293 KB), de 10 a 14 ms. A sonda no Chrome 156 do dono, no `file://`, confirmou a janela de salvar, gravar de novo sem janela, guardar o vínculo e abrir pela janela. O app passa de 239 KB para 253 KB.
+
+---
+
 ## [0.16.0] — 2026-11-06
 
 Terceira entrega da frente de interface (I3, DEC-030, DEC-032): organizar o acervo sem ligar nada. O cartão não muda.

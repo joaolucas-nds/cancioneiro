@@ -1,6 +1,6 @@
 # SPEC — Salvar no arquivo (frente de interface, entrega I4)
 
-> **Status:** Rascunho — espera a sonda no Chrome do dono e os cinco pontos para o dono decidir.
+> **Status:** Pronta — aplicação pela `meta/workorders/261106-wo0030-salvar-no-arquivo.md` (0.17.0, DEC-033)
 > **Decidida em:** a frente, em 2026-11-05 (DEC-030: a I4 é «salvar no arquivo», 0.17.0). Esta é a I4.
 > **Data:** 2026-11-06 (data de criação; não muda depois)
 > **Ideia de origem:** i-043 (gravar direto no arquivo do acervo, File System Access).
@@ -138,6 +138,52 @@ deixa: «Salvar» grava no próprio arquivo.
 
 **Prova de vida:** o mesmo teste no app da 0.16.0 reprova, no mínimo, C1, C2 e C3.
 
+## Resultado (medido pelo chat em 2026-11-06, Chromium headless, app de chegada da WO 0030)
+
+**14 de 14 critérios.** Acervo de teste: o `data/demo.json` (3 faixas, 2 álbuns), gravado num arquivo da pasta privada do
+navegador e aberto pela janela trocada; para o C13, um acervo de 205 faixas em 12 álbuns feito a partir dele (293 KB).
+
+| # | O que foi conferido | Resultado |
+|---|---|---|
+| C1 | sem a API: «Salvar .json», sem ▾, baixa `demo.json` e zera; com a API: «Salvar», o ▾ com os três itens | OK |
+| C2 | sem vínculo, a janela com `suggestedName` = nome de origem; o arquivo gravado é o JSON do acervo com 2 espaços e a quebra final; zera e vincula; cancelar a janela não grava, não zera, não vincula e só avisa «Nada foi gravado.» | OK |
+| C3 | com vínculo, grava sem janela (só `queryPermission`) | OK |
+| C4 | recarregar traz o vínculo; com «perguntar», «Salvar» chama `requestPermission`; negar não grava e avisa; permitir grava | OK |
+| C5 | importar pela janela de abrir vincula, e o primeiro «Salvar» grava sem janela de salvar | OK |
+| C6 | mudado fora: o aviso com Cancelar, Salvar em outro… e Substituir; cancelar não grava; substituir grava; outro grava e vincula ao outro; duas gravações seguidas pelo app não abrem o aviso | OK |
+| C7 | arquivo apagado: avisa, oferece «Salvar em outro arquivo…», e o rascunho fica | OK |
+| C8 | «Baixar .json» com vínculo baixa e não zera nem muda o arquivo | OK |
+| C9 | `Ctrl+S` com o foco na busca salva e impede o padrão do navegador; sem alterações, impede o padrão e não grava | OK |
+| C10 | depois de salvar (no arquivo e baixando), «Desfazer» e `Ctrl+Z` voltam a «1 alteração não salva» | OK |
+| C11 | o seletor mostra «Vinculado a…» e «Desvincular»; desvincular tira o vínculo do registro e o próximo «Salvar» pede a janela; esquecer apaga o registro com o vínculo | OK |
+| C12 | a 390×844, com a API presente: «Salvar .json», sem ▾, baixa sem chamar janela | OK |
+| C13 | abrir 205 faixas, média de 5, três rodadas: 243, 235 e 218 ms, contra 209, 218 e 217 ms da 0.16.0 nas mesmas rodadas (no pior caso, +34 ms; o limite era +50); gravar 205 faixas: 10 a 14 ms | OK |
+| C14 | `v0.17.0`; nenhum erro de página nos três cenários | OK |
+
+**Prova de vida, medida:** no app da 0.16.0 o teste para no C1 (não há o ▾ de salvar).
+
+**Regressão:** os testes das entregas anteriores não estão no repositório nem nesta conversa (viraram a i-051). A
+regressão foi por fumaça: importar, a Lista com 3 linhas, o detalhe, Descer pelo «⋯» do detalhe (+1 alteração), Cartões
+com 3 cartões, sem erro de página; soltar um `.json` sem vínculo importa como antes. O arrastar da I3 não foi refeito.
+`validate.py` exit=0 com `jsonschema`.
+
+**Onde a implementação saiu da spec:**
+- **Sem a API não há ▾:** o botão já baixa, e o «⋯» da barra tem «Baixar .json». A spec previa o ▾ só com ele.
+- **O aviso da primeira vez** («Escolha o arquivo X para o app gravar nele daqui em diante…») sai como aviso no pé, junto
+  da janela, sem clique a mais.
+- **Salvar com outro nome:** neste navegador o acervo continua com o nome de origem, e o aviso diz isso.
+- **O C13 mediu a importação inteira** (ler o arquivo, guardar e desenhar), por isso os números são maiores que os da I3;
+  a comparação é com a 0.16.0 nas mesmas rodadas.
+- **O teste roda num perfil persistente do Chromium:** no contexto anônimo, ler do IndexedDB um handle guardado derruba a
+  aba (medido). No Chrome do dono a sonda leu o handle guardado sem problema.
+- **Soltar o arquivo com vínculo** não se mede no headless (um drop sintético não traz handle); a sonda viu o handle no
+  Chrome do dono, com a permissão de gravar em «perguntar», que o primeiro «Salvar» pede.
+
+**A sonda no Chrome 156 do dono (`file://`, 2026-11-06 16:27):** janela de salvar e gravação (221 ms na primeira, cerca de
+100 ms depois); gravar de novo sem janela; handle guardado e lido do IndexedDB; janela de abrir com gravação; handle ao
+arrastar. **Não medido:** o fechar e reabrir (a página não foi reaberta: o relatório não tem a linha «página reaberta») e o
+arquivo mudado fora (o arquivo de teste não foi editado). Os dois ficam no roteiro de tela da I4.
+
 ## Riscos
 
 - **O aviso de permissão a cada sessão.** Se o `file://` não ganhar «Permitir em todas as visitas», será um clique por
@@ -165,6 +211,8 @@ deixa: «Salvar» grava no próprio arquivo.
 - **Organizar os álbuns** (i-049) e **arrastar faixa para outro acervo** (i-050).
 
 ## Pontos para o dono decidir
+
+**Decididos pelo dono em 2026-11-06, os cinco como recomendados** (DEC-033), depois da sonda.
 
 1. **Como o acervo se vincula ao arquivo.**
    - **(a) Nos dois caminhos (recomendado):** no primeiro «Salvar» de cada acervo, pela janela de salvar, e também ao

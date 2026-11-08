@@ -99,6 +99,20 @@
     border-radius: 8px; background: var(--ember-soft); flex-shrink: 0; white-space: nowrap; }
   .bar-draft .dot { width: 8px; height: 8px; border-radius: 4px; background: var(--ember); }
   .bar-draft button { height: 26px; }
+  /* I4: «Salvar» com o ▾ colado (Salvar em outro arquivo…, Baixar .json) e, depois de
+     gravar no arquivo, a marca «✓ Salvo no arquivo às HH:MM», sem o fundo de rascunho. */
+  #save-wrap { margin-left: -8px; }
+  #draft-save:has(+ #save-wrap:not([hidden])) { border-radius: 6px 0 0 6px; }
+  #draft-more { width: 24px; padding: 0; display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 0 6px 6px 0; border-left: 1px solid rgba(255,255,255,.4); }
+  #draft-more svg { width: 10px; height: 10px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; }
+  .bar-draft.is-saved { background: transparent; border: 1px solid var(--line); color: var(--moss); }
+  .bar-draft.is-saved .dot, .bar-draft.is-saved #draft-save { display: none; }
+  .bar-draft.is-saved #save-wrap { margin-left: 0; }
+  .bar-draft.is-saved #draft-more { background: transparent; border: 0; border-radius: 6px; color: var(--ink-soft); }
+  #save-pop { width: 300px; }
+  #save-pop .sub { display: block; font-size: 12px; color: var(--ink-soft); }
+  #save-pop kbd { float: right; font-family: inherit; font-size: 12px; color: var(--ink-soft); }
   /* I3: o «editar» saiu da barra (DEC-030); organizar vive no «⋯» de cada faixa. */
   .icon-btn { width: 32px; padding: 0 !important; display: inline-flex; align-items: center; justify-content: center; font-size: 16px; }
   .mobile-only { display: none; }
@@ -578,7 +592,7 @@
     <h1>Cancioneiro</h1>
     <!-- Versao: a mesma do topo do meta/CHANGELOG.md. O scripts/validate.py confere
          que app, CHANGELOG, README e STATUS dizem a mesma (i-027). -->
-    <span class="version" data-role="app-version">v0.16.0</span>
+    <span class="version" data-role="app-version">v0.17.0</span>
   </div>
   <div class="pop-wrap" id="acervo-wrap">
     <button type="button" id="acervo-btn" class="acervo-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="acervo-pop" title="Os acervos guardados neste navegador">
@@ -591,8 +605,10 @@
       <ul class="acervos-list" id="acervos-list"></ul>
       <div class="pop-sep"></div>
       <button type="button" role="menuitem" id="import-btn">Importar outro .json…</button>
+      <button type="button" role="menuitem" id="unlink-btn" hidden>Desvincular do arquivo</button>
       <button type="button" role="menuitem" id="forget-btn" class="danger" hidden>Esquecer este acervo</button>
       <p class="pop-note" id="origin"></p>
+      <p class="pop-note" id="link-note" hidden></p>
       <p class="pop-note" id="acervos-persist"></p>
     </div>
   </div>
@@ -637,6 +653,15 @@
     <span class="dot" aria-hidden="true"></span>
     <span id="draft-text" data-role="dirty"></span>
     <button type="button" class="btn-primary" id="draft-save" data-role="dirty-download" title="Baixa o acervo com as alterações, com o nome do arquivo de origem.">Salvar .json</button>
+    <!-- I4: o ▾ ao lado de «Salvar», so onde o app grava direto no arquivo. -->
+    <div class="pop-wrap" id="save-wrap" hidden>
+      <button type="button" class="btn-primary" id="draft-more" aria-label="Outras formas de salvar" aria-haspopup="menu" aria-expanded="false" aria-controls="save-pop"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5"/></svg></button>
+      <div class="pop pop-right" id="save-pop" role="menu" aria-label="Salvar" hidden>
+        <button type="button" role="menuitem" id="save-file">Salvar no arquivo <kbd>Ctrl+S</kbd></button>
+        <button type="button" role="menuitem" id="save-as">Salvar em outro arquivo…</button>
+        <button type="button" role="menuitem" id="save-download">Baixar .json<span class="sub">uma cópia em Downloads; o arquivo vinculado não muda</span></button>
+      </div>
+    </div>
   </div>
   <div class="pop-wrap">
     <button type="button" class="icon-btn" id="more-btn" aria-label="Mais ações" aria-haspopup="menu" aria-expanded="false" aria-controls="more-pop">⋯</button>
@@ -757,6 +782,12 @@
     <button type="button" id="confirm-cancel-btn">cancelar</button>
     <button type="button" id="confirm-ok-btn" class="spacer">confirmar</button>
   </div>
+</dialog>
+
+<!-- I4: escolha entre varias saidas (o arquivo mudou fora do app, ou sumiu). -->
+<dialog class="prompt-dialog" id="choice-dialog" aria-labelledby="choice-text">
+  <p id="choice-text"></p>
+  <div class="dialog-actions" id="choice-actions"></div>
 </dialog>
 
 <dialog class="prompt-dialog" id="move-dialog" aria-labelledby="move-dialog-title">
@@ -917,7 +948,9 @@ function parseCollectionText(text) {
   throw new Error("sem JSON");
 }
 
-function importFromFile(file) {
+/** Importa um acervo. Com `handle` (aberto pela janela do sistema ou solto, no
+    Chrome), o acervo ja nasce vinculado ao arquivo (I4). */
+function importFromFile(file, handle) {
   const reader = new FileReader();
   reader.onload = async () => {
     // Dois try separados de proposito: um catch que nomeia uma causa especifica
@@ -945,8 +978,11 @@ function importFromFile(file) {
       if (App.collection !== json) { App.source = before; return; }
       App.ui.open = file.name;
       saveUiState();
-      const r = await saveAcervo(json, file.name);
+      // I4: o vinculo e a marca do arquivo como foi lido (data e tamanho).
+      const link = handle && Store.db ? { handle, stamp: { lastModified: file.lastModified, size: file.size } } : null;
+      const r = await saveAcervo(json, file.name, link);
       App.saved = r.ok; App.changes = 0; App.savedAt = r.savedAt; App.editedAt = null; App.unsavedInMemory = false;
+      App.link = r.ok ? link : null; App.lastWrite = null;
       if (r.ok) savedOrigin(file.name, r.savedAt);
       else setOrigin("importado de " + file.name + " · não guardado no navegador", false);
       toast("Acervo importado: " + (json.title || file.name)
@@ -1046,7 +1082,13 @@ function downloadCollection() {
   const name = App.saved && App.source ? App.source : slug(App.collection.title) + ".json";
   downloadFile(name, JSON.stringify(App.collection, null, 2), "application/json");
   if (!App.saved) return;
-  App.undo = null;   // I3: depois de salvar, a volta nao vale mais
+  // I4: com o acervo vinculado a um arquivo, baixar e so uma copia: o arquivo
+  // vinculado nao mudou, entao o rascunho continua a frente dele.
+  if (App.link && canWriteFile()) {
+    toast("Baixado em Downloads como " + name + ". O arquivo vinculado (" + App.link.handle.name + ") não mudou.");
+    return;
+  }
+  keepUndoAfterSave();   // I4 (DEC-033): a volta continua valendo depois de salvar
   App.changes = 0;
   persistDraft(false).then(() => { App.unsavedInMemory = false; });
   toast("Baixado como " + name + ". Substitua o arquivo antigo por este: ele passa a ser a fonte."
@@ -2144,7 +2186,7 @@ function noDbNotice() {
 
 /** Guarda o acervo importado. Devolve {ok, savedAt, replaced}: `replaced` e a
     data da copia de mesmo nome que foi substituida, ou null. */
-async function saveAcervo(json, source) {
+async function saveAcervo(json, source, link) {
   const savedAt = new Date().toISOString();
   if (!Store.db) {
     try { localStorage.setItem(CACHE_KEY, JSON.stringify({ savedAt, source, json })); }
@@ -2153,7 +2195,9 @@ async function saveAcervo(json, source) {
   }
   let prev = null;
   try { prev = await dbGet(source); } catch (e) { /* sem a anterior, segue */ }
-  try { await dbPut({ source, title: json.title || source, savedAt, json }); }
+  const rec = { source, title: json.title || source, savedAt, json };
+  if (link) { rec.fileHandle = link.handle; rec.fileStamp = link.stamp; }   // I4: o vinculo com o arquivo
+  try { await dbPut(rec); }
   catch (e) { return { ok: false, savedAt, replaced: null }; }
   await refreshCount();
   requestPersistOnce();
@@ -2207,6 +2251,8 @@ function openRecord(rec) {
   saveUiState();
   App.saved = true; App.changes = rec.changes || 0; App.savedAt = rec.savedAt;
   App.editedAt = rec.editedAt || null; App.unsavedInMemory = false;
+  App.link = rec.fileHandle ? { handle: rec.fileHandle, stamp: rec.fileStamp || null } : null;   // I4
+  App.lastWrite = null;
   savedOrigin(rec.source, rec.savedAt);
   return true;
 }
@@ -2297,6 +2343,7 @@ async function forgetAcervo(source) {
   if (rest.length) { openRecord(newest(rest)); toast(msg); return; }
   App.collection = null; App.activeModules = {}; App.bpm = {}; App.modulesById = {}; App.source = null;
   App.saved = false; App.changes = 0; App.originText = ""; App.unsavedInMemory = false;
+  App.link = null; App.lastWrite = null;   // I4
   delete App.ui.open; saveUiState();
   document.getElementById("main").innerHTML = EMPTY_HTML;
   document.getElementById("origin").textContent = "";
@@ -2399,6 +2446,8 @@ async function persistDraft(count) {
   if (count) { App.changes++; App.editedAt = new Date().toISOString(); }
   const rec = { source: App.source, title: App.collection.title || App.source, savedAt: App.savedAt,
                 editedAt: App.editedAt, changes: App.changes, json: App.collection };
+  // I4: o vinculo com o arquivo mora no mesmo registro; sem ele aqui, gravar o rascunho o apagaria.
+  if (App.link) { rec.fileHandle = App.link.handle; rec.fileStamp = App.link.stamp; }
   let ok = true;
   if (Store.db) { try { await dbPut(rec); } catch (e) { ok = false; } }
   else { try { localStorage.setItem(CACHE_KEY, JSON.stringify(rec)); } catch (e) { ok = false; } }
@@ -2723,8 +2772,7 @@ window.addEventListener("beforeunload", e => {
    Ligacao de eventos + boot
    =================================================================== */
 const EMPTY_HTML = document.getElementById("main").innerHTML;
-document.getElementById("import-btn").addEventListener("click", () =>
-  document.getElementById("file-input").click());
+document.getElementById("import-btn").addEventListener("click", pickAndImport);   // I4
 document.getElementById("file-input").addEventListener("change", e => {
   if (e.target.files[0]) importFromFile(e.target.files[0]);
   e.target.value = "";
@@ -2769,8 +2817,14 @@ document.addEventListener("drop", e => {
   // I3: sobre um album (o cabecalho na Lista, ou a lateral), as faixas vao para ele.
   const alb = fileDropAlbum(e.target);
   markFileTarget(null);
-  if (f && alb && App.saved) readTracksFile(f, alb.id);
-  else if (f) importFromFile(f);
+  if (f && alb && App.saved) { readTracksFile(f, alb.id); return; }
+  if (!f) return;
+  // I4: no Chrome, o arquivo solto traz o vinculo. getAsFileSystemHandle so pode
+  // ser chamado durante o drop; sem ele (ou se falhar), importa como antes.
+  const item = Array.from(e.dataTransfer.items || []).find(i => i.kind === "file");
+  const hp = canWriteFile() && item && item.getAsFileSystemHandle ? item.getAsFileSystemHandle() : null;
+  if (!hp) { importFromFile(f); return; }
+  hp.then(h => importFromFile(f, h && h.kind === "file" ? h : null), () => importFromFile(f));
 });
 ["filter-album", "filter-state", "filter-used"].forEach(id =>
   document.getElementById(id).addEventListener("change", render));
@@ -2787,6 +2841,7 @@ const POPS = {
   acervo: ["acervo-btn", "acervo-pop"],
   filtros: ["filters-btn", "filters-pop"],
   mais: ["more-btn", "more-pop"],
+  salvar: ["draft-more", "save-pop"],   // I4
 };
 let openPop = null;
 const isMobile = () => window.matchMedia("(max-width: 719px)").matches;
@@ -2826,10 +2881,30 @@ function updateBar() {
   // Sem acervo aberto nao ha o que esquecer, mesmo que a origem antiga ainda diga que sim.
   document.getElementById("forget-btn").hidden = !(has && App.originForget);
   const dirty = App.saved && App.changes > 0;
-  document.getElementById("bar-draft").hidden = !dirty;
+  // I4: onde o app grava direto, «Salvar» com o ▾ e, depois de gravar, a marca de salvo.
+  const direct = App.saved && canWriteFile();
+  const savedMark = direct && !dirty && !!App.lastWrite;
+  const bar = document.getElementById("bar-draft");
+  bar.hidden = !(dirty || savedMark);
+  bar.classList.toggle("is-saved", savedMark);
   document.body.classList.toggle("has-draft", dirty);
   document.getElementById("draft-text").textContent =
-    dirty ? nPlural(App.changes, "alteração não salva", "alterações não salvas") : "";
+    dirty ? nPlural(App.changes, "alteração não salva", "alterações não salvas")
+    : savedMark ? "✓ Salvo no arquivo às " + App.lastWrite : "";
+  const save = document.getElementById("draft-save");
+  save.textContent = direct ? "Salvar" : "Salvar .json";
+  save.title = !direct ? "Baixa o acervo com as alterações, com o nome do arquivo de origem."
+    : App.link ? "Grava em " + App.link.handle.name + " (Ctrl+S)"
+    : "Escolha o arquivo do acervo uma vez; depois o app grava direto nele (Ctrl+S)";
+  document.getElementById("save-wrap").hidden = !direct;
+  document.getElementById("unlink-btn").hidden = !(direct && App.link);
+  const note = document.getElementById("link-note");
+  note.hidden = !App.saved;
+  note.textContent = !App.saved ? "" : direct
+    ? (App.link ? "Vinculado a " + App.link.handle.name + ": «Salvar» grava nele."
+       : "Sem vínculo com o arquivo: o primeiro «Salvar» pede o arquivo e vincula.")
+    : (fileApi() ? "No celular, «Salvar .json» baixa uma cópia."
+       : "Este navegador não grava direto no arquivo: «Salvar .json» baixa uma cópia.");
   // I3 (DEC-030): sem o interruptor «editar»; «Importar faixas…» mora no «⋯» da barra.
   document.getElementById("menu-import-tracks").hidden = !App.saved;
 }
@@ -2879,7 +2954,7 @@ document.getElementById("filters-btn").addEventListener("click", () => togglePop
 document.getElementById("more-btn").addEventListener("click", () => { dismissTour(); togglePopover("mais"); });
 // Item de menu escolhido fecha o painel (a acao do item ja rodou: o ouvinte
 // dele dispara antes, no proprio botao).
-["acervo-pop", "more-pop"].forEach(id => document.getElementById(id).addEventListener("click", e => {
+["acervo-pop", "more-pop", "save-pop"].forEach(id => document.getElementById(id).addEventListener("click", e => {
   if (e.target.closest('[role="menuitem"], [role="menuitemradio"]')) closePopovers(false);
 }));
 document.addEventListener("pointerdown", e => {
@@ -2903,9 +2978,15 @@ document.getElementById("search-toggle").addEventListener("click", () =>
 document.getElementById("filters-clear").addEventListener("click", clearAllFilters);
 document.getElementById("chips-clear").addEventListener("click", clearAllFilters);
 document.getElementById("filters-done").addEventListener("click", () => closePopovers(true));
-document.getElementById("draft-save").addEventListener("click", () => downloadCollection());
+document.getElementById("draft-save").addEventListener("click", () => saveDraft());
+// I4: o ▾ de salvar e os itens dele; desvincular mora no seletor de acervo.
+document.getElementById("draft-more").addEventListener("click", () => togglePopover("salvar"));
+document.getElementById("save-file").addEventListener("click", () => saveDraft());
+document.getElementById("save-as").addEventListener("click", saveAsOther);
+document.getElementById("save-download").addEventListener("click", downloadCollection);
+document.getElementById("unlink-btn").addEventListener("click", unlinkFile);
 document.getElementById("forget-btn").addEventListener("click", () => forgetAcervo(App.source));
-document.getElementById("menu-import").addEventListener("click", () => document.getElementById("file-input").click());
+document.getElementById("menu-import").addEventListener("click", pickAndImport);   // I4
 document.getElementById("menu-import-tracks").addEventListener("click", pickTracksFile);
 document.getElementById("more-brand").textContent =
   "Cancioneiro " + document.querySelector('[data-role="app-version"]').textContent;
@@ -3735,11 +3816,193 @@ document.addEventListener("keydown", e => {
     if (App.saved) moveAndFocus(t.closest("li").dataset.id, e.key === "ArrowUp" ? -1 : 1);
     return;
   }
+  // I4 (DEC-033): Ctrl+S / ⌘S salva, ate dentro de um campo de texto, e nunca abre o
+  // «salvar pagina» do navegador. Sem alteracoes, nao faz nada visivel.
+  if ((e.ctrlKey || e.metaKey) && !e.altKey && !e.shiftKey && e.key.toLowerCase() === "s") {
+    e.preventDefault(); e.stopImmediatePropagation();
+    if (!document.querySelector("dialog[open]") && App.saved && App.changes > 0) saveDraft();
+    return;
+  }
   if ((e.ctrlKey || e.metaKey) && !e.altKey && !e.shiftKey && e.key.toLowerCase() === "z") {
     if (isTextField(t) || document.querySelector("dialog[open]") || !App.undo) return;
     e.preventDefault(); e.stopImmediatePropagation(); undoLast();
   }
 }, true);
+
+/* ===================================================================
+   Salvar no arquivo (I4, DEC-033 — spec meta/specs/261106-salvar-no-arquivo.md)
+   Onde a File System Access existe (Chrome e Edge no computador), «Salvar»
+   grava no proprio .json. O acervo fica VINCULADO ao arquivo: o handle mora no
+   registro do IndexedDB, com a data e o tamanho do arquivo na ultima leitura ou
+   gravacao, para perceber quando ele mudou fora do app. Nada disso vai para o
+   .json. A permissao de gravar e do navegador, que a pede de novo em outra
+   sessao. Firefox, Safari e o celular baixam, como antes.
+   =================================================================== */
+App.link = null;        // { handle, stamp: { lastModified, size } } do acervo aberto, ou null
+App.lastWrite = null;   // «HH:MM» da ultima gravacao no arquivo, para a marca da barra
+App.writing = false;    // uma gravacao por vez (o botao e o Ctrl+S juntos)
+
+/** A API existe e a pagina nao esta num iframe (onde as janelas sao recusadas). */
+function fileApi() {
+  let top = false;
+  try { top = window.self === window.top; } catch (e) { top = false; }
+  return "showSaveFilePicker" in window && "showOpenFilePicker" in window && top;
+}
+/** O app grava direto no arquivo: com a API, no computador e com o IndexedDB (onde o
+    vinculo mora). No celular, mesmo com a API, baixa (ponto 5 da spec). */
+function canWriteFile() { return fileApi() && !isMobile() && !!Store.db; }
+
+const JSON_TYPES = [{ description: "Acervo do Cancioneiro", accept: { "application/json": [".json"] } }];
+const hhmm = () => new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+const stampOf = f => ({ lastModified: f.lastModified, size: f.size });
+
+/** Depois de salvar, a volta da ultima operacao continua valendo (DEC-033): desfazer
+    devolve o rascunho a uma alteracao a frente do arquivo. */
+function keepUndoAfterSave() { if (App.undo) App.undo.changes = 1; }
+
+/** Janela com varias saidas; resolve com o valor do botao escolhido, ou "cancel" no Esc.
+    `options`: [valor, rotulo, principal?]. */
+function chooseAsk(message, options) {
+  return new Promise(resolve => {
+    const dlg = document.getElementById("choice-dialog");
+    document.getElementById("choice-text").textContent = message;
+    const box = document.getElementById("choice-actions");
+    box.textContent = "";
+    let done = false;
+    const finish = v => { if (done) return; done = true; if (dlg.open) dlg.close(); resolve(v); };
+    options.forEach(([value, label, primary], i) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.textContent = label; b.dataset.value = value;
+      if (primary) b.classList.add("btn-primary");
+      if (i === 1) b.classList.add("spacer");
+      b.addEventListener("click", () => finish(value));
+      box.appendChild(b);
+    });
+    dlg.oncancel = e => { e.preventDefault(); finish("cancel"); };
+    dlg.showModal();
+  });
+}
+
+/** «Importar .json…»: no computador com a API, pela janela do sistema, que traz o
+    vinculo; nos outros, pelo <input type=file> de sempre. */
+async function pickAndImport() {
+  if (!canWriteFile()) { document.getElementById("file-input").click(); return; }
+  let h;
+  try { [h] = await window.showOpenFilePicker({ types: JSON_TYPES }); }
+  catch (e) { if (e.name !== "AbortError") document.getElementById("file-input").click(); return; }
+  let f;
+  try { f = await h.getFile(); } catch (e) { toast("Não consegui ler o arquivo: " + e.message); return; }
+  importFromFile(f, h);
+}
+
+/** O texto que vai para o arquivo: o do «Baixar .json», com a quebra de linha final. */
+function collectionText() {
+  stripInternalKeys(App.collection);
+  return JSON.stringify(App.collection, null, 2) + "\n";
+}
+
+/** Grava no arquivo. O Chrome escreve num .crswap ao lado e so troca no close():
+    uma falha no meio nao deixa o arquivo pela metade. Devolve a marca nova, ou
+    null (e avisa) se falhou. */
+async function writeHandle(h) {
+  try {
+    const w = await h.createWritable();
+    await w.write(collectionText());
+    await w.close();
+    return stampOf(await h.getFile());
+  } catch (e) {
+    toast("Não consegui gravar em " + h.name + ": " + e.message + ". O rascunho continua guardado neste navegador.");
+    return null;
+  }
+}
+
+/** Gravou: vincula ao arquivo, zera as alteracoes e guarda o vinculo no registro. */
+async function afterFileWrite(h, stamp) {
+  App.link = { handle: h, stamp };
+  App.changes = 0; App.lastWrite = hhmm();
+  keepUndoAfterSave();
+  const ok = await persistDraft(false);
+  toast("Salvo em " + h.name + " às " + App.lastWrite + "."
+    + (h.name !== App.source ? " Neste navegador, o acervo continua com o nome " + App.source + "." : "")
+    + (ok ? "" : " Não consegui guardar o vínculo neste navegador."));
+}
+
+/** «Salvar» e Ctrl+S: grava no arquivo vinculado; sem vinculo, pede o arquivo uma vez;
+    onde nao grava direto, baixa. */
+async function saveDraft() {
+  if (!App.collection) return;
+  if (!App.saved || !canWriteFile()) { downloadCollection(); return; }
+  if (App.writing) return;
+  App.writing = true;
+  try {
+    if (App.link) await saveLinked();
+    else await saveAsFile(true);
+  } finally { App.writing = false; }
+}
+/** «Salvar em outro arquivo…», do ▾. */
+async function saveAsOther() {
+  if (!App.collection || !App.saved || App.writing) return;
+  App.writing = true;
+  try { await saveAsFile(false); } finally { App.writing = false; }
+}
+
+/** A janela «Salvar como», com o nome de origem. `first`: o primeiro «Salvar» de um
+    acervo sem vinculo, que diz antes o que vai acontecer. */
+async function saveAsFile(first) {
+  if (first) toast("Escolha o arquivo " + App.source + " para o app gravar nele daqui em diante; a janela já vem com o nome.");
+  let h;
+  try { h = await window.showSaveFilePicker({ suggestedName: App.source || "acervo.json", types: JSON_TYPES }); }
+  catch (e) {
+    if (e.name !== "AbortError") toast("Não consegui abrir a janela de salvar: " + e.message);
+    else if (first) toast("Nada foi gravado.");
+    return;
+  }
+  const stamp = await writeHandle(h);
+  if (stamp) await afterFileWrite(h, stamp);
+}
+
+/** Grava no arquivo vinculado: a permissao (o aviso do navegador, uma vez por sessao),
+    a conferencia de mudanca fora do app (data e tamanho) e a gravacao. */
+async function saveLinked() {
+  const h = App.link.handle, name = h.name;
+  let p = "denied";
+  try {
+    p = await h.queryPermission({ mode: "readwrite" });
+    if (p !== "granted") p = await h.requestPermission({ mode: "readwrite" });
+  } catch (e) { p = "denied"; }
+  if (p !== "granted") {
+    toast("Sem permissão para gravar em " + name + ": nada foi gravado. Tente de novo, ou use «Baixar .json» no ▾.");
+    return;
+  }
+  let f = null;
+  try { f = await h.getFile(); } catch (e) { f = null; }
+  if (!f) {
+    const v = await chooseAsk(name + " não foi encontrado: foi movido, renomeado ou apagado. O rascunho continua guardado neste navegador.",
+      [["cancel", "Cancelar"], ["other", "Salvar em outro arquivo…", true]]);
+    if (v === "other") await saveAsFile(false);
+    return;
+  }
+  const s = App.link.stamp;
+  if (s && (f.lastModified !== s.lastModified || f.size !== s.size)) {
+    const v = await chooseAsk(name + " mudou fora do app: foi alterado em " + fmtDate(f.lastModified)
+      + ", depois da última vez que o app o leu ou gravou (" + fmtDate(s.lastModified) + "). Substituir grava "
+      + (App.changes === 1 ? "a alteração" : "as " + App.changes + " alterações") + " por cima do que mudou lá.",
+      [["cancel", "Cancelar"], ["other", "Salvar em outro arquivo…"], ["replace", "Substituir mesmo assim", true]]);
+    if (v === "other") { await saveAsFile(false); return; }
+    if (v !== "replace") return;
+  }
+  const stamp = await writeHandle(h);
+  if (stamp) await afterFileWrite(h, stamp);
+}
+
+/** Desvincula o acervo aberto do arquivo: o proximo «Salvar» pede a janela de novo. */
+async function unlinkFile() {
+  if (!App.link) return;
+  const name = App.link.handle.name;
+  App.link = null; App.lastWrite = null;
+  await persistDraft(false);
+  toast("Desvinculado de " + name + ". O próximo «Salvar» pede o arquivo de novo.");
+}
 
 // A abertura e assincrona (IndexedDB); a importacao espera por ela.
 const bootDone = boot();
