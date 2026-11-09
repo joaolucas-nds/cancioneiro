@@ -10,7 +10,7 @@
 ## Última conversa (2026-11-09, I4 conferida, i-051 e o kit de música v2)
 
 - **I4 conferida na tela pelo dono** (os 10 itens do roteiro OK `[relatado pelo dono]`, WO 0031): salvar no arquivo (0.17.0) está fechado, e a frente de interface, com as quatro entregas.
-- **i-051, testes do navegador no CI** (DEC-034, WO 0032): `tests/` com 32 testes, só com dados sintéticos, e o GitHub Actions a cada push, com o `validate.py` com esquema e os testes dos conversores. Fecha também a i-016 e a i-025. Falta ver o primeiro ✓ no GitHub.
+- **i-051, testes do navegador no CI** (DEC-034, WO 0032): `tests/` com 32 testes, só com dados sintéticos, e o GitHub Actions a cada push, com o `validate.py` com esquema e os testes dos conversores. Fecha também a i-016 e a i-025. Aplicada e empurrada (`de49282`); o primeiro ✓ está confirmado: `gh run list` mostra `completed success` para o run «testes» (1m15s) `[medido por instrumento]`.
 - **Kit de música v2:** análise `meta/analises/261109-ANALISE-kit-de-musica-v2.md`, decidida pelo dono como recomendada; a leva 1 (o kit na 0.17.0, os recursos do Suno de 2026 e «Depois de ouvir») vem depois da i-051.
 - **Este bloco substitui o anterior, da WO 0030** (I4). O que ele dizia está no CHANGELOG [0.17.0], na spec `meta/specs/261106-salvar-no-arquivo.md` e em `logs/2026-11-06.md` (Conversas 11 e 12).
 
@@ -51,7 +51,6 @@
 ## Pendências do dono
 
 - **Apagar à mão o `..\sonda-i4-teste.json`** — arquivo de teste da sonda, na pasta-pai (o chat não apaga arquivo seu).
-- **Ver o primeiro ✓ do CI** — em `https://github.com/joaolucas-nds/cancioneiro/actions`, depois do push da WO 0032: a execução «testes» do commit dela, verde.
 - **Instalar o validador de esquema nesta máquina.** Sem `jsonschema` e `referencing`, o `validate.py` só confere sintaxe e diz `ESQUEMA NAO CONFERIDO` na última linha. Uma vez, no CMD: `pip install jsonschema referencing --break-system-packages`. Depois, `python3 scripts/validate.py` deve terminar em `Tudo conforme ao esquema.` Desde a DEC-034 o CI confere o esquema a cada push: instalar aqui passa a ser opcional.
 
 ## Backlog curto (próximas ações concretas)
