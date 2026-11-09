@@ -47,7 +47,8 @@ conversa tiver execução, nunca de cabeça. Vermelho (o Suno corta) se resolve 
 concreta de corte; cortar letra é decisão do dono.
 
 **Ciclo de uma faixa.** Conceito (PROJETO) → letra com prosódia (LETRAS) → pedido ao Suno (JSON, revisado) →
-o dono gera e relata o que ouviu → ajuste do pedido (variante ou módulo, sem reescrever a faixa) → estado em
+o dono gera e relata o que ouviu → ajuste do pedido, uma variável por vez (variante ou módulo, sem reescrever a
+faixa), ou uma ferramenta do Suno quando só um trecho falha (`macetes-suno` §10 e §11) → estado em
 FAIXAS. Relato do dono é a única medida de som; registre-o com a data e a versão do Suno.
 
 **A interface do Suno muda.** Limites e campos vêm de fonte secundária (o Suno não publica os do v6).

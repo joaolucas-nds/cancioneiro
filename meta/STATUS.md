@@ -11,7 +11,7 @@
 
 - **I4 conferida na tela pelo dono** (os 10 itens do roteiro OK `[relatado pelo dono]`, WO 0031): salvar no arquivo (0.17.0) está fechado, e a frente de interface, com as quatro entregas.
 - **i-051, testes do navegador no CI** (DEC-034, WO 0032): `tests/` com 32 testes, só com dados sintéticos, e o GitHub Actions a cada push, com o `validate.py` com esquema e os testes dos conversores. Fecha também a i-016 e a i-025. Aplicada e empurrada (`de49282`); o primeiro ✓ está confirmado: `gh run list` mostra `completed success` para o run «testes» (1m15s) `[medido por instrumento]`.
-- **Kit de música v2:** análise `meta/analises/261109-ANALISE-kit-de-musica-v2.md`, decidida pelo dono como recomendada; a leva 1 (o kit na 0.17.0, os recursos do Suno de 2026 e «Depois de ouvir») vem depois da i-051.
+- **Kit de música v2, leva 1** (WO 0033): o README do kit na 0.17.0, a `macetes-suno` com «Depois de ouvir» (§10) e as ferramentas do Suno de 2026 (§11), e o ciclo do `BLOCO-SUNO.md` com elas. A leva 2 espera um projeto de música para a prova de campo.
 - **Este bloco substitui o anterior, da WO 0030** (I4). O que ele dizia está no CHANGELOG [0.17.0], na spec `meta/specs/261106-salvar-no-arquivo.md` e em `logs/2026-11-06.md` (Conversas 11 e 12).
 
 ## Funciona (pronto)
@@ -56,7 +56,7 @@
 ## Backlog curto (próximas ações concretas)
 
 1. **Organizar os álbuns** (i-049) — renomear, reordenar na lateral, juntar dois.
-2. **Kit de música v2, leva 1** (i-039, análise `meta/analises/261109-ANALISE-kit-de-musica-v2.md`) — o kit na 0.17.0, os recursos do Suno de 2026 e «Depois de ouvir» na `macetes-suno`; uma WO só de documento.
+2. **Kit de música v2, leva 2** (i-039) — as skills `escrever-letra-suno` e `conceber-album`, com prova de campo num projeto de música do dono; depois, a carta 02 ao KCM.
 3. **Rampa de BPM** (i-042) — três faixas BR reprovam no `validate.py` por mudarem de andamento de propósito.
 4. **Pesquisar outras plataformas de música por IA** (i-032) — um turno de pesquisa antes de qualquer mudança de esquema.
 5. **Avisar palavra de andamento que contradiz o BPM** (i-029) — pede uma tabela palavra → faixa de BPM, com fonte e data.

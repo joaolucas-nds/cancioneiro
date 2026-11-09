@@ -17,7 +17,7 @@ essas regras: 72 de 151 letras acima do limite, 138 de 151 styles com tags demai
 | Peça | O que é | Quando é lida |
 |---|---|---|
 | `BLOCO-SUNO.md` | Parte 1: cinco linhas para as Instruções do projeto (679 caracteres). Parte 2: seção para o CEREBRO do projeto | sempre (Parte 1); sob demanda (Parte 2) |
-| `skills/macetes-suno/SKILL.md` | o que tem efeito no Suno e o que é mito, com exemplo bom e ruim | ao escrever ou reescrever style e letra |
+| `skills/macetes-suno/SKILL.md` | o que tem efeito no Suno e o que é mito, com exemplo bom e ruim; o que mudar depois de ouvir e as ferramentas do Suno | ao escrever ou reescrever style e letra, e quando o dono relata o que ouviu |
 | `skills/revisar-faixa/SKILL.md` | oito conferências por faixa, com script que conta (não estima) | antes de entregar faixa ou álbum |
 
 O contrato do JSON não é peça nova: é o prompt-modelo (`schema/PROMPT-PARA-CHATS.md`, ou o botão «Prompt»
@@ -29,7 +29,11 @@ do app), que o projeto recebe junto.
 2. Cole a Parte 1 do `BLOCO-SUNO.md` no fim das Instruções do projeto (meça: o KCM tem teto) e a Parte 2 no
    `meta/CEREBRO.md` dele.
 3. Suba ao projeto as duas skills e o prompt-modelo.
-4. Peça faixas; o chat entrega o `.json`; arraste para o Cancioneiro.
+4. Peça faixas; o chat entrega o `.json`; arraste para o Cancioneiro. Para juntar a um acervo que já existe,
+   solte o `.json` sobre um álbum (a lista ou a lateral): abre «importar faixas» com ele escolhido.
+5. Organize no Cancioneiro (arrastar, o «⋯» de cada faixa, várias de uma vez). No Chrome e no Edge do
+   computador, «Salvar» grava no próprio `.json`; nos outros, baixa para você substituir.
+6. Gere no Suno e conte ao chat o que ouviu: a `macetes-suno` (§10 e §11) diz o que mudar, uma coisa por vez.
 
 ## Como o KCM pode absorver (mapa para o molde do nicho)
 

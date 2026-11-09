@@ -1,12 +1,12 @@
 ---
 name: macetes-suno
-description: O que tem efeito no Suno e o que é mito — os dois campos, o style em camadas, o orçamento de tags, os limites que cortam em silêncio, BPM, instrumental e exclusão. USE ao escrever ou reescrever o style ou a letra de uma faixa para o Suno, ao montar variantes, e quando o dono perguntar «por que saiu assim?» ou «como faço o Suno fazer X?». Para conferir uma faixa pronta, use a skill revisar-faixa.
+description: O que tem efeito no Suno e o que é mito — os dois campos, o style em camadas, o orçamento de tags, os limites que cortam em silêncio, BPM, instrumental, exclusão, o que fazer depois de ouvir e as ferramentas do Suno (Replace Section, Extend, Remaster, Cover, Persona). USE ao escrever ou reescrever o style ou a letra de uma faixa para o Suno, ao montar variantes, quando o dono relatar o que ouviu, e quando perguntar «por que saiu assim?» ou «como faço o Suno fazer X?». Para conferir uma faixa pronta, use a skill revisar-faixa.
 ---
 
 # Macetes do Suno — o que tem efeito
 
 > Parte do kit de música do Cancioneiro (`kit-musica/`). Fonte: `meta/HISTORY.md` do Cancioneiro, que
-> traz cada item com data, fonte e nível de confiança. **Conferido em 2026-10, Suno v6.** A interface
+> traz cada item com data, fonte e nível de confiança. **Conferido em 2026-10, Suno v6; §10 e §11 em 2026-11.** A interface
 > do Suno muda: se o dono disser que um botão ou campo não existe na conta dele, acredite nele.
 
 ## 1. Dois campos, dois trabalhos
@@ -91,3 +91,46 @@ style são o recurso que sobra; mais que isso dilui.
 O assistente **não ouve** o resultado. Ele escreve o pedido e explica o porquê; o dono gera, ouve e diz o
 que saiu. «Ficou bom» só quem ouviu pode dizer. Quando o resultado sair estranho, pergunte primeiro: passou
 de algum limite? quantas tags? tinha rótulo no texto?
+
+## 10. Depois de ouvir: uma variável por vez
+
+O dono gerou e contou o que ouviu. Antes de reescrever, separe **o que ficou bom** do **que não ficou**,
+e mude **uma coisa só** por rodada — duas mudanças juntas não dizem qual funcionou.
+
+| O dono disse | Mude isto, e só isto |
+|---|---|
+| «o gênero/clima não é esse» | as primeiras tags do style (o começo pesa mais) |
+| «tem instrumento sobrando/faltando» | uma tag de instrumento, ou o Exclude |
+| «a voz não é essa» | a tag de voz; para manter a mesma voz em várias faixas, Persona (§11) |
+| «correu / pulou parte da letra» | a letra: está acima de ~3.000? refrão por extenso repetido? (`revisar-faixa`) |
+| «cantou onde era instrumental» | `[Instrumental]` sozinho no Lyrics (§6) |
+| «está bom, mas um trecho ficou fraco» | não peça de novo: Replace Section ou Extend (§11) |
+
+**Onde guardar a mudança, sem reescrever a faixa:** um style alternativo vai em `variants[]` da faixa; uma
+frase que serve a várias faixas vira **módulo** da coleção (ligável no Cancioneiro). Registre o relato no
+`FAIXAS.md` do projeto com a **data** e a **versão do Suno** — ele é a única medida de som que existe.
+
+**Conte as gerações:** em geral são várias por resultado bom. Três rodadas sem melhorar com uma variável
+de cada vez é sinal de que o pedido brigou consigo mesmo (sinais opostos no style, letra longa demais): volte
+à `revisar-faixa` antes da quarta.
+
+## 11. Ferramentas do Suno: quando usar em vez de pedir de novo
+
+> Lido em 2026-11-09 na página de produtos e na central de ajuda do Suno, e num guia verificado em 2026-09
+> (fontes no fim). Nomes, planos e limites mudam: se o dono disser que não existe na conta dele, acredite.
+
+| Situação | Ferramenta | Ressalva |
+|---|---|---|
+| Um verso, ponte ou final fraco; o resto está bom | **Replace Section** (regenera só o trecho escolhido) | no guia, só planos pagos |
+| Falta uma seção, um final, espaço para crescer | **Extend** (continua de um ponto escolhido) | quanto mais cedo o ponto, mais do resto muda |
+| A faixa está certa; só o som (clareza, equilíbrio) | **Remaster** | variação sutil: não muda letra nem estrutura |
+| A faixa funciona; quer outro gênero ou outra interpretação | **Cover** | é transformação grande; para polir, Remaster |
+| A mesma voz e o mesmo clima em várias faixas (um álbum) | **Persona** (vocal, estilo e clima salvos num perfil) | o style da faixa continua dizendo o que muda |
+| Arranjo fino, stems, MIDI | **Studio** | aí o trabalho já é de produção, fora do pedido |
+
+**Uso comercial:** o que sai de remix de faixa de outra pessoa pode ter uso só pessoal pelos termos de
+setembro de 2026. Antes de publicar, o dono confere os termos; isto não é conselho jurídico.
+
+Fontes da §11: [Suno — produtos](https://suno.com/pt-br/products) ·
+[Suno — central de ajuda, «Making Music»](https://help.suno.com/en/categories/550017) ·
+[Jack Righteous — Suno Remix Guide: Covers, Song Edits, Studio](https://jackrighteous.com/blogs/guides-using-suno-ai-music-creation/suno-remix-covers-edits-studio)
