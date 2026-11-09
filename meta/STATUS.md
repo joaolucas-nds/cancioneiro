@@ -3,7 +3,7 @@
 > **O agora.** O que funciona, o que está em progresso, o que está quebrado, backlog curto.
 > Rolante: item resolvido sai daqui e vai para o CHANGELOG. Médio/longo prazo vive no ROADMAP.
 
-**Versão atual:** 0.17.0 · **Fase:** 3a, 3a.2, o BPM da 3b, o prompt-modelo e as conveniências de uso concluídos e conferidos · os álbuns antigos convertidos (i-008, fora do repo) · curadoria no app concluída nas três entregas (DEC-028, DEC-029) · frente de interface nas quatro entregas, a I4 à espera da conferência na tela (DEC-030 a DEC-033) · kit de música lido pelo KCM, à espera da resposta (i-039)
+**Versão atual:** 0.17.0 · **Fase:** 3a, 3a.2, o BPM da 3b, o prompt-modelo e as conveniências de uso concluídos e conferidos · os álbuns antigos convertidos (i-008, fora do repo) · curadoria no app concluída nas três entregas (DEC-028, DEC-029) · frente de interface concluída e conferida nas quatro entregas (DEC-030 a DEC-033) · kit de música lido pelo KCM, à espera da resposta (i-039)
 
 ---
 
@@ -11,7 +11,7 @@
 
 - **WO 0029 aplicada e empurrada** (`24b1fc0`, wrap `a9efdef`): a I3 conferida, a recusa da WO 0028 e a I4 em spec ficaram registradas.
 - **Sonda da I4 no Chrome 156 do dono** (`file://`): janela de salvar, gravar de novo sem janela, vínculo guardado no IndexedDB, janela de abrir e handle ao arrastar, todos OK `[medido por instrumento]`. Não mediu o fechar e reabrir nem o arquivo mudado fora: a página não foi reaberta e o arquivo de teste não foi editado.
-- **I4, salvar no arquivo (0.17.0):** os cinco pontos decididos pelo dono como recomendados (DEC-033); 14 de 14 critérios no Chromium headless, testados pelo chat; falta a conferência na tela pelo dono.
+- **I4, salvar no arquivo (0.17.0):** os cinco pontos decididos pelo dono como recomendados (DEC-033); 14 de 14 critérios no Chromium headless, testados pelo chat. **Conferida na tela pelo dono** em 2026-11-09 (os 10 itens do roteiro OK `[relatado pelo dono]`): salvar no arquivo está fechado.
 - **Este bloco substitui o anterior, da WO 0029** (I3 conferida e a I4 em spec). O que ele dizia está no CHANGELOG [0.16.0], nas specs `meta/specs/261106-organizar.md` e `meta/specs/261106-salvar-no-arquivo.md` e em `logs/2026-11-06.md` (Conversas 4 a 10).
 
 ## Funciona (pronto)
@@ -31,7 +31,7 @@
 - **Vários acervos no navegador** (0.12.0, DEC-028): cada importado fica no IndexedDB pelo nome do arquivo; o seletor de acervo, na barra, abre ou esquece cada um; reabre no último aberto; marcas «usei» por acervo. Sem IndexedDB, guarda só o último, como antes.
 - **Curadoria pela tela** (0.13.0, DEC-028, DEC-029): mover, novo álbum, excluir e importar faixas num rascunho gravado no navegador; «● N alterações não salvas» com «Salvar .json» pelo nome de origem. Desde a 0.16.0, sem o interruptor «editar».
 - **Organizar** (0.16.0, DEC-030, DEC-032): arrastar pela alça ⋮⋮ na Lista (com filtro, antes da próxima visível) e para os álbuns da lateral ou «+ Novo álbum»; o «⋯» de cada faixa (linha, detalhe e cartão) com Mover, Subir, Descer, Exportar e Excluir, e `Alt+↑`/`Alt+↓`; caixas e barra de lote; «Desfazer» e `Ctrl+Z` da última operação; soltar o `.json` sobre um álbum importa faixas nele. Só com cópia guardada no navegador. A SortableJS 1.15.7 vai embutida, com o hash no `validate.py`. Conferido na tela pelo dono em 2026-11-06.
-- **Salvar no arquivo** (0.17.0, DEC-033): no Chrome e no Edge do computador, «Salvar» (ou `Ctrl+S`) grava no próprio `.json`; o primeiro «Salvar» de um acervo pede o arquivo na janela do sistema, e importar pela janela ou soltar o arquivo já vinculam. Antes de gravar, confere se o arquivo mudou fora. O ▾ tem «Salvar em outro arquivo…» e «Baixar .json»; o seletor de acervo mostra o vínculo e «Desvincular». Firefox, Safari e o celular baixam. O «Desfazer» continua depois de salvar.
+- **Salvar no arquivo** (0.17.0, DEC-033): no Chrome e no Edge do computador, «Salvar» (ou `Ctrl+S`) grava no próprio `.json`; o primeiro «Salvar» de um acervo pede o arquivo na janela do sistema, e importar pela janela ou soltar o arquivo já vinculam. Antes de gravar, confere se o arquivo mudou fora. O ▾ tem «Salvar em outro arquivo…» e «Baixar .json»; o seletor de acervo mostra o vínculo e «Desvincular». Firefox, Safari e o celular baixam. O «Desfazer» continua depois de salvar. Conferido na tela pelo dono em 2026-11-09.
 - **Lista e detalhe** (0.15.0, DEC-030, DEC-031): Lista (padrão) ou Cartões; uma linha por faixa com Style, Lyrics, ✓ e a saúde do prompt; o cartão de hoje ao lado, com ‹ ›, setas e `#faixa=<id>` no endereço; a lateral de álbuns e acervos a partir de 1280 px; no celular, o detalhe em tela própria com os botões de copiar no pé.
 - **Barra única** (0.14.0, DEC-030): fixa, de 48 px; seletor de acervo como menu, busca com `/`, Filtros num painel com etiquetas removíveis e «N de M», rascunho e o «⋯» com Importar, Importar faixas, Baixar, Exportar .md, Prompt para chats, Baixar exemplo e Estrutura do cartão. No celular, 51 px, botões de 44 px, a busca numa linha própria e o rascunho no pé.
 - **Prompt-modelo** (`schema/PROMPT-PARA-CHATS.md`, DEC-021, DEC-023): contrato de módulo, style com 6 a 8 tags e até 10 com os módulos ligados; pede o JSON como arquivo e, sem arquivo, em bloco de código. Dois retestes em 2026-10-29: 6 de 6 faixas dentro do contrato e do orçamento, nos dois.
@@ -49,7 +49,7 @@
 
 ## Pendências do dono
 
-- **Conferir a I4 na tela** — roteiro na conversa de 2026-11-06 (WO 0030), depois do push, no Chrome do computador (com fechar e reabrir o app) e no celular. Apagar à mão o `..\sonda-i4-teste.json`.
+- **Apagar à mão o `..\sonda-i4-teste.json`** — arquivo de teste da sonda, na pasta-pai (o chat não apaga arquivo seu).
 - **Instalar o validador de esquema nesta máquina.** Sem `jsonschema` e `referencing`, o `validate.py` só confere sintaxe e diz `ESQUEMA NAO CONFERIDO` na última linha. Uma vez, no CMD: `pip install jsonschema referencing --break-system-packages`. Depois, `python3 scripts/validate.py` deve terminar em `Tudo conforme ao esquema.`
 
 ## Backlog curto (próximas ações concretas)
