@@ -48,6 +48,16 @@ python3 scripts/validate.py
 ```
 Checa todos os `data/*.json` contra o esquema e confere que a SortableJS embutida no app é a 1.15.7 sem mudança (pelo sha256). Rode antes de commitar mudança em `data/`, `schema/` ou `app/`.
 
+## Testes
+
+A cada push na `main`, o GitHub Actions roda o `validate.py` (com o esquema), os testes dos conversores e os testes do navegador em `tests/`: o app aberto no Chromium sem tela, com dados só sintéticos (o `data/demo.json` e acervos gerados pelo próprio teste). O resultado aparece como ✓ ou ✗ no commit e na aba **Actions** do repositório. Para rodar na sua máquina:
+
+```
+pip install -r tests/requirements.txt
+python -m playwright install chromium
+python -m pytest tests
+```
+
 ## Converter guias antigos
 
 Guias `.md` da família BR (`..._VOL<n>_GUIA.md`) viram um acervo no esquema com um comando — grave a saída **fora do repo**, porque letra e persona são suas:

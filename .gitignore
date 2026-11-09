@@ -27,3 +27,7 @@ export/
 # Backups locais
 *.bak
 backups/
+
+# Testes (i-051): cache do Python e do pytest, gerados ao rodar tests/
+__pycache__/
+.pytest_cache/

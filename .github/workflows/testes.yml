@@ -1,0 +1,39 @@
+# Testes do Cancioneiro (i-051, DEC-034): a cada push e pull request na main,
+# o validate.py com o esquema, os testes dos conversores e os testes do
+# navegador (tests/, Chromium sem tela). Dados so sinteticos: nenhum acervo
+# do dono entra no repositorio. Resultado: o ✓ ou ✗ no commit, e a aba Actions.
+name: testes
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  testes:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: tests/requirements.txt
+      - name: Dependencias
+        run: |
+          python -m pip install -r tests/requirements.txt
+          python -m playwright install --with-deps chromium
+      - name: Validar acervos, versao e biblioteca
+        run: python scripts/validate.py
+      - name: Conversores
+        run: |
+          python scripts/test_convert_br.py
+          python scripts/test_convert_guides.py
+      - name: Navegador
+        run: python -m pytest tests -q

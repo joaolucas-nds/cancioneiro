@@ -16,6 +16,7 @@ Conteúdo copiável (`style`, `lyrics`) é campo separado de referência humana 
 ## Build / validação
 - **Sem build:** a ferramenta é um `app/index.html` autônomo. Abra no navegador para testar.
 - **Validar datasets:** `python3 scripts/validate.py` (valida todos os `data/*.json` contra o schema). Rode antes de commitar mudança em `data/` ou `schema/`. Requer `pip install jsonschema referencing --break-system-packages` (sem eles, faz só checagem de sintaxe).
+- **Testes do navegador** (`tests/`, DEC-034): rodam no GitHub Actions a cada push (`.github/workflows/testes.yml`), com o `validate.py` e os testes dos conversores. Nesta máquina não há Playwright: depois do push, confira o resultado com `gh run list --limit 1` se o `gh` existir; senão, diga no relatório que o ✓ é para o dono ver na aba Actions. Push vermelho no CI: relate a saída, não «conserte» sem WO.
 - Mudança só de doc (meta/) NÃO precisa de validação; a rede é o `git diff`.
 
 ## Convenções

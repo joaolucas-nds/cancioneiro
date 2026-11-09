@@ -56,8 +56,9 @@ O texto que ensina os chats (i-002) deve pedir explicitamente as cinco camadas a
 ### i-015 💡 "Exportar estado" das marcações (usei/filtros) para versionar
 Bônus: botão que exporta as marcações de sessão (hoje em localStorage) para um pequeno JSON, para levar entre máquinas ou versionar. Não é canônico (DEC-004); é conveniência. Fase 4.
 
-### i-016 💡 Rodar validate.py em pre-commit / CI
+### i-016 ✅ Rodar validate.py em pre-commit / CI
 Já que `scripts/validate.py` existe e retorna código 1 em erro, plugá-lo num hook de pre-commit (ou GitHub Action) garante que nenhum dataset quebrado entre no repo. Baixo esforço, alta rede de segurança. Fase 2/3.
+**Entregue (2026-11-09, DEC-034):** no GitHub Actions, a cada push e pull request na `main`, com `jsonschema`; junto dos testes do navegador (i-051). O pre-commit ficou de fora: pediria as dependências na máquina do dono.
 
 ### i-017 ✅ Contador de caracteres do Style e do Lyrics
 O Suno **trunca em silêncio** ao passar de ~1.000 caracteres no Style (5.000 no Lyrics, com ~3.000 como ponto doce). Sem aviso, sem erro — o excedente só não chega ao modelo. É um problema invisível que só uma ferramenta resolve. Mostrar contador ao vivo, com aviso ao aproximar do limite. Ver HISTORY §9. **Alta prioridade** — é exatamente o "consumir espaço desnecessário" da premissa original.
@@ -93,8 +94,9 @@ A API expõe pesos 0.00-1.00 para aderência ao estilo e desvio criativo (os Cre
 ### i-024 💡 Molde para o projeto gerar skill de estilo proprio
 `[relatado pelo dono, 2026-08-22]` Nao e uma skill, e um **molde que gera skills** — uma por estilo musical, capturando como manter o mesmo estilo, voz, idioma, forma de escrever letra, tom e melodia, e como guiar edicao, extend e cover. Serviria para replicar ou refinar um estilo ja estabelecido. E a ideia mais ambiciosa das tres e a mais dependente das outras duas; candidata a analise (`meta/analises/`) antes de qualquer spec, porque mexe no formato de um artefato que outra pessoa vai ler.
 
-### i-025 💡 Teste de round-trip automatizado (baixar → reimportar)
+### i-025 ✅ Teste de round-trip automatizado (baixar → reimportar)
 `[nascido do FIX-004, 2026-10-22]` O ciclo baixar→reimportar quebrou por meses sem ninguem notar, e so apareceu porque alguem abriu o app num navegador de verdade. Uma checagem que carregue um acervo, serialize como o `downloadCollection` serializa e reimporte, afirmando igualdade, capturaria a classe inteira — nao so o `_activeModules`. Hoje o `validate.py` valida arquivos parados; isto e o primeiro teste de COMPORTAMENTO do projeto, e exige decidir se entra um harness de navegador (headless) ou se a serializacao e extraida para uma funcao testavel sem DOM. Candidata a analise antes de spec.
+**Entregue (2026-11-09, DEC-034):** `tests/test_roundtrip.py` baixa e reimporta um acervo sintético de 205 faixas, antes e depois de organizar, e compara com o original.
 
 ### i-026 ✅ Sugerir o que cortar quando ha tags demais (Fase 3a.2)
 `[nascido da spec do painel, 2026-10-24]` O painel ja avisa quando o Style passa de ~10 tags, mas nao diz QUAIS cortar. O HISTORY §10 traz a ordem de prioridade (genero > clima > instrumento principal > vocal > BPM). Medido: 7 de 7 faixas do album de referencias passam de 10 tags so com os modulos da propria faixa (11 a 18) — o aviso ambar vai acender quase sempre, e aviso que sempre acende vira paisagem. A sugestao e o que transforma o aviso em acao. Exige classificar cada fragmento por camada, o que o recomposto nao carrega hoje: o fragmento do modulo sabe a camada, o do style base nao.
@@ -201,8 +203,9 @@ Achado no teste da entrega 2 (2026-11-05): o CSS `.controls { display: flex }` v
 ### i-050 💡 Arrastar uma faixa para outro acervo
 `[relatado pelo dono, 2026-11-05, na i-048]` Soltar uma faixa sobre outro acervo da lateral para copiá-la ou movê-la para ele. Mexe em dois rascunhos de uma vez (e em dois arquivos a salvar), e pede uma análise própria antes da spec. Hoje o caminho é exportar a faixa em `.json` e importá-la no outro acervo.
 
-### i-051 💡 Versionar os testes do navegador
+### i-051 ✅ Versionar os testes do navegador
 `[capturada pelo chat, 2026-11-06, na I4]` Os testes no Chromium headless de cada entrega (curadoria 1 a 3, I1 a I4) moram só na sessão do chat que os escreveu: a conversa seguinte não os tem, e a regressão da I4 teve de ser por fumaça (importar, lista, detalhe, «⋯», Cartões). Guardar em `tests/` (Playwright, Python) e rodar antes de cada WO de código. Pede decidir onde roda (a máquina do dono não tem Playwright) e o custo de manter.
+**Entregue (2026-11-09, DEC-034):** `tests/` com 32 testes (básico, organizar, salvar no arquivo, ida e volta, celular) e o workflow `.github/workflows/testes.yml`, que roda a cada push. Só dados sintéticos: o dono perguntou se seriam versionados os acervos — não `[relatado pelo dono, 2026-11-09]`.
 
 ## Feedback para o Kit
 

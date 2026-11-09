@@ -7,12 +7,12 @@
 
 ---
 
-## Última conversa (2026-11-06, I4: sonda, pontos e implementação, WO 0030)
+## Última conversa (2026-11-09, I4 conferida, i-051 e o kit de música v2)
 
-- **WO 0029 aplicada e empurrada** (`24b1fc0`, wrap `a9efdef`): a I3 conferida, a recusa da WO 0028 e a I4 em spec ficaram registradas.
-- **Sonda da I4 no Chrome 156 do dono** (`file://`): janela de salvar, gravar de novo sem janela, vínculo guardado no IndexedDB, janela de abrir e handle ao arrastar, todos OK `[medido por instrumento]`. Não mediu o fechar e reabrir nem o arquivo mudado fora: a página não foi reaberta e o arquivo de teste não foi editado.
-- **I4, salvar no arquivo (0.17.0):** os cinco pontos decididos pelo dono como recomendados (DEC-033); 14 de 14 critérios no Chromium headless, testados pelo chat. **Conferida na tela pelo dono** em 2026-11-09 (os 10 itens do roteiro OK `[relatado pelo dono]`): salvar no arquivo está fechado.
-- **Este bloco substitui o anterior, da WO 0029** (I3 conferida e a I4 em spec). O que ele dizia está no CHANGELOG [0.16.0], nas specs `meta/specs/261106-organizar.md` e `meta/specs/261106-salvar-no-arquivo.md` e em `logs/2026-11-06.md` (Conversas 4 a 10).
+- **I4 conferida na tela pelo dono** (os 10 itens do roteiro OK `[relatado pelo dono]`, WO 0031): salvar no arquivo (0.17.0) está fechado, e a frente de interface, com as quatro entregas.
+- **i-051, testes do navegador no CI** (DEC-034, WO 0032): `tests/` com 32 testes, só com dados sintéticos, e o GitHub Actions a cada push, com o `validate.py` com esquema e os testes dos conversores. Fecha também a i-016 e a i-025. Falta ver o primeiro ✓ no GitHub.
+- **Kit de música v2:** análise `meta/analises/261109-ANALISE-kit-de-musica-v2.md`, decidida pelo dono como recomendada; a leva 1 (o kit na 0.17.0, os recursos do Suno de 2026 e «Depois de ouvir») vem depois da i-051.
+- **Este bloco substitui o anterior, da WO 0030** (I4). O que ele dizia está no CHANGELOG [0.17.0], na spec `meta/specs/261106-salvar-no-arquivo.md` e em `logs/2026-11-06.md` (Conversas 11 e 12).
 
 ## Funciona (pronto)
 
@@ -26,6 +26,7 @@
 - **Conversor dos guias de `Albuns/`** (`scripts/convert_guides.py`, 0.10.0): formatos mistos → coleção, com mapa de grupos que reprova faixa perdida. Teste: `python3 scripts/test_convert_guides.py`.
 - **Kit de música** (`kit-musica/`, 0.10.0, DEC-027): bloco para Instruções e CEREBRO de um projeto de música, skills `macetes-suno` e `revisar-faixa`. Uso à mão em `kit-musica/README.md`.
 - **Validação** (`scripts/validate.py`): sintaxe, esquema (com `jsonschema`), integridade referencial dos módulos (id ausente ou objeto no lugar do id, sem traceback — FIX-009), versão igual nos quatro lugares, um BPM só por faixa (DEC-020) e as marcações do prompt que o app lê (DEC-021) e os limites da skill `revisar-faixa` contra o app (DEC-027); código 1 se falhar; a última linha diz se o esquema foi de fato conferido.
+- **Testes do navegador no CI** (DEC-034): `tests/` (pytest e Playwright, 32 testes, dados só sintéticos) e `.github/workflows/testes.yml`, que roda o `validate.py` com esquema, os testes dos conversores e o `pytest tests` a cada push na `main`. O resultado é o ✓ ou ✗ no commit e a aba Actions.
 - **Export MD** (faixa / álbum / acervo), com o rótulo fora do bloco e o Style da tela nos três (0.9.0, D5).
 - **Exportar faixa como `.json`** (0.11.0, DEC-028): botão no rodapé do cartão; a faixa sai como acervo — o álbum de origem (id e título), a faixa e os módulos que ela cita — e importa como qualquer acervo. Sai o dado do acervo, não os módulos ligados nem o BPM da tela; o toast conta os módulos e os citados que não existem. Conferido na tela pelo dono em 2026-11-04.
 - **Vários acervos no navegador** (0.12.0, DEC-028): cada importado fica no IndexedDB pelo nome do arquivo; o seletor de acervo, na barra, abre ou esquece cada um; reabre no último aberto; marcas «usei» por acervo. Sem IndexedDB, guarda só o último, como antes.
@@ -41,7 +42,7 @@
 
 ## Em progresso
 
-- **Kit de música no KCM (i-039)** — o KCM leu a carta 01 e responde por carta, sem data. Gatilho: sem resposta até o primeiro projeto de música novo, o projeto usa o kit à mão (`kit-musica/README.md`).
+- **Kit de música no KCM (i-039)** — o KCM leu a carta 01 e responde por carta, sem data. Gatilho: sem resposta até o primeiro projeto de música novo, o projeto usa o kit à mão (`kit-musica/README.md`). Kit v2 decidido pelo dono em 2026-11-09 (análise `meta/analises/261109-ANALISE-kit-de-musica-v2.md`): leva 1 depois da i-051, leva 2 com prova de campo, carta 02 no fim.
 
 ## Quebrado / pendências que travam
 
@@ -50,12 +51,13 @@
 ## Pendências do dono
 
 - **Apagar à mão o `..\sonda-i4-teste.json`** — arquivo de teste da sonda, na pasta-pai (o chat não apaga arquivo seu).
-- **Instalar o validador de esquema nesta máquina.** Sem `jsonschema` e `referencing`, o `validate.py` só confere sintaxe e diz `ESQUEMA NAO CONFERIDO` na última linha. Uma vez, no CMD: `pip install jsonschema referencing --break-system-packages`. Depois, `python3 scripts/validate.py` deve terminar em `Tudo conforme ao esquema.`
+- **Ver o primeiro ✓ do CI** — em `https://github.com/joaolucas-nds/cancioneiro/actions`, depois do push da WO 0032: a execução «testes» do commit dela, verde.
+- **Instalar o validador de esquema nesta máquina.** Sem `jsonschema` e `referencing`, o `validate.py` só confere sintaxe e diz `ESQUEMA NAO CONFERIDO` na última linha. Uma vez, no CMD: `pip install jsonschema referencing --break-system-packages`. Depois, `python3 scripts/validate.py` deve terminar em `Tudo conforme ao esquema.` Desde a DEC-034 o CI confere o esquema a cada push: instalar aqui passa a ser opcional.
 
 ## Backlog curto (próximas ações concretas)
 
 1. **Organizar os álbuns** (i-049) — renomear, reordenar na lateral, juntar dois.
-2. **Versionar os testes do navegador** (i-051) — os testes de cada entrega ficaram fora do repositório; a regressão da I4 foi por fumaça.
+2. **Kit de música v2, leva 1** (i-039, análise `meta/analises/261109-ANALISE-kit-de-musica-v2.md`) — o kit na 0.17.0, os recursos do Suno de 2026 e «Depois de ouvir» na `macetes-suno`; uma WO só de documento.
 3. **Rampa de BPM** (i-042) — três faixas BR reprovam no `validate.py` por mudarem de andamento de propósito.
 4. **Pesquisar outras plataformas de música por IA** (i-032) — um turno de pesquisa antes de qualquer mudança de esquema.
 5. **Avisar palavra de andamento que contradiz o BPM** (i-029) — pede uma tabela palavra → faixa de BPM, com fonte e data.

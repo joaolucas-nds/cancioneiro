@@ -1,0 +1,5 @@
+# Dependencias dos testes (i-051). O CI instala estas; o validate.py usa as duas ultimas.
+playwright==1.63.0
+pytest==9.1.1
+jsonschema==4.26.0
+referencing==0.37.0
