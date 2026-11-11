@@ -11,7 +11,7 @@
 
 - **0.18.0 conferida na tela pelo dono** em 2026-11-11 (os 8 itens do roteiro OK `[relatado pelo dono]`): organizar os álbuns está fechado.
 - **WO 0035 recusada** na Edição 0 (o HEAD andou para `0d639f7` depois da leitura do chat); o conteúdo dela foi para a WO 0036.
-- **CI:** o passo «Dependencias» deixa de depender do `apt` do runner (o navegador sozinho; as bibliotecas do sistema com três tentativas de 3 minutos, sem derrubar o job). Os testes não rodam no CI desde a 0.18.0: o primeiro veredito é o do push da WO 0036.
+- **CI:** o passo «Dependencias» deixa de depender do `apt` do runner (o navegador sozinho; as bibliotecas do sistema com três tentativas de 3 minutos, sem derrubar o job). Os testes não rodavam no CI desde a 0.18.0; o push da WO 0036 (`790aa3a`) fechou verde.
 - **Rampa de BPM (0.19.0, DEC-036):** o app copiava «95 BPM building to 115 BPM» como «95 BPM building to 95 bpm», desde a 0.7.0; agora a rampa sai como foi escrita, com rótulo no lugar do controle, aviso âmbar e AVISO no `validate.py`. Os quatro pontos decididos pelo dono como recomendados; 7 de 7 critérios e 6 testes novos (`tests/test_bpm.py`), testados pelo chat. Falta a conferência na tela pelo dono.
 - **Este bloco substitui o anterior, da WO 0034** (organizar os álbuns). O que ele dizia está no CHANGELOG [0.18.0], na spec `meta/specs/261109-organizar-os-albuns.md` e em `logs/2026-11-09.md` e `logs/2026-11-11.md`.
 
@@ -49,7 +49,7 @@
 
 ## Quebrado / pendências que travam
 
-- **CI sem veredito desde a 0.18.0** — o passo «Dependencias» caiu três vezes no `apt` do runner. A WO 0036 muda o passo; conferir o resultado no push dela.
+- **CI do `790aa3a` verde** (run `43082294050`, 4 passos success): o passo «Dependencias» novo segurou, e os testes rodaram no CI pela primeira vez desde a 0.18.0. Sem pendência de CI.
 
 ## Pendências do dono
 
