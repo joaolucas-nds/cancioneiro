@@ -48,6 +48,7 @@
 ## Quebrado / pendências que travam
 
 - **CI do `a67ee01` sem veredito** — falha de rede do runner no passo «Dependencias», três vezes (duas no run `43036351737`, uma no run `43044109509` do commit do wrap, `45312d5`) — não é pontual. Re-rodar (`gh run rerun 43036351737 --failed`) ou empurrar de novo; se repetir, WO para o passo de instalação do `testes.yml` (cache ou nova tentativa).
+- **WO 0035 recusada pelo Code em 2026-11-11 (Edição 0 vermelha):** o HEAD era `0d639f7`, não `45312d5`; a âncora E03 e os sha1 de `meta/STATUS.md` e `logs/2026-11-11.md` já não batiam. Nada aplicado. Falta o chat reemitir a WO sobre `0d639f7`; `meta/specs/261111-rampa-de-bpm.md` e a própria WO seguem sem versionar.
 
 ## Pendências do dono
 
