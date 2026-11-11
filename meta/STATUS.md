@@ -47,7 +47,7 @@
 
 ## Quebrado / pendências que travam
 
-- **CI do `a67ee01` sem veredito** — falha de rede do runner no passo «Dependencias», duas vezes. Re-rodar (`gh run rerun 43036351737 --failed`) ou empurrar de novo; se repetir, WO para o passo de instalação do `testes.yml` (cache ou nova tentativa).
+- **CI do `a67ee01` sem veredito** — falha de rede do runner no passo «Dependencias», três vezes (duas no run `43036351737`, uma no run `43044109509` do commit do wrap, `45312d5`) — não é pontual. Re-rodar (`gh run rerun 43036351737 --failed`) ou empurrar de novo; se repetir, WO para o passo de instalação do `testes.yml` (cache ou nova tentativa).
 
 ## Pendências do dono
 
