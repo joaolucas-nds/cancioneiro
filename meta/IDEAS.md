@@ -198,8 +198,9 @@ Achado no teste da entrega 2 (2026-11-05): o CSS `.controls { display: flex }` v
 `[relatado pelo dono, 2026-11-05]` A estrutura para «edição, controle e organização das faixas, acervos e tudo mais» não está prática nem intuitiva, e falta muito UX/UI. Ele pede estudo e planejamento antes, e praticidades como **arrastar objetos** onde for possível, útil e interessante: cartões entre posições e álbuns, faixas para um acervo, arquivos para a tela. Junta-se às i-044 a i-047, numa frente só (análise `meta/analises/261105-ANALISE-frente-de-interface.md`).
 **Entregue (DEC-030, DEC-032):** a I3 (0.16.0): arrastar pela alça, com a SortableJS embutida; o «⋯» por faixa como caminho sem arrastar; seleção em lote; «Desfazer»; o fim do interruptor «editar»; soltar o `.json` sobre um álbum. Ficaram de fora e viraram ideias próprias: organizar os álbuns (i-049) e arrastar uma faixa para outro acervo (i-050).
 
-### i-049 💡 Organizar os álbuns
+### i-049 ✅ Organizar os álbuns
 `[capturada pelo chat, 2026-11-06, na spec da I3]` Renomear um álbum, reordenar os álbuns arrastando na lateral e juntar dois. A I3 organiza as faixas; os álbuns só nascem (pelo «+ Novo álbum» ou pelo «Mover para…») e somem quando esvaziam. Fora da I3 por escopo.
+**Entregue (0.18.0, DEC-035):** o «⋯» do álbum (cabeçalho e lateral) com Renomear (título e descrição; o id não muda), Subir/Descer, Juntar com…, Exportar .md e .json e Excluir álbum; arrastar na lateral pela alça. Spec `meta/specs/261109-organizar-os-albuns.md`.
 
 ### i-050 💡 Arrastar uma faixa para outro acervo
 `[relatado pelo dono, 2026-11-05, na i-048]` Soltar uma faixa sobre outro acervo da lateral para copiá-la ou movê-la para ele. Mexe em dois rascunhos de uma vez (e em dois arquivos a salvar), e pede uma análise própria antes da spec. Hoje o caminho é exportar a faixa em `.json` e importá-la no outro acervo.

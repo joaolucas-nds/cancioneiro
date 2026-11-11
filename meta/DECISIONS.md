@@ -529,3 +529,17 @@
 - **Desempenho fica fora do CI:** o tempo de abertura varia com a máquina; segue medido pelo chat, contra a versão anterior, nas mesmas rodadas.
 **Alternativas consideradas:** testes só no chat (ninguém roda quando se mexe à mão); hook de pre-commit na máquina do dono (pede Python, Playwright e o navegador instalados lá); Node e `@playwright/test` (o projeto já tem os scripts em Python).
 **Consequências:** (+) Toda mudança roda contra tudo o que já funcionava, inclusive o arrastar da I3; o esquema passa a ser conferido a cada push (fecha na prática a pendência do `jsonschema` e a i-016). (+) A ida e volta do acervo vira teste (i-025). (−) O teste não abre a janela real do sistema nem o aviso de permissão: isso continua no roteiro de tela do dono. (−) Trocar a versão do Playwright, do Chromium ou da SortableJS pode quebrar o teste de arrastar; o CI acusa. (−) Empurrar um arquivo em `.github/workflows/` exige que a credencial do Git tenha o escopo `workflow`.
+
+## DEC-035 — Organizar os álbuns: «⋯» no cabeçalho e na lateral, renomear numa janela sem mudar o id, arrastar na lateral, juntar no fim do destino e excluir com confirmação
+
+**Data:** 2026-11-09
+**Status:** aceita
+**Contexto:** A I3 organizou as faixas; os álbuns só nasciam e sumiam ao esvaziar (i-049). A spec `meta/specs/261109-organizar-os-albuns.md` trouxe cinco pontos, decididos pelo dono em 2026-11-09, os cinco como recomendados `[relatado pelo dono]`.
+**Decisão:**
+- **O «⋯» do álbum mora no cabeçalho** (Lista e Cartões, inclusive no celular) **e na lateral** (a partir de 1280 px). O «exportar álbum .md» do cabeçalho entra nele, junto de um «Exportar álbum .json».
+- **Renomear numa janela**, com título e descrição (o `description` do esquema). **O id do álbum não muda.**
+- **Reordenar arrastando pela alça da lateral** (SortableJS, grupo próprio, separado do das faixas) **e por Subir/Descer no «⋯»**, com `Alt+↑`/`Alt+↓`.
+- **Juntar:** as faixas da origem vão para o fim do destino, na ordem; ficam id, título e descrição do destino.
+- **Excluir álbum** existe, com a contagem de faixas no botão da confirmação e «Desfazer».
+**Alternativas consideradas:** o «⋯» só na lateral (some abaixo de 1280 px e no celular); renomear com clique duplo no título (sem a descrição, e compete com o clique que filtra); mudar o id junto com o título (quebra filtros e referências); só Subir/Descer (lento com 12 álbuns); perguntar nome e posição ao juntar (uma pergunta a mais por junção); não ter «Excluir álbum» (o mais seguro, e o mais lento).
+**Consequências:** (+) Organizar o acervo inteiro sem editar o `.json` à mão. (+) A descrição do álbum, que estava no esquema desde a fase 1, ganha uso. (−) Excluir álbum é a operação mais destrutiva do app (dezenas de faixas num clique); seguram a confirmação com a contagem, o «Desfazer» e, no arquivo, o aviso de mudança da I4. (−) Dois arrastares na lateral: o teste da I3 que solta faixa sobre álbum da lateral virou teste de regressão (`tests/test_albuns.py`).

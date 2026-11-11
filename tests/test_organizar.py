@@ -98,5 +98,6 @@ def test_mover_para_outro_album(open_app):
 def test_sem_copia_guardada_nao_ha_alca(open_app):
     """O exemplo que o Pages carrega sozinho nao tem rascunho (C9 da I3)."""
     page = open_app()
+    page.wait_for_function("App.collection && App.collection.albums")   # o exemplo carregado sozinho (http://)
     page.evaluate("d => { setCollection(d); App.saved = false; render(); }", DEMO)
     assert page.eval_on_selector_all("#main .row-grip", "e => e.length") == 0

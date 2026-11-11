@@ -3,16 +3,15 @@
 > **O agora.** O que funciona, o que está em progresso, o que está quebrado, backlog curto.
 > Rolante: item resolvido sai daqui e vai para o CHANGELOG. Médio/longo prazo vive no ROADMAP.
 
-**Versão atual:** 0.17.0 · **Fase:** 3a, 3a.2, o BPM da 3b, o prompt-modelo e as conveniências de uso concluídos e conferidos · os álbuns antigos convertidos (i-008, fora do repo) · curadoria no app concluída nas três entregas (DEC-028, DEC-029) · frente de interface concluída e conferida nas quatro entregas (DEC-030 a DEC-033) · kit de música lido pelo KCM, à espera da resposta (i-039)
+**Versão atual:** 0.18.0 · **Fase:** 3a, 3a.2, o BPM da 3b, o prompt-modelo e as conveniências de uso concluídos e conferidos · os álbuns antigos convertidos (i-008, fora do repo) · curadoria no app concluída nas três entregas (DEC-028, DEC-029) · frente de interface concluída e conferida nas quatro entregas (DEC-030 a DEC-033) · organizar os álbuns (0.18.0, DEC-035) à espera da conferência na tela · kit de música lido pelo KCM, à espera da resposta (i-039)
 
 ---
 
-## Última conversa (2026-11-09, I4 conferida, i-051 e o kit de música v2)
+## Última conversa (2026-11-09, organizar os álbuns, WO 0034)
 
-- **I4 conferida na tela pelo dono** (os 10 itens do roteiro OK `[relatado pelo dono]`, WO 0031): salvar no arquivo (0.17.0) está fechado, e a frente de interface, com as quatro entregas.
-- **i-051, testes do navegador no CI** (DEC-034, WO 0032): `tests/` com 32 testes, só com dados sintéticos, e o GitHub Actions a cada push, com o `validate.py` com esquema e os testes dos conversores. Fecha também a i-016 e a i-025. Aplicada e empurrada (`de49282`); o primeiro ✓ está confirmado: `gh run list` mostra `completed success` para o run «testes» (1m15s) `[medido por instrumento]`.
-- **Kit de música v2, leva 1** (WO 0033): o README do kit na 0.17.0, a `macetes-suno` com «Depois de ouvir» (§10) e as ferramentas do Suno de 2026 (§11), e o ciclo do `BLOCO-SUNO.md` com elas. A leva 2 espera um projeto de música para a prova de campo. Aplicada e empurrada (`47bb0cf`); CI `completed success` (run «testes» 42679747519, 1m2s) `[medido por instrumento]`.
-- **Este bloco substitui o anterior, da WO 0030** (I4). O que ele dizia está no CHANGELOG [0.17.0], na spec `meta/specs/261106-salvar-no-arquivo.md` e em `logs/2026-11-06.md` (Conversas 11 e 12).
+- **Ordem das próximas frentes, decidida pelo dono:** organizar os álbuns (i-049) → rampa de BPM (i-042) → importar os prompts prontos dos álbuns como módulos, que fecha a Fase 3b.
+- **Organizar os álbuns (0.18.0, DEC-035):** protótipo no canvas, spec `meta/specs/261109-organizar-os-albuns.md` com os cinco pontos decididos pelo dono como recomendados, 10 de 10 critérios e 12 testes novos (`tests/test_albuns.py`), testados pelo chat; falta a conferência na tela pelo dono.
+- **Este bloco substitui o anterior** (I4 conferida, i-051 e o kit v2, leva 1). O que ele dizia está no CHANGELOG [0.17.0], na DEC-034, na análise `meta/analises/261109-ANALISE-kit-de-musica-v2.md` e em `logs/2026-11-09.md` (Conversas 1 a 6).
 
 ## Funciona (pronto)
 
@@ -32,6 +31,7 @@
 - **Vários acervos no navegador** (0.12.0, DEC-028): cada importado fica no IndexedDB pelo nome do arquivo; o seletor de acervo, na barra, abre ou esquece cada um; reabre no último aberto; marcas «usei» por acervo. Sem IndexedDB, guarda só o último, como antes.
 - **Curadoria pela tela** (0.13.0, DEC-028, DEC-029): mover, novo álbum, excluir e importar faixas num rascunho gravado no navegador; «● N alterações não salvas» com «Salvar .json» pelo nome de origem. Desde a 0.16.0, sem o interruptor «editar».
 - **Organizar** (0.16.0, DEC-030, DEC-032): arrastar pela alça ⋮⋮ na Lista (com filtro, antes da próxima visível) e para os álbuns da lateral ou «+ Novo álbum»; o «⋯» de cada faixa (linha, detalhe e cartão) com Mover, Subir, Descer, Exportar e Excluir, e `Alt+↑`/`Alt+↓`; caixas e barra de lote; «Desfazer» e `Ctrl+Z` da última operação; soltar o `.json` sobre um álbum importa faixas nele. Só com cópia guardada no navegador. A SortableJS 1.15.7 vai embutida, com o hash no `validate.py`. Conferido na tela pelo dono em 2026-11-06.
+- **Organizar os álbuns** (0.18.0, DEC-035): o «⋯» do álbum no cabeçalho e na lateral, com Renomear (título e descrição; o id não muda), Subir/Descer (`Alt+↑`/`Alt+↓` na lateral), Juntar com… (no fim do destino), Exportar .md e .json e Excluir álbum (com a contagem e «Desfazer»); na lateral, a alça arrasta o álbum.
 - **Salvar no arquivo** (0.17.0, DEC-033): no Chrome e no Edge do computador, «Salvar» (ou `Ctrl+S`) grava no próprio `.json`; o primeiro «Salvar» de um acervo pede o arquivo na janela do sistema, e importar pela janela ou soltar o arquivo já vinculam. Antes de gravar, confere se o arquivo mudou fora. O ▾ tem «Salvar em outro arquivo…» e «Baixar .json»; o seletor de acervo mostra o vínculo e «Desvincular». Firefox, Safari e o celular baixam. O «Desfazer» continua depois de salvar. Conferido na tela pelo dono em 2026-11-09.
 - **Lista e detalhe** (0.15.0, DEC-030, DEC-031): Lista (padrão) ou Cartões; uma linha por faixa com Style, Lyrics, ✓ e a saúde do prompt; o cartão de hoje ao lado, com ‹ ›, setas e `#faixa=<id>` no endereço; a lateral de álbuns e acervos a partir de 1280 px; no celular, o detalhe em tela própria com os botões de copiar no pé.
 - **Barra única** (0.14.0, DEC-030): fixa, de 48 px; seletor de acervo como menu, busca com `/`, Filtros num painel com etiquetas removíveis e «N de M», rascunho e o «⋯» com Importar, Importar faixas, Baixar, Exportar .md, Prompt para chats, Baixar exemplo e Estrutura do cartão. No celular, 51 px, botões de 44 px, a busca numa linha própria e o rascunho no pé.
@@ -50,17 +50,17 @@
 
 ## Pendências do dono
 
+- **Conferir organizar os álbuns na tela** — roteiro na conversa de 2026-11-09 (WO 0034), depois do push, no computador e no celular.
 - **Apagar à mão o `..\sonda-i4-teste.json`** — arquivo de teste da sonda, na pasta-pai (o chat não apaga arquivo seu).
 - **Instalar o validador de esquema nesta máquina.** Sem `jsonschema` e `referencing`, o `validate.py` só confere sintaxe e diz `ESQUEMA NAO CONFERIDO` na última linha. Uma vez, no CMD: `pip install jsonschema referencing --break-system-packages`. Depois, `python3 scripts/validate.py` deve terminar em `Tudo conforme ao esquema.` Desde a DEC-034 o CI confere o esquema a cada push: instalar aqui passa a ser opcional.
 
 ## Backlog curto (próximas ações concretas)
 
-1. **Organizar os álbuns** (i-049) — renomear, reordenar na lateral, juntar dois.
-2. **Kit de música v2, leva 2** (i-039) — as skills `escrever-letra-suno` e `conceber-album`, com prova de campo num projeto de música do dono; depois, a carta 02 ao KCM.
-3. **Rampa de BPM** (i-042) — três faixas BR reprovam no `validate.py` por mudarem de andamento de propósito.
+1. **Rampa de BPM** (i-042) — três faixas BR reprovam no `validate.py` por mudarem de andamento de propósito.
+2. **Importar prompts prontos dos álbuns como módulos** — o último ⬜ da 3b no ROADMAP; o índice-mestre da BR e os «estilos originais» do VOL5 trazem fórmulas de estilo.
+3. **Kit de música v2, leva 2** (i-039) — as skills `escrever-letra-suno` e `conceber-album`, com prova de campo num projeto de música do dono; depois, a carta 02 ao KCM.
 4. **Pesquisar outras plataformas de música por IA** (i-032) — um turno de pesquisa antes de qualquer mudança de esquema.
 5. **Avisar palavra de andamento que contradiz o BPM** (i-029) — pede uma tabela palavra → faixa de BPM, com fonte e data.
-6. **Importar prompts prontos dos álbuns como módulos** — o último ⬜ da 3b no ROADMAP; o índice-mestre da BR e os «estilos originais» do VOL5 trazem fórmulas de estilo.
 
 ## Notas de estado
 

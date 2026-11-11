@@ -206,7 +206,7 @@
   }
   .album-head h2 { font-family: var(--serif); font-size: 21px; margin: 0; }
   .album-head .count { color: var(--ink-soft); font-size: 13px; }
-  .album-head .album-md { margin-left: auto; font-size: 12px; padding: 4px 10px; }
+  .album-head .album-more { margin-left: auto; font-size: 15px; padding: 2px 10px; line-height: 1.2; }   /* 0.18: o «⋯» do álbum */
   .album-desc { color: var(--ink-soft); font-size: 13px; margin: 6px 0 16px; }
 
   .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
@@ -343,12 +343,23 @@
   .drop-hover, .file-target { background: #e5c9ba !important; outline: 2px dashed var(--ember); outline-offset: -2px; }
   .detail-body .card-more { display: none; }
 
-  #track-pop { position: fixed; z-index: 40; width: 240px; }
-  #track-pop .tm-row { display: flex; gap: 4px; }
-  #track-pop .tm-row button { flex: 1; }
-  #track-pop .kbd-hint { color: var(--ink-soft); font-size: 11px; margin-left: 6px; }
-  #track-pop button:disabled { opacity: .45; cursor: default; }
-  #track-pop .tm-danger { color: var(--ember); }
+  #track-pop, #album-pop { position: fixed; z-index: 40; width: 240px; }
+  #track-pop .tm-row, #album-pop .tm-row { display: flex; gap: 4px; }
+  #track-pop .tm-row button, #album-pop .tm-row button { flex: 1; }
+  #track-pop .kbd-hint, #album-pop .kbd-hint { color: var(--ink-soft); font-size: 11px; margin-left: 6px; }
+  #track-pop button:disabled, #album-pop button:disabled { opacity: .45; cursor: default; }
+  #track-pop .tm-danger, #album-pop .tm-danger { color: var(--ember); }
+  #album-pop .tm-row { flex-direction: column; gap: 0; }   /* 0.18: «Subir álbum» e «Descer álbum», um por linha */
+  /* 0.18: a lateral com a alca e o «⋯» de cada album (a partir de 1280 px). */
+  .side-album { display: flex; align-items: center; }
+  .side-album .side-item { flex: 1; min-width: 0; }
+  .side-grip { flex: none; width: 18px; height: 28px; padding: 0; border: 0; background: transparent; color: var(--ink-soft);
+    cursor: grab; letter-spacing: -2px; font-size: 12px; touch-action: none; }
+  .side-more { flex: none; width: 26px; height: 26px; padding: 0; border: 0; border-radius: 6px; background: transparent;
+    color: var(--ink-soft); font-size: 15px; }
+  .side-grip:hover, .side-more:hover { color: var(--ink); }
+  .side-album.album-ghost { opacity: .4; }
+  #album-desc-input { min-height: 64px; }
   .sheet-backdrop { position: fixed; inset: 0; z-index: 39; background: rgba(35,32,27,.35); }
 
   .batch { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 30; display: flex;
@@ -379,10 +390,12 @@
     .row-meta .row-health .ht { display: inline !important; }
     .album-sel { display: none; margin-left: 12px; }
     body.selecting .album-sel { display: inline-block; }
-    #track-pop { left: 0 !important; right: 0; top: auto !important; bottom: 0; width: auto; border-radius: 16px 16px 0 0;
+    #track-pop, #album-pop { left: 0 !important; right: 0; top: auto !important; bottom: 0; width: auto; border-radius: 16px 16px 0 0;
       padding: 8px 8px 20px; max-height: 80vh; overflow: auto; }
-    #track-pop [role="menuitem"] { min-height: 52px; font-size: 15px; }
-    #track-pop .kbd-hint { display: none; }
+    #track-pop [role="menuitem"], #album-pop [role="menuitem"] { min-height: 52px; font-size: 15px; }
+    #track-pop .kbd-hint, #album-pop .kbd-hint { display: none; }
+    .album-head .album-more { min-width: 44px; min-height: 44px; }
+    #album-pop .tm-row { flex-direction: row; gap: 4px; }
     .batch { left: 8px; right: 8px; bottom: 16px; transform: none; flex-wrap: wrap; white-space: normal; gap: 6px; }
     .batch-count { flex: 1 1 calc(100% - 56px); }   /* contagem e × na primeira linha; acoes na segunda */
     .batch .batch-x { order: 1; }
@@ -592,7 +605,7 @@
     <h1>Cancioneiro</h1>
     <!-- Versao: a mesma do topo do meta/CHANGELOG.md. O scripts/validate.py confere
          que app, CHANGELOG, README e STATUS dizem a mesma (i-027). -->
-    <span class="version" data-role="app-version">v0.17.0</span>
+    <span class="version" data-role="app-version">v0.18.0</span>
   </div>
   <div class="pop-wrap" id="acervo-wrap">
     <button type="button" id="acervo-btn" class="acervo-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="acervo-pop" title="Os acervos guardados neste navegador">
@@ -741,6 +754,23 @@
   <p class="pop-note" id="tm-note" hidden>Para organizar, importe o .json: a cópia guardada é o rascunho.</p>
   <button type="button" role="menuitem" class="mobile-only" id="tm-cancel">Cancelar</button>
 </div>
+<!-- 0.18 (i-049): o «⋯» do album, no cabecalho e na lateral. -->
+<div class="pop" id="album-pop" role="menu" aria-labelledby="album-pop-title" hidden>
+  <div class="pop-head" id="album-pop-title"></div>
+  <button type="button" role="menuitem" id="am-rename">Renomear…</button>
+  <div class="tm-row">
+    <button type="button" role="menuitem" id="am-up">Subir álbum<span class="kbd-hint">Alt+↑</span></button>
+    <button type="button" role="menuitem" id="am-down">Descer álbum<span class="kbd-hint">Alt+↓</span></button>
+  </div>
+  <button type="button" role="menuitem" id="am-merge">Juntar com…</button>
+  <div class="pop-sep"></div>
+  <button type="button" role="menuitem" id="am-md">Exportar álbum .md</button>
+  <button type="button" role="menuitem" id="am-json">Exportar álbum .json</button>
+  <div class="pop-sep"></div>
+  <button type="button" role="menuitem" class="tm-danger" id="am-delete">Excluir álbum…</button>
+  <p class="pop-note" id="am-note" hidden>Para organizar, importe o .json: a cópia guardada é o rascunho.</p>
+  <button type="button" role="menuitem" class="mobile-only" id="am-cancel">Cancelar</button>
+</div>
 <div class="batch" id="batch" role="toolbar" aria-label="Ações em lote" hidden>
   <span class="batch-count" id="batch-count"></span>
   <button type="button" id="batch-move">Mover para…</button>
@@ -788,6 +818,32 @@
 <dialog class="prompt-dialog" id="choice-dialog" aria-labelledby="choice-text">
   <p id="choice-text"></p>
   <div class="dialog-actions" id="choice-actions"></div>
+</dialog>
+
+<!-- 0.18 (i-049): renomear e juntar albuns. -->
+<dialog class="prompt-dialog" id="album-dialog" aria-labelledby="album-dialog-title">
+  <h2 id="album-dialog-title">Renomear álbum</h2>
+  <label for="album-title-input">Título</label>
+  <input type="text" id="album-title-input" autocomplete="off">
+  <p class="pop-note" id="album-dup-note" hidden>Já existe um álbum com este nome.</p>
+  <label for="album-desc-input">Descrição (opcional; não vai para o Suno)</label>
+  <textarea id="album-desc-input" rows="2"></textarea>
+  <p class="pop-note" id="album-id-note"></p>
+  <div class="dialog-actions">
+    <button type="button" id="album-cancel-btn">cancelar</button>
+    <button type="button" id="album-ok-btn" class="spacer">renomear</button>
+  </div>
+</dialog>
+
+<dialog class="prompt-dialog" id="merge-dialog" aria-labelledby="merge-dialog-title">
+  <h2 id="merge-dialog-title">Juntar álbuns</h2>
+  <label for="merge-target">Juntar com</label>
+  <select id="merge-target"></select>
+  <p id="merge-text"></p>
+  <div class="dialog-actions">
+    <button type="button" id="merge-cancel-btn">cancelar</button>
+    <button type="button" id="merge-ok-btn" class="spacer">juntar</button>
+  </div>
 </dialog>
 
 <dialog class="prompt-dialog" id="move-dialog" aria-labelledby="move-dialog-title">
@@ -1501,14 +1557,14 @@ function render() {
     sec.querySelector("h2").textContent = album.title;
     sec.querySelector(".count").textContent = songs.length + " faixa" + (songs.length > 1 ? "s" : "");
     if (album.description) sec.querySelector(".album-desc").textContent = album.description;
-    // botao de exportar este album em .md
-    const albMd = document.createElement("button");
-    albMd.className = "album-md"; albMd.textContent = "exportar álbum .md";
-    albMd.addEventListener("click", () => {
-      downloadFile(slug(album.title) + ".md", albumToMarkdown(album), "text/markdown");
-      toast("Álbum exportado: " + album.title);
-    });
-    sec.querySelector(".album-head").appendChild(albMd);
+    // 0.18 (i-049): o «⋯» do album; o «exportar album .md» de antes mora nele.
+    const albMore = document.createElement("button");
+    albMore.type = "button"; albMore.className = "album-more"; albMore.textContent = "⋯";
+    albMore.dataset.album = album.id;
+    albMore.setAttribute("aria-haspopup", "menu"); albMore.setAttribute("aria-expanded", "false");
+    albMore.setAttribute("aria-label", "Ações do álbum " + album.title);
+    albMore.addEventListener("click", e => openAlbumMenu(album.id, e.currentTarget));
+    sec.querySelector(".album-head").appendChild(albMore);
 
     // I2: na Lista, uma linha por faixa; em Cartoes, a grade de sempre.
     if (currentView() === "list") {
@@ -3254,6 +3310,16 @@ function renderSide(f) {
   ul.textContent = "";
   const item = (title, n, id) => {
     const li = document.createElement("li");
+    // 0.18 (i-049): cada album ganha a alca (arrastar para reordenar, so com rascunho) e o «⋯».
+    if (id) {
+      li.className = "side-album"; li.dataset.album = id;
+      if (App.saved) {
+        const g = document.createElement("button");
+        g.type = "button"; g.className = "side-grip"; g.textContent = "⋮⋮"; g.tabIndex = -1;
+        g.setAttribute("aria-label", "Arrastar o álbum " + title + " (ou Alt+↑ e Alt+↓ no nome)");
+        li.appendChild(g);
+      }
+    }
     const b = document.createElement("button");
     b.type = "button"; b.className = "side-item" + (n ? "" : " empty-album");
     if (id) b.dataset.album = id;   // I3: alvo do arrastar e do .json solto
@@ -3262,7 +3328,16 @@ function renderSide(f) {
     const c = document.createElement("span"); c.className = "n"; c.textContent = n;
     b.appendChild(t); b.appendChild(c);
     b.addEventListener("click", () => { document.getElementById("filter-album").value = id; render(); });
-    li.appendChild(b); ul.appendChild(li);
+    li.appendChild(b);
+    if (id) {
+      const m = document.createElement("button");
+      m.type = "button"; m.className = "side-more"; m.textContent = "⋯"; m.dataset.album = id;
+      m.setAttribute("aria-haspopup", "menu"); m.setAttribute("aria-expanded", "false");
+      m.setAttribute("aria-label", "Ações do álbum " + title);
+      m.addEventListener("click", e => openAlbumMenu(id, e.currentTarget));
+      li.appendChild(m);
+    }
+    ul.appendChild(li);
   };
   const albums = App.collection.albums || [];
   const counts = albums.map(a => (a.songs || []).filter(s => songMatches(s, f)).length);
@@ -3274,6 +3349,7 @@ function renderSide(f) {
   nb.type = "button"; nb.className = "side-item side-new"; nb.id = "side-new"; nb.tabIndex = -1;
   nb.textContent = "+ Novo álbum (solte aqui)";
   nl.appendChild(nb); ul.appendChild(nl);
+  setupAlbumSortable(ul);   // 0.18
 }
 /** Os acervos guardados na lateral, como no seletor; o aberto marcado. Le o
     banco so com a lateral visivel e quando algo mudou (aberto, quantos, data):
@@ -3652,6 +3728,226 @@ document.getElementById("batch-used").addEventListener("click", () => {
   toast(nPlural(ids.length, all ? "faixa desmarcada" : "faixa marcada como usada", all ? "faixas desmarcadas" : "faixas marcadas como usadas"));
 });
 
+/* ===================================================================
+   Organizar os albuns (0.18.0, i-049 — spec meta/specs/261109-organizar-os-albuns.md,
+   DEC-035). O «⋯» do album (cabecalho e lateral): renomear (titulo e
+   descricao; o id nao muda), subir e descer, juntar com outro (as faixas vao
+   para o fim do destino, que guarda id, titulo e descricao), exportar .md e
+   .json, excluir com as faixas. Tudo e operacao de rascunho: beginEdit antes,
+   afterEdit depois, um «Desfazer» (I3). Na lateral, a alca arrasta o album.
+   =================================================================== */
+let albumMenuFor = null, albumMenuAnchor = null;
+const findAlbum = id => (App.collection && App.collection.albums || []).find(a => a.id === id) || null;
+
+/** Abre o «⋯» de um album abaixo do botao (no celular, a folha de baixo). */
+function openAlbumMenu(id, anchor) {
+  const album = findAlbum(id);
+  if (!album) return;
+  if (albumMenuFor === id && albumMenuAnchor === anchor) { closeAlbumMenu(true); return; }
+  closeAlbumMenu(false); closeTrackMenu(false); closePopovers(false);
+  albumMenuFor = id; albumMenuAnchor = anchor;
+  const list = App.collection.albums, i = list.indexOf(album), can = App.saved;
+  document.getElementById("album-pop-title").textContent = album.title;
+  document.getElementById("am-rename").disabled = !can;
+  document.getElementById("am-up").disabled = !can || i === 0;
+  document.getElementById("am-down").disabled = !can || i === list.length - 1;
+  document.getElementById("am-merge").disabled = !can || list.length < 2;
+  document.getElementById("am-delete").disabled = !can;
+  document.getElementById("am-note").hidden = can;
+  const pop = document.getElementById("album-pop");
+  pop.hidden = false;
+  document.getElementById("track-backdrop").hidden = !isMobile();
+  anchor.setAttribute("aria-expanded", "true");
+  if (!isMobile()) {
+    const r = anchor.getBoundingClientRect(), h = pop.offsetHeight, w = pop.offsetWidth;
+    const top = r.bottom + 4 + h > window.innerHeight ? Math.max(8, r.top - 4 - h) : r.bottom + 4;
+    pop.style.top = top + "px";
+    // Na lateral, o menu abre para a direita; no cabecalho, alinhado pela direita do botao.
+    const left = anchor.classList.contains("side-more") ? r.left : r.right - w;
+    pop.style.left = Math.max(8, Math.min(window.innerWidth - w - 8, left)) + "px";
+  } else { pop.style.top = ""; pop.style.left = ""; }
+  const first = [...pop.querySelectorAll('[role="menuitem"]')].find(b => !b.disabled && b.offsetParent !== null);
+  if (first) first.focus();
+}
+function closeAlbumMenu(restore) {
+  if (!albumMenuFor) return;
+  document.getElementById("album-pop").hidden = true;
+  if (!trackMenuFor) document.getElementById("track-backdrop").hidden = true;
+  const a = albumMenuAnchor;
+  albumMenuFor = null; albumMenuAnchor = null;
+  if (a) { a.setAttribute("aria-expanded", "false"); if (restore && a.isConnected) a.focus(); }
+}
+/** Liga um item do menu do album: fecha o menu e roda a acao com o album. */
+function albumItem(elId, fn) {
+  document.getElementById(elId).addEventListener("click", () => {
+    const id = albumMenuFor;
+    closeAlbumMenu(false);
+    const album = id && findAlbum(id);
+    if (album) fn(album);
+  });
+}
+
+/** Subir/Descer: troca com o vizinho na lista de albuns. */
+async function moveAlbumBy(id, d) {
+  const list = App.collection.albums, i = list.findIndex(a => a.id === id), j = i + d;
+  if (i < 0 || j < 0 || j >= list.length) return;
+  beginEdit();
+  [list[i], list[j]] = [list[j], list[i]];
+  await afterEdit("«" + list[j].title + "» " + (d < 0 ? "subiu" : "desceu") + " na lista de álbuns");
+}
+/** Alt+↑/↓ na lateral: move e devolve o foco ao nome do album. */
+async function moveAlbumAndFocus(id, d) {
+  await moveAlbumBy(id, d);
+  const b = document.querySelector('#side .side-item[data-album="' + CSS.escape(id) + '"]');
+  if (b) b.focus({ preventScroll: true });
+}
+
+/** Renomear: titulo e descricao numa janela. O id nao muda (DEC-035). Sem
+    mudanca, nao conta alteracao. Descricao vazia tira o campo do album. */
+function openRenameDialog(album) {
+  const dlg = document.getElementById("album-dialog");
+  const ti = document.getElementById("album-title-input"), de = document.getElementById("album-desc-input");
+  const ok = document.getElementById("album-ok-btn"), dup = document.getElementById("album-dup-note");
+  ti.value = album.title; de.value = album.description || "";
+  document.getElementById("album-id-note").textContent =
+    "O id do álbum (" + album.id + ") não muda: filtros, exportações e faixas continuam valendo.";
+  const sync = () => {
+    const t = ti.value.trim();
+    ok.disabled = !t;
+    dup.hidden = !App.collection.albums.some(a => a !== album && a.title.trim() === t);
+  };
+  ti.oninput = sync; sync();
+  document.getElementById("album-cancel-btn").onclick = () => dlg.close();
+  ok.onclick = async () => {
+    const t = ti.value.trim(), d = de.value.trim();
+    if (!t) { ti.focus(); return; }
+    dlg.close();
+    if (t === album.title && d === (album.description || "")) return;
+    beginEdit();
+    const before = album.title;
+    album.title = t;
+    if (d) album.description = d; else delete album.description;
+    await afterEdit(t === before ? "Descrição de «" + t + "» alterada" : "«" + before + "» agora se chama «" + t + "»");
+  };
+  dlg.showModal();
+  ti.select();
+}
+
+/** Juntar: as faixas do album de origem vao para o fim do destino, na ordem; a
+    origem sai; ficam o id, o titulo e a descricao do destino. O filtro que
+    apontava para a origem passa a apontar para o destino. */
+function openMergeDialog(src) {
+  const others = App.collection.albums.filter(a => a !== src);
+  if (!others.length) return;
+  const dlg = document.getElementById("merge-dialog"), sel = document.getElementById("merge-target");
+  document.getElementById("merge-dialog-title").textContent = "Juntar «" + src.title + "» com…";
+  sel.innerHTML = "";
+  others.forEach(a => sel.appendChild(new Option(a.title + " (" + nPlural((a.songs || []).length, "faixa", "faixas") + ")", a.id)));
+  const sync = () => {
+    const dst = findAlbum(sel.value);
+    document.getElementById("merge-text").textContent = dst ? "As " + nPlural(src.songs.length, "faixa", "faixas")
+      + " de «" + src.title + "» vão para o fim de «" + dst.title + "», na ordem em que estão, e «" + src.title
+      + "» sai. Ficam o nome e a descrição de «" + dst.title + "»." : "";
+  };
+  sel.onchange = sync; sync();
+  document.getElementById("merge-cancel-btn").onclick = () => dlg.close();
+  document.getElementById("merge-ok-btn").onclick = async () => {
+    const dst = findAlbum(sel.value);
+    dlg.close();
+    if (dst) await mergeAlbums(src.id, dst.id);
+  };
+  dlg.showModal();
+}
+async function mergeAlbums(srcId, dstId) {
+  const src = findAlbum(srcId), dst = findAlbum(dstId);
+  if (!src || !dst || src === dst) return;
+  beginEdit();
+  const n = (src.songs || []).length;
+  dst.songs = (dst.songs || []).concat(src.songs || []);
+  App.collection.albums.splice(App.collection.albums.indexOf(src), 1);
+  const fa = document.getElementById("filter-album");
+  if (fa.value === srcId) fa.value = dstId;   // o rerender guarda o escolhido, se ele existir
+  await afterEdit("«" + src.title + "» juntou-se a «" + dst.title + "» (" + nPlural(n, "faixa", "faixas") + ")");
+}
+
+/** Excluir o album com as faixas: confirma com a contagem; saem tambem as marcas
+    «usei», os modulos ligados e o BPM das faixas. O «Desfazer» volta tudo. */
+async function deleteAlbum(id) {
+  const album = findAlbum(id);
+  if (!album) return;
+  const n = (album.songs || []).length;
+  if (!(await confirmAsk("Excluir «" + album.title + "» com as " + nPlural(n, "faixa", "faixas")
+      + " dele, do rascunho? Para manter as faixas, use «Juntar com…».", "excluir álbum e " + nPlural(n, "faixa", "faixas")))) return;
+  beginEdit();
+  App.collection.albums.splice(App.collection.albums.indexOf(album), 1);
+  (album.songs || []).forEach(s => forgetSongMarks(s.id));
+  await afterEdit("«" + album.title + "» excluído com " + nPlural(n, "faixa", "faixas"));
+}
+
+/** Exportar o album em .json: um acervo com ele (titulo, descricao e faixas) e
+    os modulos que as faixas citam, como o exportar de uma faixa (DEC-028). */
+function exportAlbumJson(album) {
+  const coll = App.collection;
+  const json = { schemaVersion: coll.schemaVersion || "1.0", title: album.title };
+  if (coll.targetTool) json.targetTool = coll.targetTool;
+  const copy = JSON.parse(JSON.stringify(album));
+  json.albums = [copy];
+  const mods = [], seen = new Set();
+  let missing = 0;
+  (album.songs || []).forEach(s => (s.styleModules || []).forEach(id => {
+    const m = typeof id === "string" ? App.modulesById[id] : null;
+    if (!m) { missing++; return; }
+    if (seen.has(id)) return;
+    seen.add(id); mods.push(JSON.parse(JSON.stringify(m)));
+  }));
+  if (mods.length) json.styleModules = mods;
+  stripInternalKeys(json);
+  const name = album.id + ".json";
+  downloadFile(name, JSON.stringify(json, null, 2), "application/json");
+  toast("Álbum exportado em .json: " + name + " · " + nPlural(mods.length, "módulo", "módulos")
+    + (missing ? " · " + missing + " módulo(s) citado(s) não existe(m) no acervo" : ""));
+}
+
+albumItem("am-rename", a => openRenameDialog(a));
+albumItem("am-up", a => moveAlbumBy(a.id, -1));
+albumItem("am-down", a => moveAlbumBy(a.id, 1));
+albumItem("am-merge", a => openMergeDialog(a));
+albumItem("am-md", a => { downloadFile(slug(a.title) + ".md", albumToMarkdown(a), "text/markdown"); toast("Álbum exportado: " + a.title); });
+albumItem("am-json", a => exportAlbumJson(a));
+albumItem("am-delete", a => deleteAlbum(a.id));
+document.getElementById("am-cancel").addEventListener("click", () => closeAlbumMenu(true));
+document.getElementById("track-backdrop").addEventListener("click", () => closeAlbumMenu(true));
+document.addEventListener("pointerdown", e => {
+  if (!albumMenuFor) return;
+  if (document.getElementById("album-pop").contains(e.target) || (albumMenuAnchor && albumMenuAnchor.contains(e.target))) return;
+  closeAlbumMenu(false);
+});
+
+/** Arrastar os albuns na lateral pela alca: grupo proprio, separado do das
+    faixas (a faixa arrastada continua caindo SOBRE o album, I3). */
+let albumSortable = null;
+function setupAlbumSortable(ul) {
+  if (albumSortable) { try { albumSortable.destroy(); } catch (e) { /* lista redesenhada */ } albumSortable = null; }
+  if (typeof Sortable === "undefined" || !App.saved || !ul) return;
+  albumSortable = Sortable.create(ul, {
+    group: "albuns", handle: ".side-grip", draggable: "li.side-album",
+    animation: 120, forceFallback: true, fallbackOnBody: true, fallbackTolerance: 3,
+    ghostClass: "album-ghost",
+    onEnd: async () => {
+      // O mesmo clique sintetico do dragEnd das faixas (armadilha da I3).
+      setTimeout(() => document.body.dispatchEvent(new MouseEvent("click", { bubbles: true })), 0);
+      const order = [...ul.querySelectorAll("li.side-album")].map(li => li.dataset.album);
+      const list = App.collection.albums;
+      if (order.join("\n") === list.map(a => a.id).join("\n")) return;   // soltar no mesmo lugar nao conta
+      beginEdit();
+      const byId = new Map(list.map(a => [a.id, a]));
+      App.collection.albums = order.map(id => byId.get(id)).filter(Boolean);
+      const moved = order.find((id, k) => list[k] && list[k].id !== id);
+      await afterEdit("Álbuns reordenados" + (moved ? ": «" + byId.get(moved).title + "» mudou de lugar" : ""));
+    },
+  });
+}
+
 /* ---- Arrastar ---- */
 let sortables = [];
 function setupSortables() {
@@ -3769,6 +4065,7 @@ function organizeSavedChanged() {
   });
   setupSortables();
   syncSelection();
+  renderSide(currentFilters());   // 0.18: as alcas dos albuns na lateral (so a lateral; nao redesenha a lista)
 }
 
 /* ---- Soltar um .json sobre um album ---- */
@@ -3805,9 +4102,17 @@ document.addEventListener("keydown", e => {
       e.preventDefault(); e.stopImmediatePropagation(); return;
     }
     if (trackMenuFor) { e.preventDefault(); e.stopImmediatePropagation(); closeTrackMenu(true); return; }
+    if (albumMenuFor) { e.preventDefault(); e.stopImmediatePropagation(); closeAlbumMenu(true); return; }
     if ((App.selection.size || App.selecting) && !openPop && !document.querySelector("dialog[open]") && !isTextField(t)) {
       e.preventDefault(); e.stopImmediatePropagation(); clearSelection(); return;
     }
+    return;
+  }
+  // 0.18: Alt+↑/↓ no nome de um album da lateral sobe e desce o album.
+  if (e.altKey && !e.ctrlKey && !e.metaKey && (e.key === "ArrowUp" || e.key === "ArrowDown")
+      && t && t.classList && t.classList.contains("side-item") && t.dataset.album) {
+    e.preventDefault(); e.stopImmediatePropagation();
+    if (App.saved) moveAlbumAndFocus(t.dataset.album, e.key === "ArrowUp" ? -1 : 1);
     return;
   }
   if (e.altKey && !e.ctrlKey && !e.metaKey && (e.key === "ArrowUp" || e.key === "ArrowDown")

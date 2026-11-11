@@ -4,6 +4,25 @@
 
 ---
 
+## [0.18.0] — 2026-11-09
+
+Organizar os álbuns, não só as faixas (i-049, DEC-035).
+
+### Added
+- **O «⋯» do álbum**, no cabeçalho de cada álbum (Lista e Cartões) e ao lado de cada álbum da lateral: Renomear…, Subir álbum e Descer álbum, Juntar com…, Exportar álbum .md, Exportar álbum .json e Excluir álbum…. No celular, ele abre a folha de baixo.
+- **Renomear** numa janela, com o título e a descrição do álbum (o campo `description` do esquema, que já existia e passa a aparecer no cabeçalho). O id do álbum não muda. Título igual ao de outro álbum é permitido, com aviso.
+- **Reordenar os álbuns** arrastando pela alça ⋮⋮ da lateral, ou com Subir e Descer no «⋯»; `Alt+↑` e `Alt+↓` no nome do álbum da lateral.
+- **Juntar com…:** as faixas vão para o fim do álbum escolhido, na ordem; o de origem sai; ficam o id, o título e a descrição do destino. O filtro de álbum acompanha.
+- **Excluir álbum…** com as faixas, confirmando com a contagem no botão; saem também as marcas «usei» delas.
+- **Exportar álbum .json:** um acervo com o álbum e os módulos que as faixas citam, que importa como qualquer acervo.
+
+### Changed
+- O botão «exportar álbum .md» do cabeçalho mora agora no «⋯» do álbum.
+
+Todas as operações têm «Desfazer» e `Ctrl+Z`, como as das faixas. Spec `meta/specs/261109-organizar-os-albuns.md`: 10 de 10 critérios, com 12 testes novos em `tests/test_albuns.py` (44 no total), que reprovam no app da 0.17.0. Abrir 205 faixas: de 246 a 289 ms, contra 251 a 319 ms da 0.17.0 nas mesmas rodadas (sem diferença medível).
+
+---
+
 ## [0.17.0] — 2026-11-06
 
 Quarta e última entrega da frente de interface (I4, DEC-030, DEC-033): «Salvar» grava no próprio `.json`, onde o navegador deixa. Fecha a i-043.
