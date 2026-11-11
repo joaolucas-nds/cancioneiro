@@ -28,7 +28,14 @@ jobs:
       - name: Dependencias
         run: |
           python -m pip install -r tests/requirements.txt
-          python -m playwright install --with-deps chromium
+          python -m playwright install chromium
+          # As bibliotecas do sistema ja vem no runner do GitHub. O apt do runner as vezes
+          # fica sem DNS (2026-11-11, run 43036351737): tres tentativas de 3 minutos, e o job
+          # segue se falharem. Faltando biblioteca de verdade, o passo «Navegador» acusa.
+          for i in 1 2 3; do
+            timeout 180 python -m playwright install-deps chromium && break
+            echo "install-deps falhou ($i de 3)"; sleep 15
+          done
       - name: Validar acervos, versao e biblioteca
         run: python scripts/validate.py
       - name: Conversores

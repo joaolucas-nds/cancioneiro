@@ -499,6 +499,9 @@
   }
   .bpm-ctl button { font-size: 11px; padding: 1px 7px; }
   .bpm-ctl .bpm-msg { color: var(--amber); font-weight: 600; }
+  .bpm-ramp { display: inline-flex; align-items: center; gap: 6px; padding: 1px 8px; border: 1px dashed var(--ink-soft);
+    border-radius: 6px; font-variant-numeric: tabular-nums; }   /* 0.19: rampa de BPM, sem controle (DEC-036) */
+  .bpm-ramp .bpm-ramp-note { color: var(--ink-soft); font-size: 11px; }
   .recomposed {
     margin-top: 8px; font-family: var(--mono); font-size: 11.5px;
     background: var(--paper); border: 1px dashed var(--ember); border-radius: 6px; padding: 8px;
@@ -605,7 +608,7 @@
     <h1>Cancioneiro</h1>
     <!-- Versao: a mesma do topo do meta/CHANGELOG.md. O scripts/validate.py confere
          que app, CHANGELOG, README e STATUS dizem a mesma (i-027). -->
-    <span class="version" data-role="app-version">v0.18.0</span>
+    <span class="version" data-role="app-version">v0.19.0</span>
   </div>
   <div class="pop-wrap" id="acervo-wrap">
     <button type="button" id="acervo-btn" class="acervo-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="acervo-pop" title="Os acervos guardados neste navegador">
@@ -1222,7 +1225,9 @@ function songToMarkdown(song, useRecomposed) {
   // Com o Style recomposto, o BPM e o do controle (DEC-020) — o mesmo numero do
   // bloco, nunca um aqui e outro la. Sem recompor, o do acervo.
   const bpmMeta = useRecomposed ? currentBpm(song) : song.bpm;
-  if (bpmMeta) meta.push("BPM: " + bpmMeta);
+  const rampMeta = rampOf(song.style);   // 0.19: a rampa, como esta no Style
+  if (rampMeta) meta.push("BPM: rampa " + rampMeta.from + " → " + rampMeta.to);
+  else if (bpmMeta) meta.push("BPM: " + bpmMeta);
   if (song.key) meta.push("Tom: " + song.key);
   L.push("_" + meta.join(" · ") + "_");
   if (song.context) L.push("\nContexto: " + song.context);
@@ -1302,9 +1307,28 @@ function bpmIn(text) {
   const m = new RegExp(BPM_RE.source, "i").exec(text || "");
   return m ? Number(m[1]) : null;
 }
+/* Rampa de BPM (0.19.0, i-042, DEC-036): dois BPM no MESMO trecho do style
+   (entre virgulas), ligados por "to", "building to", "rising to", "climbing to",
+   "up to" ou "→" — «95 BPM building to 115 BPM», «95 to 118 BPM». A rampa sai
+   byte a byte como foi escrita: o controle nao reescreve nada nela. Dois
+   numeros soltos continuam sendo o caso da DEC-020. A MESMA expressao mora no
+   scripts/validate.py (RAMP_RE): mudar uma pede mudar a outra. */
+const RAMP_RE = /\b(\d{2,3})(?:\s*-?\s*bpm)?\s*(?:building\s+to|rising\s+to|climbing\s+to|up\s+to|to|→)\s*(\d{2,3})\s*-?\s*bpm\b/i;
+
+/** A rampa do style ({from, to}), ou null. Procura trecho a trecho. */
+function rampOf(style) {
+  for (const frag of String(style || "").split(",")) {
+    const m = RAMP_RE.exec(frag);
+    if (m && Number(m[1]) !== Number(m[2])) return { from: Number(m[1]), to: Number(m[2]) };
+  }
+  return null;
+}
+
 /** Valor inicial do controle: o numero do style (e o que o Suno ve); sem ele,
-    o campo bpm; sem os dois, null (controle vazio). */
+    o campo bpm; sem os dois, null (controle vazio). Com rampa, null: o
+    controle nao governa nada e o Style sai como esta (DEC-036). */
 function initialBpm(song) {
+  if (rampOf(song.style)) return null;
   const n = bpmIn(song.style);
   return n !== null ? n : (song.bpm || null);
 }
@@ -1357,6 +1381,18 @@ function refreshCardStyle(song, card) {
     Fica na linha de metadados — referencia que edita o conteudo, nunca dentro
     dele. Valor invalido nao chega ao Style: nunca "NaN bpm" no prompt. */
 function bpmControl(song, card) {
+  const ramp = rampOf(song.style);
+  if (ramp) {
+    // 0.19 (DEC-036): numa rampa o controle vira rotulo; nada a reescrever.
+    const r = document.createElement("span"); r.className = "bpm-ctl bpm-ramp";
+    r.title = "Rampa de BPM: o Style vai como está escrito; o controle não mexe numa rampa.";
+    r.textContent = "rampa " + ramp.from + " → " + ramp.to + " bpm";
+    const note = document.createElement("span"); note.className = "bpm-ramp-note";
+    note.textContent = "o controle não mexe numa rampa";
+    r.appendChild(note);
+    r.sync = () => {};
+    return r;
+  }
   const box = document.createElement("span"); box.className = "bpm-ctl";
   const orig = initialBpm(song);
   const mk = (txt, label) => {
@@ -1464,9 +1500,11 @@ function recomposedStyle(song, activeOverride, bpmOverride) {
   // numero, e a dedup tira o repetido (DEC-020).
   song.style.split(",").forEach(f => add(rewriteBpm(f, bpm)));
   // depois os fragmentos dos modulos ativos que agreguem algo novo
+  const ramp = rampOf(song.style);
   active.forEach(id => {
     const m = App.modulesById[id];
-    if (m) m.fragment.split(",").forEach(f => add(rewriteBpm(f, bpm)));
+    // 0.19: numa rampa, modulo de andamento poria um terceiro BPM (DEC-036)
+    if (m && !(ramp && tempoChipBpm(m) !== null)) m.fragment.split(",").forEach(f => add(rewriteBpm(f, bpm)));
   });
   // controle preenchido e nenhum BPM no texto: entra no fim (+1 tag, que o painel conta)
   if (bpm !== null && !frags.some(f => bpmIn(f) !== null)) frags.push(bpm + " bpm");
@@ -1723,6 +1761,10 @@ function styleQuality(style, lyrics, baseTags) {
   // o aviso nao manda o usuario para um campo que ele escondeu.
   if (!isHidden("exclude")) findNegations(style, lyrics).forEach(n =>
     el.appendChild(qSpan("«" + n + "»: mais confiável no campo Exclude", "warn")));
+  // 0.19 (DEC-036): a rampa sai como foi escrita, mas o Suno nao a segue
+  const ramp = rampOf(style);
+  if (ramp) el.appendChild(qSpan("rampa de BPM (" + ramp.from + " → " + ramp.to + "): o Suno não segue mudança de andamento"
+    + " numa geração; para crescer, descreva («gradual build») e deixe um BPM", "warn"));
   return el;
 }
 
@@ -1912,6 +1954,11 @@ function renderModules(song, card) {
       chip.appendChild(chipLabel); chip.appendChild(chipCost);
       chip.title = m.fragment + (m.notes ? " — " + m.notes : "");
       chip.setAttribute("aria-pressed", active.has(m.id) ? "true" : "false");
+      if (tempoChipBpm(m) !== null && rampOf(song.style)) {
+        // 0.19 (DEC-036): numa faixa com rampa, ligar um andamento poria um terceiro BPM
+        chip.disabled = true;
+        chip.title = "Desligado: esta faixa tem uma rampa de BPM no Style.";
+      }
       chip.addEventListener("click", () => {
         const on = active.has(m.id);
         if (on) active.delete(m.id); else active.add(m.id);
@@ -3130,7 +3177,8 @@ function fillHealth(el, song) {
   el.appendChild(mk); el.appendChild(document.createTextNode(" ")); el.appendChild(tx);
   el.title = h.text;
 }
-const bpmText = song => { const v = currentBpm(song); return v ? v + " bpm" : "—"; };
+const bpmText = song => { const r = rampOf(song.style); if (r) return r.from + "→" + r.to + " bpm";   // 0.19
+  const v = currentBpm(song); return v ? v + " bpm" : "—"; };
 
 /** Uma linha da Lista. Os botoes copiam SO o conteudo (regra de dominio): o
     rotulo fica no botao e no aria-label. O Style e recomposto na hora do clique,

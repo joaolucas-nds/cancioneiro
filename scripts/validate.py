@@ -15,7 +15,9 @@ Checa oito coisas:
   4. A versao e a mesma no topo do meta/CHANGELOG.md, no app, no README e no
      STATUS (i-027).
   5. O BPM de cada faixa e um so: o style nao tem dois numeros diferentes, e o
-     campo bpm, quando existe, e o numero do style (DEC-020).
+     campo bpm, quando existe, e o numero do style (DEC-020). Uma rampa
+     declarada («95 BPM building to 115 BPM», no mesmo trecho) e AVISO, nao
+     erro; o campo bpm, se houver, e o numero de partida (DEC-036).
   6. O schema/PROMPT-PARA-CHATS.md tem as marcacoes que o botao «Prompt para
      chats» do app le: as linhas de INICIO e FIM e a linha entre parenteses
      abaixo de «## Meu pedido» (DEC-021).
@@ -77,25 +79,58 @@ def check_module_refs(data, rel):
 BPM_RE = re.compile(r"\b(\d{2,3})\s*-?\s*bpm\b", re.I)  # a mesma regra do app
 
 
+# Rampa de BPM (DEC-036): dois BPM no MESMO trecho do style, ligados por uma das
+# seis formas. A mesma expressao do app (RAMP_RE em app/index.html): mudar uma
+# pede mudar a outra.
+RAMP_RE = re.compile(r"\b(\d{2,3})(?:\s*-?\s*bpm)?\s*(?:building\s+to|rising\s+to|climbing\s+to|up\s+to|to|→)"
+                     r"\s*(\d{2,3})\s*-?\s*bpm\b", re.I)
+
+
+def ramp_of(style):
+    """A rampa do style, (partida, chegada), ou None. Procura trecho a trecho."""
+    for frag in (style or "").split(","):
+        m = RAMP_RE.search(frag)
+        if m and int(m.group(1)) != int(m.group(2)):
+            return int(m.group(1)), int(m.group(2))
+    return None
+
+
 def check_bpm(data, rel):
-    """O BPM de cada faixa e um so (DEC-020).
+    """O BPM de cada faixa e um so (DEC-020), salvo a rampa declarada (DEC-036).
 
     O app governa todo "NN bpm" do style a partir de um valor inicial; style com
     dois numeros, ou campo bpm que nao e o do style, e erro de autoria que o
-    controle esconderia. Variantes ficam de fora: cada uma tem o andamento dela.
+    controle esconderia. A rampa («95 BPM building to 115 BPM») o app preserva e
+    nao controla: aqui ela e AVISO, e o campo bpm, se houver, e a partida.
+    Variantes ficam de fora: cada uma tem o andamento dela.
     """
-    bad = []
+    bad, ramps = [], []
     for album in data.get("albums", []):
         for song in album.get("songs", []):
-            nums = sorted({int(n) for n in BPM_RE.findall(song.get("style", "") or "")})
+            style = song.get("style", "") or ""
             field = song.get("bpm")
             where = f"[{album.get('id', '?')} > {song.get('id', '?')}]"
+            ramp = ramp_of(style)
+            if ramp:
+                rest = [frag for frag in style.split(",") if not RAMP_RE.search(frag)]
+                loose = sorted({int(n) for frag in rest for n in BPM_RE.findall(frag)})
+                ramps.append(f"{where} rampa de BPM: {ramp[0]} -> {ramp[1]}")
+                if loose:
+                    bad.append(f"{where} rampa {ramp[0]} -> {ramp[1]} e outro BPM no style: {', '.join(map(str, loose))}")
+                elif field is not None and field != ramp[0]:
+                    bad.append(f"{where} campo bpm {field}, mas a rampa parte de {ramp[0]}")
+                continue
+            nums = sorted({int(n) for n in BPM_RE.findall(style)})
             if len(nums) > 1:
                 bad.append(f"{where} o style tem {len(nums)} BPM diferentes: {', '.join(map(str, nums))}")
             elif field is not None and not nums:
                 bad.append(f"{where} campo bpm {field}, mas o style nao tem BPM")
             elif field is not None and nums[0] != field:
                 bad.append(f"{where} campo bpm {field}, mas o style diz {nums[0]}")
+    if ramps:
+        print(f"AVISO de BPM em {rel} ({len(ramps)} faixa(s) com rampa; o Suno nao segue mudanca de andamento numa geracao):")
+        for r in ramps[:8]:
+            print(f"   {r}")
     if bad:
         print(f"ERRO de BPM em {rel} ({len(bad)} faixa(s)):")
         for b in bad[:8]:

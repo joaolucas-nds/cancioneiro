@@ -543,3 +543,16 @@
 - **Excluir álbum** existe, com a contagem de faixas no botão da confirmação e «Desfazer».
 **Alternativas consideradas:** o «⋯» só na lateral (some abaixo de 1280 px e no celular); renomear com clique duplo no título (sem a descrição, e compete com o clique que filtra); mudar o id junto com o título (quebra filtros e referências); só Subir/Descer (lento com 12 álbuns); perguntar nome e posição ao juntar (uma pergunta a mais por junção); não ter «Excluir álbum» (o mais seguro, e o mais lento).
 **Consequências:** (+) Organizar o acervo inteiro sem editar o `.json` à mão. (+) A descrição do álbum, que estava no esquema desde a fase 1, ganha uso. (−) Excluir álbum é a operação mais destrutiva do app (dezenas de faixas num clique); seguram a confirmação com a contagem, o «Desfazer» e, no arquivo, o aviso de mudança da I4. (−) Dois arrastares na lateral: o teste da I3 que solta faixa sobre álbum da lateral virou teste de regressão (`tests/test_albuns.py`).
+
+## DEC-036 — Rampa de BPM: reconhecida no texto do Style, preservada byte a byte, sem controle, com aviso âmbar; no validador, AVISO (revê a DEC-020)
+
+**Data:** 2026-11-11
+**Status:** aceita
+**Contexto:** Três faixas BR mudam de andamento de propósito («95 BPM building to 115 BPM»), e o `validate.py` as reprovava pela DEC-020 (i-042). Medido na spec `meta/specs/261111-rampa-de-bpm.md`: o app copiava a rampa com o segundo número trocado pelo primeiro, sem ninguém mexer no controle de BPM. Pesquisa de 2026-11-11: o Suno não segue mudança de andamento numa geração. Os quatro pontos da spec, decididos pelo dono como recomendados `[relatado pelo dono, 2026-11-11]`.
+**Decisão:**
+- **Rampa = dois BPM no mesmo trecho do Style** (entre vírgulas), ligados por `to`, `building to`, `rising to`, `up to`, `climbing to` ou `→`. Só texto: o esquema não muda. A mesma expressão no app e no `validate.py`.
+- **Numa rampa, o Style sai byte a byte;** o controle de BPM vira rótulo, e os chips e módulos de andamento ficam de fora.
+- **Aviso âmbar** na linha de qualidade, com a recomendação de um BPM e a subida descrita.
+- **No `validate.py`, AVISO** (código 0); o campo `bpm`, se houver, é a partida. Dois números soltos continuam ERRO (DEC-020).
+**Alternativas consideradas:** um campo `bpmEnd` no esquema (muda o contrato dos chats); o controle deslocar os dois números juntos (mais código, para algo que o Suno não segue); sem aviso; aviso com um botão que troca a rampa (o app passaria a editar o Style); manter o erro (forçaria editar as três faixas à mão).
+**Consequências:** (+) O que se copia é o que está escrito, também na rampa — a promessa da DEC-020. (+) As três faixas passam no `validate.py` com aviso. (−) Uma forma de ligação fora da lista cai na DEC-020 e o validador reprova: falha alta, não silenciosa. (−) A lista de formas mora em dois lugares (app e validador), com um comentário apontando um para o outro.

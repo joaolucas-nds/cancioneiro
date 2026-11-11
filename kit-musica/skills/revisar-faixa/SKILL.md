@@ -30,7 +30,7 @@ dono, escritos sem esta revisão: 72 de 151 letras acima de 5.000 caracteres, 13
 | 4 | **Rótulo** dentro do copiável: `ESTILO SUNO`, `[LETRA]`, `Style:`, `Letra:` em `style`/`lyrics` | sempre | — |
 | 5 | **Colchete** no style | sempre (colchete é do Lyrics) | — |
 | 6 | **«no X»** no style | — | vai para `excludeStyles` (se o plano tiver o campo) |
-| 7 | **BPM**: dois números no style, ou campo `bpm` diferente do style | — | um BPM por faixa; rampa («95 to 118 BPM») o app não controla |
+| 7 | **BPM**: dois números no style, ou campo `bpm` diferente do style | — | um BPM por faixa; rampa num trecho só («95 BPM building to 115 BPM») o app preserva e avisa, mas o Suno não segue: prefira um BPM e descreva a subida |
 | 8 | **Instrumental** com `[Instrumental]` e mais coisa no Lyrics, ou letra cantada com «no vocals» no style | — | sinais que brigam |
 
 Variantes (`variants[].style`) passam pelas conferências 2 a 7.

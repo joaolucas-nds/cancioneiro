@@ -62,6 +62,8 @@ e marque as repetições com a tag (`[Chorus]`).
 - `NN bpm` no style ajuda a mirar o andamento; o Suno **não obedece com precisão**.
 - **Um número por faixa.** Dois números («95 BPM to 118 BPM») viram ruído para o Suno e confusão para o
   controle de BPM do Cancioneiro. Para acelerar, descreva (`gradual build, accelerating`), não some números.
+  Se a rampa for escolha consciente, escreva-a num trecho só (`95 BPM building to 115 BPM`): desde a 0.19.0 o
+  Cancioneiro a reconhece, copia como está e avisa em âmbar; dois números soltos continuam sendo erro.
 - O campo `bpm` do JSON repete o número do style.
 
 ## 6. Instrumental

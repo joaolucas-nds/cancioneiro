@@ -3,16 +3,17 @@
 > **O agora.** O que funciona, o que está em progresso, o que está quebrado, backlog curto.
 > Rolante: item resolvido sai daqui e vai para o CHANGELOG. Médio/longo prazo vive no ROADMAP.
 
-**Versão atual:** 0.18.0 · **Fase:** 3a, 3a.2, o BPM da 3b, o prompt-modelo e as conveniências de uso concluídos e conferidos · os álbuns antigos convertidos (i-008, fora do repo) · curadoria no app concluída nas três entregas (DEC-028, DEC-029) · frente de interface concluída e conferida nas quatro entregas (DEC-030 a DEC-033) · organizar os álbuns (0.18.0, DEC-035) à espera da conferência na tela · kit de música lido pelo KCM, à espera da resposta (i-039)
+**Versão atual:** 0.19.0 · **Fase:** 3a, 3a.2, o BPM da 3b, o prompt-modelo e as conveniências de uso concluídos e conferidos · os álbuns antigos convertidos (i-008, fora do repo) · curadoria no app concluída nas três entregas (DEC-028, DEC-029) · frente de interface concluída e conferida nas quatro entregas (DEC-030 a DEC-033) · organizar os álbuns (0.18.0, DEC-035) conferido · rampa de BPM (0.19.0, DEC-036) à espera da conferência na tela · kit de música lido pelo KCM, à espera da resposta (i-039)
 
 ---
 
-## Última conversa (2026-11-09, organizar os álbuns, WO 0034)
+## Última conversa (2026-11-11, 0.18 conferida, CI e rampa de BPM, WO 0036)
 
-- **Ordem das próximas frentes, decidida pelo dono:** organizar os álbuns (i-049) → rampa de BPM (i-042) → importar os prompts prontos dos álbuns como módulos, que fecha a Fase 3b.
-- **Organizar os álbuns (0.18.0, DEC-035):** protótipo no canvas, spec `meta/specs/261109-organizar-os-albuns.md` com os cinco pontos decididos pelo dono como recomendados, 10 de 10 critérios e 12 testes novos (`tests/test_albuns.py`), testados pelo chat; falta a conferência na tela pelo dono.
-- **WO 0034 aplicada e empurrada (`a67ee01`, 2026-11-11):** 27 edições + `tests/test_albuns.py`, 9 sha1 de chegada conferidos, `validate.py` exit=0 (só sintaxe: `jsonschema` ausente nesta máquina). **CI vermelho, mas sem rodar teste algum:** o run `43036351737` caiu nas duas tentativas no passo «Dependencias» (`apt`: `Temporary failure resolving 'azure.archive.ubuntu.com'`); «Validar», «Conversores» e «Navegador» foram pulados `[medido por instrumento]`. Os 44 testes seguem sem veredito no CI.
-- **Este bloco substitui o anterior** (I4 conferida, i-051 e o kit v2, leva 1). O que ele dizia está no CHANGELOG [0.17.0], na DEC-034, na análise `meta/analises/261109-ANALISE-kit-de-musica-v2.md` e em `logs/2026-11-09.md` (Conversas 1 a 6).
+- **0.18.0 conferida na tela pelo dono** em 2026-11-11 (os 8 itens do roteiro OK `[relatado pelo dono]`): organizar os álbuns está fechado.
+- **WO 0035 recusada** na Edição 0 (o HEAD andou para `0d639f7` depois da leitura do chat); o conteúdo dela foi para a WO 0036.
+- **CI:** o passo «Dependencias» deixa de depender do `apt` do runner (o navegador sozinho; as bibliotecas do sistema com três tentativas de 3 minutos, sem derrubar o job). Os testes não rodam no CI desde a 0.18.0: o primeiro veredito é o do push da WO 0036.
+- **Rampa de BPM (0.19.0, DEC-036):** o app copiava «95 BPM building to 115 BPM» como «95 BPM building to 95 bpm», desde a 0.7.0; agora a rampa sai como foi escrita, com rótulo no lugar do controle, aviso âmbar e AVISO no `validate.py`. Os quatro pontos decididos pelo dono como recomendados; 7 de 7 critérios e 6 testes novos (`tests/test_bpm.py`), testados pelo chat. Falta a conferência na tela pelo dono.
+- **Este bloco substitui o anterior, da WO 0034** (organizar os álbuns). O que ele dizia está no CHANGELOG [0.18.0], na spec `meta/specs/261109-organizar-os-albuns.md` e em `logs/2026-11-09.md` e `logs/2026-11-11.md`.
 
 ## Funciona (pronto)
 
@@ -20,6 +21,7 @@
 - **Painel de qualidade (0.5.0, DEC-018):** linha abaixo de Style, Lyrics e Exclude com caracteres contra o limite do campo, tags do Style e negações «no X». Vermelho só para truncamento.
 - **Custo de cada módulo no chip (0.6.0, DEC-019):** com o painel de módulos aberto, cada chip mostra `−N`, `+N` ou `0` tags; a linha de qualidade diz quanto o style base usa sozinho quando o recomposto passa de 10.
 - **Controle de BPM no cartão (0.7.0, DEC-020):** campo 20-300 com `−5`/`+5` e «voltar a N» governa todo «NN bpm» do Style principal; o chip de andamento é atalho (no máximo um ligado); variantes e «Baixar .json» não mudam; o valor é só da sessão.
+- **Rampa de BPM** (0.19.0, DEC-036): dois BPM no mesmo trecho do Style, ligados por «to» e afins, saem como foram escritos; o controle vira o rótulo «rampa 95 → 115 bpm», os chips de andamento ficam desligados e a linha de qualidade avisa em âmbar. O `validate.py` dá AVISO; dois números soltos continuam ERRO.
 - **Esquema JSON canônico** (`schema/`). Biblioteca de referência para autoria em `schema/style-modules.json` (27 módulos, sete camadas); cada acervo traz os seus (DEC-016).
 - **Datasets:** `data/exemplo-cinzeiro.json` (1 faixa, com os 5 módulos que cita) e `data/demo.json` (2 álbuns, 3 faixas). Os acervos do dono moram fora do repo (DEC-026): `../album-referencias (1).json` (7 faixas, 50 módulos) `../acervos/rainha-da-preguica.json` (10 álbuns, 151 faixas) e `../acervos/albuns-reagrupados.json` (12 álbuns, 205 faixas), os dois gerados pelos conversores.
 - **Conversor da família BR** (`scripts/convert_br.py`, 0.9.1, DEC-026): guias `..._VOL<n>_GUIA.md` → coleção no esquema, um álbum por volume, rótulos fora do copiável, variantes e referência levadas; relata o que passa do limite do Suno sem cortar. Teste: `python3 scripts/test_convert_br.py`.
@@ -47,22 +49,20 @@
 
 ## Quebrado / pendências que travam
 
-- **CI do `a67ee01` sem veredito** — falha de rede do runner no passo «Dependencias», três vezes (duas no run `43036351737`, uma no run `43044109509` do commit do wrap, `45312d5`) — não é pontual. Re-rodar (`gh run rerun 43036351737 --failed`) ou empurrar de novo; se repetir, WO para o passo de instalação do `testes.yml` (cache ou nova tentativa).
-- **WO 0035 recusada pelo Code em 2026-11-11 (Edição 0 vermelha):** o HEAD era `0d639f7`, não `45312d5`; a âncora E03 e os sha1 de `meta/STATUS.md` e `logs/2026-11-11.md` já não batiam. Nada aplicado. Falta o chat reemitir a WO sobre `0d639f7`; `meta/specs/261111-rampa-de-bpm.md` e a própria WO seguem sem versionar.
+- **CI sem veredito desde a 0.18.0** — o passo «Dependencias» caiu três vezes no `apt` do runner. A WO 0036 muda o passo; conferir o resultado no push dela.
 
 ## Pendências do dono
 
-- **Conferir organizar os álbuns na tela** — roteiro na conversa de 2026-11-09 (WO 0034), depois do push, no computador e no celular.
+- **Conferir a rampa de BPM na tela** — roteiro na conversa de 2026-11-11 (WO 0036), depois do push, com uma das três faixas BR com rampa.
 - **Apagar à mão o `..\sonda-i4-teste.json`** — arquivo de teste da sonda, na pasta-pai (o chat não apaga arquivo seu).
 - **Instalar o validador de esquema nesta máquina.** Sem `jsonschema` e `referencing`, o `validate.py` só confere sintaxe e diz `ESQUEMA NAO CONFERIDO` na última linha. Uma vez, no CMD: `pip install jsonschema referencing --break-system-packages`. Depois, `python3 scripts/validate.py` deve terminar em `Tudo conforme ao esquema.` Desde a DEC-034 o CI confere o esquema a cada push: instalar aqui passa a ser opcional.
 
 ## Backlog curto (próximas ações concretas)
 
-1. **Rampa de BPM** (i-042) — três faixas BR reprovam no `validate.py` por mudarem de andamento de propósito.
-2. **Importar prompts prontos dos álbuns como módulos** — o último ⬜ da 3b no ROADMAP; o índice-mestre da BR e os «estilos originais» do VOL5 trazem fórmulas de estilo.
-3. **Kit de música v2, leva 2** (i-039) — as skills `escrever-letra-suno` e `conceber-album`, com prova de campo num projeto de música do dono; depois, a carta 02 ao KCM.
-4. **Pesquisar outras plataformas de música por IA** (i-032) — um turno de pesquisa antes de qualquer mudança de esquema.
-5. **Avisar palavra de andamento que contradiz o BPM** (i-029) — pede uma tabela palavra → faixa de BPM, com fonte e data.
+1. **Importar prompts prontos dos álbuns como módulos** — o último ⬜ da 3b no ROADMAP; o índice-mestre da BR e os «estilos originais» do VOL5 trazem fórmulas de estilo.
+2. **Kit de música v2, leva 2** (i-039) — as skills `escrever-letra-suno` e `conceber-album`, com prova de campo num projeto de música do dono; depois, a carta 02 ao KCM.
+3. **Pesquisar outras plataformas de música por IA** (i-032) — um turno de pesquisa antes de qualquer mudança de esquema.
+4. **Avisar palavra de andamento que contradiz o BPM** (i-029) — pede uma tabela palavra → faixa de BPM, com fonte e data.
 
 ## Notas de estado
 

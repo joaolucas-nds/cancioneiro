@@ -168,8 +168,9 @@ Achado em 2026-10-29 nos `.md` que o dono exportou: o export de **faixa** sai co
 **Decidida (2026-11-02, DEC-028):** IndexedDB, um acervo por nome de arquivo, marcas «usei» por acervo (hoje colidem: `brv-04`, `cinzeiro-01`). É a entrega 2 da curadoria; a sonda `../261102-sonda-armazenamento.html` mede o navegador do dono antes da spec.
 **Entregue (0.12.0, 2026-11-05):** spec `meta/specs/261104-varios-acervos.md`, WO 0023. A sonda (Chrome 156, `file://`) mostrou o IndexedDB funcionando e a origem `file://` compartilhada com outras páginas locais. Janela «acervos (N)», reabre no último aberto, marcas por acervo com migração, ramo sem IndexedDB.
 
-### i-042 💡 Rampa de BPM no style («95 BPM to 118 BPM»)
+### i-042 ✅ Rampa de BPM no style («95 BPM to 118 BPM»)
 Achado na conversão BR: três faixas mudam de andamento de propósito. A DEC-020 reprova dois BPM no `validate.py`, e o controle de BPM do cartão igualaria os dois números. Decidir: o controle não aparecer (ou avisar) quando o style tem uma rampa, e o `validate.py` aceitar o par ligado por «to»/«building to», sem perder o erro de autoria que a DEC-020 pega.
+**Entregue (0.19.0, DEC-036):** a rampa (dois BPM no mesmo trecho, ligados por «to» e afins) é reconhecida e sai como foi escrita; o controle vira rótulo e avisa em âmbar; o `validate.py` dá AVISO. Achado na spec: o app reescrevia a rampa em silêncio desde a 0.7.0.
 
 ### i-043 ✅ Gravar direto no arquivo do acervo (File System Access)
 Achado na análise da curadoria (2026-11-02, opção F4): no Chrome e no Edge o app pode abrir o `.json` com permissão de gravar e «Salvar» no mesmo arquivo, sem passar por Downloads. Não existe no Firefox nem no Safari, e a permissão é pedida de novo a cada sessão. **Gatilho:** depois da entrega 3 da curadoria (DEC-028), se a sonda mostrar a API no navegador do dono — entra como «Salvar no arquivo» onde existir, com «Baixar» onde não.

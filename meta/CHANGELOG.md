@@ -4,6 +4,26 @@
 
 ---
 
+## [0.19.0] — 2026-11-11
+
+Rampa de BPM (i-042, DEC-036): o Style com rampa sai como foi escrito.
+
+### Fixed
+- **A rampa de BPM era reescrita em silêncio.** O controle de BPM (DEC-020) troca todo número de BPM pelo valor dele, e o valor inicial é o primeiro número: «95 BPM building to 115 BPM» copiava como «95 BPM building to 95 bpm», sem ninguém mexer no controle. Afetava as três faixas BR com rampa desde a 0.7.0. Agora a rampa é reconhecida e sai byte a byte.
+
+### Added
+- **Rampa reconhecida:** dois BPM no mesmo trecho do Style ligados por `to`, `building to`, `rising to`, `up to`, `climbing to` ou `→`. Dois números soltos continuam sendo o caso da DEC-020.
+- Numa faixa com rampa, o controle de BPM vira o rótulo «rampa 95 → 115 bpm», os chips de andamento ficam desligados, a coluna BPM da Lista mostra «95→115 bpm» e a linha de qualidade avisa em âmbar que o Suno não segue mudança de andamento numa geração. O export `.md` leva «BPM: rampa 95 → 115».
+- `validate.py`: a rampa declarada é AVISO, não erro; o campo `bpm`, se houver, é o número de partida.
+
+### Changed
+- `revisar-faixa` (conferência 7) e `macetes-suno` (§5) dizem que o Cancioneiro preserva a rampa, e continuam recomendando um BPM com a subida descrita.
+- CI: o passo «Dependencias» instala o navegador sem depender do `apt` do runner, que ficou sem DNS três vezes em 2026-11-11; as bibliotecas do sistema, já presentes no runner, com três tentativas de 3 minutos.
+
+Spec `meta/specs/261111-rampa-de-bpm.md`: 7 de 7 critérios, com 6 testes novos em `tests/test_bpm.py` (50 no total).
+
+---
+
 ## [0.18.0] — 2026-11-09
 
 Organizar os álbuns, não só as faixas (i-049, DEC-035).
