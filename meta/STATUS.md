@@ -11,6 +11,7 @@
 
 - **Ordem das próximas frentes, decidida pelo dono:** organizar os álbuns (i-049) → rampa de BPM (i-042) → importar os prompts prontos dos álbuns como módulos, que fecha a Fase 3b.
 - **Organizar os álbuns (0.18.0, DEC-035):** protótipo no canvas, spec `meta/specs/261109-organizar-os-albuns.md` com os cinco pontos decididos pelo dono como recomendados, 10 de 10 critérios e 12 testes novos (`tests/test_albuns.py`), testados pelo chat; falta a conferência na tela pelo dono.
+- **WO 0034 aplicada e empurrada (`a67ee01`, 2026-11-11):** 27 edições + `tests/test_albuns.py`, 9 sha1 de chegada conferidos, `validate.py` exit=0 (só sintaxe: `jsonschema` ausente nesta máquina). **CI vermelho, mas sem rodar teste algum:** o run `43036351737` caiu nas duas tentativas no passo «Dependencias» (`apt`: `Temporary failure resolving 'azure.archive.ubuntu.com'`); «Validar», «Conversores» e «Navegador» foram pulados `[medido por instrumento]`. Os 44 testes seguem sem veredito no CI.
 - **Este bloco substitui o anterior** (I4 conferida, i-051 e o kit v2, leva 1). O que ele dizia está no CHANGELOG [0.17.0], na DEC-034, na análise `meta/analises/261109-ANALISE-kit-de-musica-v2.md` e em `logs/2026-11-09.md` (Conversas 1 a 6).
 
 ## Funciona (pronto)
@@ -25,7 +26,7 @@
 - **Conversor dos guias de `Albuns/`** (`scripts/convert_guides.py`, 0.10.0): formatos mistos → coleção, com mapa de grupos que reprova faixa perdida. Teste: `python3 scripts/test_convert_guides.py`.
 - **Kit de música** (`kit-musica/`, 0.10.0, DEC-027): bloco para Instruções e CEREBRO de um projeto de música, skills `macetes-suno` e `revisar-faixa`. Uso à mão em `kit-musica/README.md`.
 - **Validação** (`scripts/validate.py`): sintaxe, esquema (com `jsonschema`), integridade referencial dos módulos (id ausente ou objeto no lugar do id, sem traceback — FIX-009), versão igual nos quatro lugares, um BPM só por faixa (DEC-020) e as marcações do prompt que o app lê (DEC-021) e os limites da skill `revisar-faixa` contra o app (DEC-027); código 1 se falhar; a última linha diz se o esquema foi de fato conferido.
-- **Testes do navegador no CI** (DEC-034): `tests/` (pytest e Playwright, 32 testes, dados só sintéticos) e `.github/workflows/testes.yml`, que roda o `validate.py` com esquema, os testes dos conversores e o `pytest tests` a cada push na `main`. O resultado é o ✓ ou ✗ no commit e a aba Actions.
+- **Testes do navegador no CI** (DEC-034): `tests/` (pytest e Playwright, 44 testes desde a 0.18.0, dados só sintéticos) e `.github/workflows/testes.yml`, que roda o `validate.py` com esquema, os testes dos conversores e o `pytest tests` a cada push na `main`. O resultado é o ✓ ou ✗ no commit e a aba Actions.
 - **Export MD** (faixa / álbum / acervo), com o rótulo fora do bloco e o Style da tela nos três (0.9.0, D5).
 - **Exportar faixa como `.json`** (0.11.0, DEC-028): botão no rodapé do cartão; a faixa sai como acervo — o álbum de origem (id e título), a faixa e os módulos que ela cita — e importa como qualquer acervo. Sai o dado do acervo, não os módulos ligados nem o BPM da tela; o toast conta os módulos e os citados que não existem. Conferido na tela pelo dono em 2026-11-04.
 - **Vários acervos no navegador** (0.12.0, DEC-028): cada importado fica no IndexedDB pelo nome do arquivo; o seletor de acervo, na barra, abre ou esquece cada um; reabre no último aberto; marcas «usei» por acervo. Sem IndexedDB, guarda só o último, como antes.
@@ -46,7 +47,7 @@
 
 ## Quebrado / pendências que travam
 
-- (nada quebrado)
+- **CI do `a67ee01` sem veredito** — falha de rede do runner no passo «Dependencias», duas vezes. Re-rodar (`gh run rerun 43036351737 --failed`) ou empurrar de novo; se repetir, WO para o passo de instalação do `testes.yml` (cache ou nova tentativa).
 
 ## Pendências do dono
 
