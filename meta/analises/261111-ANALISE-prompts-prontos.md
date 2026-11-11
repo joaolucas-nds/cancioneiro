@@ -1,6 +1,6 @@
 # ANALISE — Prompts prontos dos álbuns: módulos ou fórmulas?
 
-> **Status:** Em discussao
+> **Status:** Decidida — opção D, pelo dono em 2026-11-11; spec `meta/specs/261111-formulas.md`.
 > **Data:** 2026-11-11 (data de criacao; nao muda depois)
 > **Origem:** o último ⬜ da Fase 3b no ROADMAP, «Importar prompts prontos dos álbuns como módulos»; GLOSSARY, «prompt pronto». Ordem decidida pelo dono em 2026-11-09.
 
