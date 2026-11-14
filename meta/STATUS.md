@@ -13,6 +13,7 @@
 - **Prompts prontos — análise** `meta/analises/261111-ANALISE-prompts-prontos.md`: os dois acervos reais têm 0 módulos e styles de 10 a 17 tags; uma fórmula tem de 5 a 14 tags, contra 1 a 3 de um módulo. O dono escolheu a opção D, fórmula de referência copiável inteira `[relatado pelo dono, 2026-11-11 17:12]` (DEC-037).
 - **Spec da 0.20.0** `meta/specs/261111-formulas.md`, com protótipo na fileira «0.20» do canvas; os quatro pontos como recomendados `[relatado pelo dono, 2026-11-14 09:21]`. **A implementação não começou:** nenhum código e nenhum `../acervos/formulas.json` escrito.
 - **Conversa do chat encerrada** em 2026-11-14 a pedido do dono (pesada); a próxima arranca pelo `../261114-HANDOFF-BRIEF.md`.
+- **WO 0037 aplicada pelo Code** em 2026-11-14 (`255ba51`, CI verde, run `43595539716`, `[medido pelo Code]`): só registro, sem código; o app segue na 0.19.0.
 - **Este bloco substitui o anterior, da WO 0036** (rampa de BPM). O que ele dizia está no CHANGELOG [0.19.0], na spec `meta/specs/261111-rampa-de-bpm.md` e em `logs/2026-11-11.md`.
 
 ## Funciona (pronto)
