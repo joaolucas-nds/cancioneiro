@@ -516,6 +516,40 @@
     display: flex; flex-direction: column; gap: 8px; }
   .import-list li { display: flex; flex-direction: column; gap: 2px; padding: 6px 10px; background: var(--paper-2); border-radius: 6px; }
   .import-list label { font-size: 13px; margin: 0; }
+  .import-dialog h3, .formulas-dialog h3 { font-size: 13px; font-weight: 600; margin: 10px 0 0; }
+
+  /* ---- 0.20: formulas de referencia (DEC-037) ----
+     Uma janela so, aberta pela lateral e pelo «⋯». No celular, em tela cheia. */
+  .side-formulas { margin-bottom: 18px; }
+  dialog.prompt-dialog.formulas-dialog { width: min(720px, calc(100vw - 32px)); max-height: calc(100vh - 48px); box-sizing: border-box;
+    padding: 0; overflow: hidden; }
+  dialog.prompt-dialog.formulas-dialog[open] { display: flex; flex-direction: column; }
+  .formulas-head { flex: none; display: flex; align-items: center; gap: 8px; padding: 14px 12px 6px 20px; }
+  .formulas-head h2 { flex: 1; margin: 0; }
+  .formulas-dialog .formulas-intro { margin: 0; padding: 0 20px 8px; }
+  .formulas-dialog [data-role="formulas-status"] { display: flex; align-items: center; gap: 10px; margin: 0; padding: 0 20px;
+    min-height: 1.4em; }
+  .formulas-body { flex: 1; overflow: auto; overscroll-behavior: contain; padding: 4px 20px 20px; }
+  .fgroup + .fgroup { margin-top: 14px; }
+  .fgroup h3 { margin: 0 0 6px; color: var(--ink-soft); font-weight: 600; }
+  .formula { border: 1px solid var(--line); border-radius: 8px; padding: 10px; background: var(--paper-2); }
+  .formula + .formula { margin-top: 8px; }
+  .formula-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
+  .formula-label { flex: 1; min-width: 0; font-weight: 600; }
+  .formula .quality { margin: 0 0 6px; }
+  .formula .block { max-height: none; }
+  .formula-notes { margin-top: 6px; font-size: 13px; }
+  .formula-notes summary { cursor: pointer; color: var(--ink-soft); }
+  .formula-notes p { margin: 4px 0 0; white-space: pre-wrap; }
+  .formula-del { color: var(--ink-soft); }
+  .formulas-empty { color: var(--ink-soft); font-size: 13px; }
+  @media (max-width: 719px) {
+    dialog.prompt-dialog.formulas-dialog { width: 100vw; max-width: 100vw; height: 100dvh; max-height: 100dvh; margin: 0;
+      border: 0; border-radius: 0; }
+    .formulas-dialog button, .formula-notes summary { min-height: 44px; }
+    .formulas-head .dbtn { width: 44px; }
+    .formula-notes summary { display: flex; align-items: center; gap: 4px; }
+  }
   .prompt-dialog select, .prompt-dialog input[type="text"] { font: inherit; padding: 4px 6px; margin: 0 0 8px; width: 100%; box-sizing: border-box; }
 
   .toast {
@@ -608,7 +642,7 @@
     <h1>Cancioneiro</h1>
     <!-- Versao: a mesma do topo do meta/CHANGELOG.md. O scripts/validate.py confere
          que app, CHANGELOG, README e STATUS dizem a mesma (i-027). -->
-    <span class="version" data-role="app-version">v0.19.0</span>
+    <span class="version" data-role="app-version">v0.20.0</span>
   </div>
   <div class="pop-wrap" id="acervo-wrap">
     <button type="button" id="acervo-btn" class="acervo-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="acervo-pop" title="Os acervos guardados neste navegador">
@@ -683,6 +717,7 @@
     <button type="button" class="icon-btn" id="more-btn" aria-label="Mais ações" aria-haspopup="menu" aria-expanded="false" aria-controls="more-pop">⋯</button>
     <div class="pop pop-right" id="more-pop" role="menu" aria-label="Mais ações" hidden>
       <div class="pop-head mobile-only" id="more-brand">Cancioneiro</div>
+      <button type="button" role="menuitem" id="menu-formulas" aria-haspopup="dialog" hidden>Fórmulas</button>
       <button type="button" role="menuitem" id="menu-import">Importar .json…</button>
       <button type="button" role="menuitem" id="download-btn">Baixar .json</button>
       <button type="button" role="menuitem" id="export-md-btn">Exportar .md</button>
@@ -710,6 +745,10 @@
 
 <div class="shell" id="shell">
 <nav class="side" id="side" aria-label="Álbuns e acervos" hidden>
+  <!-- 0.20 (DEC-037): so aparece quando o acervo tem formulas. -->
+  <ul class="side-list side-formulas" id="side-formulas" hidden>
+    <li><button type="button" class="side-item" id="side-formulas-btn" aria-haspopup="dialog"><span class="t">Fórmulas</span><span class="n" id="side-formulas-n"></span></button></li>
+  </ul>
   <div class="side-head">Álbuns</div>
   <ul class="side-list" id="side-albums"></ul>
   <div class="side-head">Acervos neste navegador</div>
@@ -861,20 +900,39 @@
   </div>
 </dialog>
 
-<dialog class="prompt-dialog" id="import-dialog" aria-labelledby="import-dialog-title">
+<dialog class="prompt-dialog import-dialog" id="import-dialog" aria-labelledby="import-dialog-title">
   <h2 id="import-dialog-title">Importar faixas</h2>
   <p>De <span id="import-source"></span>. Desmarque o que não quer trazer. Faixa idêntica a uma que já está
   aqui é pulada; com o mesmo id e conteúdo diferente, entra com sufixo (-2).</p>
   <ul class="import-list" id="import-list"></ul>
+  <!-- 0.20 (DEC-037): so quando a origem traz styleReferences. -->
+  <div id="import-formulas" hidden>
+    <h3>Fórmulas</h3>
+    <ul class="import-list" id="import-formula-list"></ul>
+  </div>
+  <div id="import-dest">
   <label for="import-target">Destino</label>
   <select id="import-target"></select>
   <input type="text" id="import-new-title" placeholder="título do álbum novo" hidden>
+  </div>
   <div class="dialog-actions">
     <button type="button" id="import-cancel-btn">cancelar</button>
     <button type="button" id="import-ok-btn" class="spacer">importar</button>
   </div>
 </dialog>
 <input type="file" id="tracks-input" accept=".json,application/json" hidden>
+
+<!-- 0.20 (DEC-037): as formulas de referencia do acervo. O Style de cada uma e
+     o copiavel; label, notes e source sao referencia e ficam fora do bloco. -->
+<dialog class="prompt-dialog formulas-dialog" id="formulas-dialog" aria-labelledby="formulas-dialog-title">
+  <div class="formulas-head">
+    <h2 id="formulas-dialog-title">Fórmulas</h2>
+    <button type="button" class="dbtn" id="formulas-close-btn" aria-label="Fechar">×</button>
+  </div>
+  <p class="formulas-intro">Styles completos, já validados, para começar uma faixa nova. «Copiar Style» entrega só o texto do bloco.</p>
+  <p class="note" data-role="formulas-status" id="formulas-status" role="status"></p>
+  <div class="formulas-body" id="formulas-body"></div>
+</dialog>
 
 <div class="drop-hint" aria-hidden="true">Solte o .json para importar</div>
 
@@ -1520,9 +1578,11 @@ async function copyText(text, btn) {
   } catch (e) {
     // Fallback para file:// / navegadores sem Clipboard API
     const ta = document.createElement("textarea");
-    ta.value = text; document.body.appendChild(ta); ta.select();
+    // 0.20: com uma janela aberta, o resto da pagina e inerte; o campo vai para dentro dela
+    const host = document.querySelector("dialog[open]") || document.body;
+    ta.value = text; host.appendChild(ta); ta.select();
     try { document.execCommand("copy"); } catch (_) {}
-    document.body.removeChild(ta);
+    host.removeChild(ta);
   }
   if (btn) {
     btn.classList.add("copied");
@@ -2753,6 +2813,13 @@ function readTracksFile(file, dest) {
 function openImportDialog(src, name, dest) {
   const dlg = document.getElementById("import-dialog");
   document.getElementById("import-source").textContent = name;
+  const hasSongs = src.albums.some(a => (a.songs || []).length);
+  const refs = importableRefs(src);
+  fillImportFormulas(refs.list);
+  // 0.20: so formulas, sem faixas: o destino (album) nao vale para nada
+  document.getElementById("import-dest").hidden = !hasSongs && refs.list.length > 0;
+  document.getElementById("import-dialog-title").textContent = !refs.list.length ? "Importar faixas"
+    : hasSongs ? "Importar faixas e fórmulas" : "Importar fórmulas";
   const list = document.getElementById("import-list");
   list.textContent = "";
   src.albums.forEach((a, ai) => {
@@ -2784,8 +2851,10 @@ function openImportDialog(src, name, dest) {
     if (sel.value === "__new" && !inp.value.trim()) { inp.focus(); return; }
     const keys = new Set([...list.querySelectorAll('input[type="checkbox"]')]
       .filter(c => c.checked).map(c => c.dataset.key));
+    const refKeys = new Set([...document.querySelectorAll('#import-formula-list input[type="checkbox"]')]
+      .filter(c => c.checked).map(c => Number(c.dataset.ref)));
     dlg.close();
-    await importTracks(src, keys, sel.value, inp.value.trim());
+    await importTracks(src, keys, sel.value, inp.value.trim(), { refs: refs.list, keys: refKeys, invalid: refs.invalid });
   };
   dlg.showModal();
 }
@@ -2795,7 +2864,7 @@ function openImportDialog(src, name, dest) {
     falta entra; o identico nao duplica; o diferente entra com sufixo e a faixa
     importada passa a citar o id novo; o que nao existe em lugar nenhum fica
     citado e e contado (FIX-006: nada de saneamento mudo). */
-async function importTracks(src, keys, dest, newTitle) {
+async function importTracks(src, keys, dest, newTitle, refPick) {
   const coll = App.collection;
   const prevUndo = App.undo;
   beginEdit();   // I3: a volta do «Desfazer» (sem nada importado, fica a anterior)
@@ -2851,16 +2920,197 @@ async function importTracks(src, keys, dest, newTitle) {
     n.imported++;
   }));
 
+  // 0.20 (DEC-037): as formulas marcadas, pela mesma regra das faixas
+  const f = importFormulas(refPick);
+
   const parts = [];
   if (n.same) parts.push(n.same + (n.same === 1 ? " já estava" : " já estavam"));
   if (n.renamed) parts.push(nPlural(n.renamed, "renomeada", "renomeadas") + " (id repetido)");
   if (n.modsAdded) parts.push(nPlural(n.modsAdded, "módulo trazido", "módulos trazidos"));
   if (n.modsRenamed) parts.push(nPlural(n.modsRenamed, "módulo renomeado", "módulos renomeados"));
   if (n.missing) parts.push(nPlural(n.missing, "citado que não existe", "citados que não existem"));
+  if (f.same) parts.push(nPlural(f.same, "fórmula já estava", "fórmulas já estavam"));
+  if (f.renamed) parts.push(nPlural(f.renamed, "fórmula renomeada", "fórmulas renomeadas") + " (id repetido)");
+  if (f.invalid) parts.push(nPlural(f.invalid, "fórmula sem id ou style ignorada", "fórmulas sem id ou style ignoradas"));
   const tail = parts.length ? " · " + parts.join(" · ") : "";
-  if (!n.imported) { App.undo = prevUndo; toast("Nada importado" + tail); return; }
-  await afterEdit(nPlural(n.imported, "faixa importada", "faixas importadas") + tail);
+  if (!n.imported && !f.imported) { App.undo = prevUndo; toast("Nada importado" + tail); return; }
+  // O aviso soma faixas e formulas; so faixas, o texto de antes
+  const head = !f.imported ? nPlural(n.imported, "faixa importada", "faixas importadas")
+    : (n.imported ? nPlural(n.imported, "faixa", "faixas") + " e " : "")
+      + nPlural(f.imported, "fórmula", "fórmulas") + (n.imported + f.imported === 1 ? " importada" : " importadas");
+  await afterEdit(head + tail);
 }
+
+/* ===================================================================
+   Formulas de referencia (0.20.0, DEC-037 — spec meta/specs/261111-formulas.md)
+   Styles completos dos guias antigos, para copiar inteiros. Moram em
+   collection.styleReferences; nenhuma faixa as cita. Ler, copiar, importar e
+   excluir; editar e no arquivo. O copiavel e so o `style` (regra de dominio:
+   label, notes e source sao referencia e ficam fora do bloco).
+   =================================================================== */
+
+/** As formulas do acervo aberto (lista vazia sem acervo ou sem o campo). */
+function formulaList() {
+  const r = App.collection && App.collection.styleReferences;
+  return Array.isArray(r) ? r : [];
+}
+
+/** As formulas importaveis de uma origem: objeto com id e style em texto. As
+    outras sao contadas, nunca caladas (FIX-006). */
+function importableRefs(src) {
+  const all = Array.isArray(src.styleReferences) ? src.styleReferences : [];
+  const list = all.filter(r => r && typeof r === "object" && typeof r.id === "string" && r.id
+    && typeof r.style === "string");
+  return { list, invalid: all.length - list.length };
+}
+
+/** A secao «Formulas» da janela de importar: uma caixa por formula, marcadas. */
+function fillImportFormulas(list) {
+  const box = document.getElementById("import-formulas"), ul = document.getElementById("import-formula-list");
+  ul.textContent = "";
+  box.hidden = !list.length;
+  list.forEach((r, i) => {
+    const li = document.createElement("li");
+    const lab = document.createElement("label");
+    const cb = document.createElement("input");
+    cb.type = "checkbox"; cb.checked = true; cb.dataset.ref = String(i);
+    lab.appendChild(cb);
+    lab.appendChild(document.createTextNode(" " + (r.label || r.id) + " "));
+    const m = document.createElement("span"); m.className = "acervo-meta"; m.textContent = r.source ? r.id + " · " + r.source : r.id;
+    lab.appendChild(m);
+    li.appendChild(lab); ul.appendChild(li);
+  });
+}
+
+/** Traz as formulas marcadas para o fim da lista. Id igual e conteudo
+    identico (objeto inteiro serializado) pula; id igual e conteudo diferente
+    entra com sufixo (-2). Chamado de dentro do importTracks, depois do
+    beginEdit: a mesma volta do «Desfazer» cobre faixas e formulas. */
+function importFormulas(pick) {
+  const n = { imported: 0, same: 0, renamed: 0, invalid: pick ? pick.invalid : 0 };
+  if (!pick || !pick.refs.length) return n;
+  const coll = App.collection;
+  const mine = Array.isArray(coll.styleReferences) ? coll.styleReferences : [];
+  const ids = new Set(mine.map(r => r && r.id));
+  pick.refs.forEach((orig, i) => {
+    if (!pick.keys.has(i)) return;
+    const r = JSON.parse(JSON.stringify(orig));
+    const ex = mine.find(x => x && x.id === r.id);
+    if (ex && JSON.stringify(ex) === JSON.stringify(r)) { n.same++; return; }
+    if (ids.has(r.id)) { r.id = nextFreeId(r.id, ids); n.renamed++; }
+    mine.push(r); ids.add(r.id); n.imported++;
+  });
+  if (n.imported && !Array.isArray(coll.styleReferences)) coll.styleReferences = mine;
+  return n;
+}
+
+/** A linha de status da janela (o toast ficaria atras dela). Com `undo`, o
+    botao «Desfazer». */
+function formulaStatus(msg, undo) {
+  const st = document.getElementById("formulas-status");
+  st.textContent = msg || "";
+  if (undo && App.undo) {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "toast-btn formula-undo"; b.textContent = "Desfazer";
+    b.addEventListener("click", () => undoLast());
+    st.appendChild(b);
+  }
+}
+
+/** Desenha a janela: agrupada por `source`, na ordem do arquivo (o grupo
+    aparece onde aparece a primeira formula dele). */
+function renderFormulasDialog() {
+  const body = document.getElementById("formulas-body");
+  body.textContent = "";
+  const list = formulaList();
+  document.getElementById("formulas-dialog-title").textContent = "Fórmulas (" + list.length + ")";
+  if (!list.length) {
+    const p = document.createElement("p"); p.className = "formulas-empty";
+    p.textContent = "Nenhuma fórmula neste acervo.";
+    body.appendChild(p);
+    return;
+  }
+  const groups = new Map();
+  list.forEach(r => {
+    const key = (r && r.source) || "Sem origem";
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(r);
+  });
+  groups.forEach((items, key) => {
+    const sec = document.createElement("section"); sec.className = "fgroup";
+    const h = document.createElement("h3"); h.textContent = key; sec.appendChild(h);
+    items.forEach(r => sec.appendChild(renderFormula(r)));
+    body.appendChild(sec);
+  });
+}
+
+/** Uma formula: o nome, a linha de qualidade do cartao, o Style num bloco e as
+    notas recolhidas em «Por que funciona». */
+function renderFormula(r) {
+  const art = document.createElement("article");
+  art.className = "formula"; art.dataset.id = r.id;
+  const head = document.createElement("div"); head.className = "formula-head";
+  const lab = document.createElement("span"); lab.className = "formula-label"; lab.textContent = r.label || r.id;
+  head.appendChild(lab);
+  const copy = document.createElement("button");
+  copy.type = "button"; copy.className = "btn-primary formula-copy"; copy.textContent = "Copiar Style";
+  // Le o bloco na hora do clique, como no cartao (FIX-007): o que se ve e o que se cola
+  copy.addEventListener("click", () => copyText(pre.textContent, copy));
+  head.appendChild(copy);
+  if (App.saved) {   // excluir mexe no rascunho: so com copia guardada, como as faixas
+    const del = document.createElement("button");
+    del.type = "button"; del.className = "formula-del"; del.textContent = "Excluir";
+    del.setAttribute("aria-label", "Excluir a fórmula " + (r.label || r.id));
+    del.addEventListener("click", () => deleteFormula(r.id));
+    head.appendChild(del);
+  }
+  art.appendChild(head);
+  art.appendChild(styleQuality(r.style || "", ""));
+  const pre = document.createElement("pre");
+  pre.className = "block formula-style"; pre.textContent = r.style || "";
+  art.appendChild(pre);
+  if (r.notes) {
+    const det = document.createElement("details"); det.className = "formula-notes";
+    const sum = document.createElement("summary"); sum.textContent = "Por que funciona";
+    const p = document.createElement("p"); p.textContent = r.notes;
+    det.appendChild(sum); det.appendChild(p);
+    art.appendChild(det);
+  }
+  return art;
+}
+
+function openFormulasDialog() {
+  closePopovers(false);
+  formulaStatus("");
+  renderFormulasDialog();
+  const dlg = document.getElementById("formulas-dialog");
+  if (!dlg.open) dlg.showModal();
+  document.getElementById("formulas-body").scrollTop = 0;
+}
+
+/** Excluir: conta como mudanca a salvar, com o «Desfazer» da I3 (a formula
+    volta na mesma posicao, porque a volta e o acervo inteiro). Sem formula
+    nenhuma, o campo sai do acervo. */
+async function deleteFormula(id) {
+  const list = formulaList(), i = list.findIndex(r => r && r.id === id);
+  if (i < 0) return;
+  const r = list[i];
+  if (!(await confirmAsk("Excluir a fórmula «" + (r.label || r.id) + "» deste acervo? Ela continua no arquivo até você salvar.", "excluir"))) return;
+  beginEdit();
+  list.splice(i, 1);
+  if (!list.length) delete App.collection.styleReferences;
+  const msg = "Fórmula «" + (r.label || r.id) + "» excluída do rascunho";
+  rerender();
+  const ok = await persistDraft(true);
+  if (App.undo && !App.undo.label) App.undo.label = msg;
+  renderFormulasDialog();
+  formulaStatus(msg + (ok ? "" : " · não consegui guardar no navegador: baixe o .json para não perder"), true);
+}
+
+document.getElementById("side-formulas-btn").addEventListener("click", openFormulasDialog);
+document.getElementById("menu-formulas").addEventListener("click", openFormulasDialog);
+document.getElementById("formulas-close-btn").addEventListener("click", () =>
+  document.getElementById("formulas-dialog").close());
 
 document.getElementById("tracks-input").addEventListener("change", e => {
   if (e.target.files[0]) readTracksFile(e.target.files[0]);
@@ -3010,6 +3260,11 @@ function updateBar() {
        : "Este navegador não grava direto no arquivo: «Salvar .json» baixa uma cópia.");
   // I3 (DEC-030): sem o interruptor «editar»; «Importar faixas…» mora no «⋯» da barra.
   document.getElementById("menu-import-tracks").hidden = !App.saved;
+  // 0.20 (DEC-037): «Formulas (N)», em qualquer largura, so com formulas.
+  const nRefs = has ? formulaList().length : 0;
+  const mf = document.getElementById("menu-formulas");
+  mf.hidden = !nRefs;
+  mf.textContent = "Fórmulas (" + nRefs + ")";
 }
 
 /** As etiquetas dos filtros aplicados, a contagem «N de M» e o numero no botao. */
@@ -3354,6 +3609,11 @@ function renderSide(f) {
   const side = document.getElementById("side");
   side.hidden = !App.collection;
   if (!App.collection) return;
+  // 0.20 (DEC-037): «Formulas · N», acima de «Todas as faixas», so com formulas.
+  const nRefs = formulaList().length;
+  document.getElementById("side-formulas").hidden = !nRefs;
+  document.getElementById("side-formulas-n").textContent = nRefs ? String(nRefs) : "";
+  document.getElementById("side-formulas-btn").setAttribute("aria-label", "Fórmulas · " + nRefs + " (abre a janela)");
   const ul = document.getElementById("side-albums");
   ul.textContent = "";
   const item = (title, n, id) => {
@@ -3525,7 +3785,10 @@ async function undoLast() {
   App.changes = u.changes; App.editedAt = u.editedAt;
   rerender();
   const ok = await persistDraft(false);
-  toast("Desfeito: " + u.label + (ok ? "" : " · não consegui guardar no navegador: baixe o .json para não perder"));
+  const msg = "Desfeito: " + u.label + (ok ? "" : " · não consegui guardar no navegador: baixe o .json para não perder");
+  // 0.20: com a janela das formulas aberta, o toast ficaria atras dela
+  if (document.getElementById("formulas-dialog").open) { renderFormulasDialog(); formulaStatus(msg); }
+  else toast(msg);
 }
 /** Aviso com um botao (o «Desfazer»). Fica mais que o aviso comum: 8 s. */
 function toastAction(msg, label, fn) {

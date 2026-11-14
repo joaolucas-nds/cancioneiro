@@ -3,18 +3,16 @@
 > **O agora.** O que funciona, o que está em progresso, o que está quebrado, backlog curto.
 > Rolante: item resolvido sai daqui e vai para o CHANGELOG. Médio/longo prazo vive no ROADMAP.
 
-**Versão atual:** 0.19.0 · **Fase:** 3a, 3a.2, o BPM da 3b, o prompt-modelo e as conveniências de uso concluídos e conferidos · os álbuns antigos convertidos (i-008, fora do repo) · curadoria no app concluída nas três entregas (DEC-028, DEC-029) · frente de interface concluída e conferida nas quatro entregas (DEC-030 a DEC-033) · organizar os álbuns (0.18.0, DEC-035) conferido · rampa de BPM (0.19.0, DEC-036) conferida · fórmulas de referência (0.20.0, DEC-037) com spec pronta, a implementar · kit de música lido pelo KCM, à espera da resposta (i-039)
+**Versão atual:** 0.20.0 · **Fase:** 3a, 3a.2, o BPM da 3b, o prompt-modelo e as conveniências de uso concluídos e conferidos · os álbuns antigos convertidos (i-008, fora do repo) · curadoria no app concluída nas três entregas (DEC-028, DEC-029) · frente de interface concluída e conferida nas quatro entregas (DEC-030 a DEC-033) · organizar os álbuns (0.18.0, DEC-035) conferido · rampa de BPM (0.19.0, DEC-036) conferida · fórmulas de referência (0.20.0, DEC-037) entregues, a conferir na tela · a Fase 3b concluída · kit de música lido pelo KCM, à espera da resposta (i-039)
 
 ---
 
-## Última conversa (2026-11-11 a 2026-11-14, rampa conferida, fórmulas decididas, WO 0037)
+## Última conversa (2026-11-14, fórmulas de referência, WO 0038)
 
-- **0.19.0 conferida na tela pelo dono** («rampa ok» `[relatado pelo dono, 2026-11-11 16:20]`): a rampa de BPM está fechada. CI verde no `790aa3a` (run `43082294050`, `[medido pelo Code, relatório 261111-1555]`).
-- **Prompts prontos — análise** `meta/analises/261111-ANALISE-prompts-prontos.md`: os dois acervos reais têm 0 módulos e styles de 10 a 17 tags; uma fórmula tem de 5 a 14 tags, contra 1 a 3 de um módulo. O dono escolheu a opção D, fórmula de referência copiável inteira `[relatado pelo dono, 2026-11-11 17:12]` (DEC-037).
-- **Spec da 0.20.0** `meta/specs/261111-formulas.md`, com protótipo na fileira «0.20» do canvas; os quatro pontos como recomendados `[relatado pelo dono, 2026-11-14 09:21]`. **A implementação não começou:** nenhum código e nenhum `../acervos/formulas.json` escrito.
-- **Conversa do chat encerrada** em 2026-11-14 a pedido do dono (pesada); a próxima arranca pelo `../261114-HANDOFF-BRIEF.md`.
-- **WO 0037 aplicada pelo Code** em 2026-11-14 (`255ba51`, CI verde, run `43595539716`, `[medido pelo Code]`): só registro, sem código; o app segue na 0.19.0.
-- **Este bloco substitui o anterior, da WO 0036** (rampa de BPM). O que ele dizia está no CHANGELOG [0.19.0], na spec `meta/specs/261111-rampa-de-bpm.md` e em `logs/2026-11-11.md`.
+- **0.20.0 implementada pelo chat num clone** pela spec `meta/specs/261111-formulas.md`: o campo `styleReferences`, a janela «Fórmulas», excluir com «Desfazer», a seção «Fórmulas» na importação e o `validate.py`. 61 testes, duas vezes, no clone `[medido pelo chat]`; os 11 novos reprovam no app da 0.19.0.
+- **`../acervos/formulas.json` escrito pelo chat** (18 fórmulas, `albums: []`), conferido contra os guias por `../acervos/conferir-formulas.py`: 18 de 18, com a Grand Anthem como única exceção. As linhas dos blocos que já terminam em vírgula não ganham outra.
+- **Falta conferir na tela** e importar as fórmulas nos dois acervos (pendência do dono abaixo).
+- **Este bloco substitui o anterior** (rampa conferida, fórmulas decididas, WO 0037). O que ele dizia está no CHANGELOG [0.19.0], na DEC-037 e em `logs/2026-11-14.md`.
 
 ## Funciona (pronto)
 
@@ -23,13 +21,14 @@
 - **Custo de cada módulo no chip (0.6.0, DEC-019):** com o painel de módulos aberto, cada chip mostra `−N`, `+N` ou `0` tags; a linha de qualidade diz quanto o style base usa sozinho quando o recomposto passa de 10.
 - **Controle de BPM no cartão (0.7.0, DEC-020):** campo 20-300 com `−5`/`+5` e «voltar a N» governa todo «NN bpm» do Style principal; o chip de andamento é atalho (no máximo um ligado); variantes e «Baixar .json» não mudam; o valor é só da sessão.
 - **Rampa de BPM** (0.19.0, DEC-036): dois BPM no mesmo trecho do Style, ligados por «to» e afins, saem como foram escritos; o controle vira o rótulo «rampa 95 → 115 bpm», os chips de andamento ficam desligados e a linha de qualidade avisa em âmbar. O `validate.py` dá AVISO; dois números soltos continuam ERRO.
+- **Fórmulas de referência** (0.20.0, DEC-037): `styleReferences` na coleção; a janela «Fórmulas», pela lateral e pelo «⋯», com a linha de qualidade, «Copiar Style» byte a byte, as notas recolhidas e «Excluir» com «Desfazer»; entram pela janela «Importar faixas» (`albums: []` aceito). Salvar leva; exportar faixa ou álbum, não.
 - **Esquema JSON canônico** (`schema/`). Biblioteca de referência para autoria em `schema/style-modules.json` (27 módulos, sete camadas); cada acervo traz os seus (DEC-016).
 - **Datasets:** `data/exemplo-cinzeiro.json` (1 faixa, com os 5 módulos que cita) e `data/demo.json` (2 álbuns, 3 faixas). Os acervos do dono moram fora do repo (DEC-026): `../album-referencias (1).json` (7 faixas, 50 módulos) `../acervos/rainha-da-preguica.json` (10 álbuns, 151 faixas) e `../acervos/albuns-reagrupados.json` (12 álbuns, 205 faixas), os dois gerados pelos conversores.
 - **Conversor da família BR** (`scripts/convert_br.py`, 0.9.1, DEC-026): guias `..._VOL<n>_GUIA.md` → coleção no esquema, um álbum por volume, rótulos fora do copiável, variantes e referência levadas; relata o que passa do limite do Suno sem cortar. Teste: `python3 scripts/test_convert_br.py`.
 - **Conversor dos guias de `Albuns/`** (`scripts/convert_guides.py`, 0.10.0): formatos mistos → coleção, com mapa de grupos que reprova faixa perdida. Teste: `python3 scripts/test_convert_guides.py`.
 - **Kit de música** (`kit-musica/`, 0.10.0, DEC-027): bloco para Instruções e CEREBRO de um projeto de música, skills `macetes-suno` e `revisar-faixa`. Uso à mão em `kit-musica/README.md`.
 - **Validação** (`scripts/validate.py`): sintaxe, esquema (com `jsonschema`), integridade referencial dos módulos (id ausente ou objeto no lugar do id, sem traceback — FIX-009), versão igual nos quatro lugares, um BPM só por faixa (DEC-020) e as marcações do prompt que o app lê (DEC-021) e os limites da skill `revisar-faixa` contra o app (DEC-027); código 1 se falhar; a última linha diz se o esquema foi de fato conferido.
-- **Testes do navegador no CI** (DEC-034): `tests/` (pytest e Playwright, 44 testes desde a 0.18.0, dados só sintéticos) e `.github/workflows/testes.yml`, que roda o `validate.py` com esquema, os testes dos conversores e o `pytest tests` a cada push na `main`. O resultado é o ✓ ou ✗ no commit e a aba Actions.
+- **Testes do navegador no CI** (DEC-034): `tests/` (pytest e Playwright, 61 testes desde a 0.20.0, dados só sintéticos) e `.github/workflows/testes.yml`, que roda o `validate.py` com esquema, os testes dos conversores e o `pytest tests` a cada push na `main`. O resultado é o ✓ ou ✗ no commit e a aba Actions.
 - **Export MD** (faixa / álbum / acervo), com o rótulo fora do bloco e o Style da tela nos três (0.9.0, D5).
 - **Exportar faixa como `.json`** (0.11.0, DEC-028): botão no rodapé do cartão; a faixa sai como acervo — o álbum de origem (id e título), a faixa e os módulos que ela cita — e importa como qualquer acervo. Sai o dado do acervo, não os módulos ligados nem o BPM da tela; o toast conta os módulos e os citados que não existem. Conferido na tela pelo dono em 2026-11-04.
 - **Vários acervos no navegador** (0.12.0, DEC-028): cada importado fica no IndexedDB pelo nome do arquivo; o seletor de acervo, na barra, abre ou esquece cada um; reabre no último aberto; marcas «usei» por acervo. Sem IndexedDB, guarda só o último, como antes.
@@ -54,15 +53,15 @@
 
 ## Pendências do dono
 
+- **Conferir a 0.20.0 na tela e importar as fórmulas** — roteiro na conversa de 2026-11-14 (WO 0038): no acervo BR, só as 10 da BR; no reagrupados, só as 8 dos `Albuns/`; salvar os dois.
 - **Apagar à mão o `..\sonda-i4-teste.json`** — arquivo de teste da sonda, na pasta-pai (o chat não apaga arquivo seu).
 - **Instalar o validador de esquema nesta máquina.** Sem `jsonschema` e `referencing`, o `validate.py` só confere sintaxe e diz `ESQUEMA NAO CONFERIDO` na última linha. Uma vez, no CMD: `pip install jsonschema referencing --break-system-packages`. Depois, `python3 scripts/validate.py` deve terminar em `Tudo conforme ao esquema.` Desde a DEC-034 o CI confere o esquema a cada push: instalar aqui passa a ser opcional.
 
 ## Backlog curto (próximas ações concretas)
 
-1. **Fórmulas de referência (0.20.0, DEC-037)** — spec `meta/specs/261111-formulas.md` pronta, com os pontos decididos: implementar num clone (chat), escrever `../acervos/formulas.json` com as 18 fórmulas conferidas contra os guias, WO para o Code. Fecha a 3b.
-2. **Kit de música v2, leva 2** (i-039) — as skills `escrever-letra-suno` e `conceber-album`, com prova de campo num projeto de música do dono; depois, a carta 02 ao KCM.
-3. **Pesquisar outras plataformas de música por IA** (i-032) — um turno de pesquisa antes de qualquer mudança de esquema.
-4. **Avisar palavra de andamento que contradiz o BPM** (i-029) — pede uma tabela palavra → faixa de BPM, com fonte e data.
+1. **Kit de música v2, leva 2** (i-039) — as skills `escrever-letra-suno` e `conceber-album`, com prova de campo num projeto de música do dono; depois, a carta 02 ao KCM.
+2. **Pesquisar outras plataformas de música por IA** (i-032) — um turno de pesquisa antes de qualquer mudança de esquema.
+3. **Avisar palavra de andamento que contradiz o BPM** (i-029) — pede uma tabela palavra → faixa de BPM, com fonte e data.
 
 ## Notas de estado
 

@@ -4,6 +4,24 @@
 
 ---
 
+## [0.20.0] — 2026-11-14
+
+Fórmulas de referência (DEC-037): os styles validados dos guias antigos, para copiar inteiros. Fecha a Fase 3b.
+
+### Added
+- **Campo `styleReferences` na coleção** (opcional): `id`, `label`, `style` (só o copiável), `notes` e `source`; nenhum outro campo. Nenhuma faixa cita fórmula.
+- **Janela «Fórmulas»**, aberta pela lateral («Fórmulas», acima de «Todas as faixas», a partir de 1280 px) e pelo «⋯» («Fórmulas (N)»), só quando o acervo tem fórmulas. Agrupa por `source`, na ordem do arquivo; cada fórmula mostra a linha de qualidade do cartão, o Style num bloco, «Copiar Style» (só o `style`, byte a byte) e as notas recolhidas em «Por que funciona». No celular, em tela cheia.
+- **Excluir fórmula**, com confirmação e «Desfazer» na própria janela; conta como alteração a salvar. Sem fórmula nenhuma, o campo sai do acervo. Editar continua sendo no arquivo.
+- **Importar fórmulas** pela janela «Importar faixas», que aceita `albums: []` com fórmulas: a seção «Fórmulas», com uma caixa por fórmula; idêntica pula, mesmo id e conteúdo diferente entra com `-2`. O aviso soma faixas e fórmulas; o destino vale só para as faixas.
+- `validate.py`: ids únicos, `label` e `style` não vazios e `style` sem colchete, com o caminho no erro (`styleReferences[3].style`).
+
+### Changed
+- O plano B do copiar (sem a API da área de transferência) põe o campo de texto dentro da janela aberta, onde o resto da página é inerte.
+
+Spec `meta/specs/261111-formulas.md`: 9 de 9 critérios, com 11 testes novos em `tests/test_formulas.py` (61 no total). Salvar e baixar o `.json` levam as fórmulas; exportar faixa ou álbum, não. As 18 fórmulas do dono ficam fora do repo, em `../acervos/formulas.json`.
+
+---
+
 ## [0.19.0] — 2026-11-11
 
 Rampa de BPM (i-042, DEC-036): o Style com rampa sai como foi escrito.

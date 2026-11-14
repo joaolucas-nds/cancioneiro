@@ -31,6 +31,30 @@
       "items": { "type": "object" },
       "default": []
     },
+    "styleReferences": {
+      "type": "array",
+      "description": "Formulas de referencia (DEC-037): styles completos ja validados, para copiar inteiros como ponto de partida. Nenhuma faixa cita formula. Opcional.",
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "style"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$",
+            "description": "Id unico da formula no acervo."
+          },
+          "label": { "type": "string", "minLength": 1, "description": "Nome curto (referencia humana, nunca vai para o Suno)." },
+          "style": {
+            "type": "string",
+            "minLength": 1,
+            "description": "O copiavel: so o que vai para o campo Style of Music, sem colchetes e sem rotulo."
+          },
+          "notes": { "type": ["string", "null"], "description": "Por que funciona, dica de uso. Nao vai para o Suno." },
+          "source": { "type": ["string", "null"], "description": "De onde veio (ex.: 'BR · indice-mestre'). Agrupa na janela." }
+        }
+      }
+    },
     "albums": {
       "type": "array",
       "description": "Os albuns da colecao.",

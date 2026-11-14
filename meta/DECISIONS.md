@@ -560,7 +560,7 @@
 ## DEC-037 — Prompts prontos viram fórmulas de referência copiáveis inteiras (`styleReferences`), não módulos
 
 **Data:** 2026-11-14
-**Status:** aceita — implementação pendente (0.20.0)
+**Status:** aceita — implementada na 0.20.0 (2026-11-14)
 **Contexto:** O último ⬜ da Fase 3b dizia «importar prompts prontos dos álbuns como módulos». A análise `meta/analises/261111-ANALISE-prompts-prontos.md` mediu em 2026-11-11: os dois acervos reais têm 0 módulos; os styles das faixas têm de 10 a 17 tags (mediana 12), acima do orçamento da DEC-021; um prompt pronto tem de 5 a 14 tags e atravessa camadas, contra 1 a 3 tags numa camada de um módulo; 100 das 151 faixas da BR não têm nenhuma fórmula do índice-mestre a ≥ 25%. O dono escolheu a opção D em 2026-11-11 `[relatado pelo dono]` e os quatro pontos da spec `meta/specs/261111-formulas.md` como recomendados em 2026-11-14 `[relatado pelo dono]`.
 **Decisão:**
 - **Campo opcional `styleReferences[]` na coleção:** `id`, `label`, `style` (só o copiável, sem colchetes nem rótulo), `notes` e `source` opcionais; nenhum outro campo. Faixas e módulos não mudam.

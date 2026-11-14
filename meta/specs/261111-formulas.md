@@ -1,6 +1,6 @@
 # SPEC — Fórmulas de referência (0.20.0)
 
-> **Status:** Pronta para implementar — os quatro pontos decididos pelo dono em 2026-11-14, como recomendados (DEC-037). Implementação e WO na próxima conversa.
+> **Status:** Implementada na 0.20.0 (2026-11-14, WO 0038) — os quatro pontos decididos pelo dono em 2026-11-14, como recomendados (DEC-037). Falta conferir na tela.
 > **Data:** 2026-11-11 (data de criação; não muda depois)
 > **Ideia de origem:** o último ⬜ da Fase 3b («importar prompts prontos dos álbuns como módulos»). Opção D da análise `meta/analises/261111-ANALISE-prompts-prontos.md`, escolhida pelo dono em 2026-11-11 `[relatado pelo dono]`.
 > **Protótipo:** fileira «0.20 · fórmulas» no canvas «Cancioneiro: nova interface» (`https://claude.ai/artifact/Sk1Xf5Rpr26WfGLbZJ2GAD`), computador e celular. Os textos de fórmula do protótipo são inventados.

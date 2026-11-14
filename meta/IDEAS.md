@@ -18,6 +18,7 @@ Cada canção tem botões separados: copiar Style, copiar Lyrics. Ao copiar, o c
 
 ### i-004 ✅ Módulos de estilo trocáveis por menu (núcleo no v0)
 Fragmentos de estilo nomeados (`melancholic`, `taiko-drums`, `female-soprano`, faixas de BPM) que se ligam/desligam por menu de contexto, recompondo o campo `style` final e gerando variações sem reescrever. Importar os "estilos construídos por chat" (prompts prontos dos álbuns) como módulos. Ver `schema/style-modules.json`. Fase 3.
+**Revisto (2026-11-14, DEC-037):** os prompts prontos não viraram módulos, e sim fórmulas de referência copiáveis inteiras (`styleReferences`, 0.20.0); decompô-los em módulos ficou na i-052.
 
 ### i-005 ✅ Controle de BPM por slider/roll
 BPM como valor manipulável na ferramenta (slider ou stepper), refletindo no style copiado. Cuidado registrado no HISTORY: Suno trata BPM como aproximação, não comando exato — a ferramenta ajuda a *escrever* o BPM, não garante que o Suno obedeça. Fase 3.
@@ -212,6 +213,9 @@ Achado no teste da entrega 2 (2026-11-05): o CSS `.controls { display: flex }` v
 
 ### i-052 💡 Paleta de módulos do acervo
 `[capturada pelo chat, 2026-11-11, na análise dos prompts prontos]` Os dois acervos reais têm 0 módulos: o painel de módulos fica vazio com dado real. Uma paleta por acervo poderia vir de duas fontes: (1) as tags que se repetem nas faixas (medido em 2026-11-11: 25 tags aparecem em 10 faixas ou mais na BR, 34 nos reagrupados) e (2) as fórmulas decompostas, uma tag por módulo, mais as 3 listas de voz do `album_guia_suno` que ficaram fora das fórmulas (DEC-037). Limite medido: os styles das faixas já têm de 10 a 17 tags (mediana 12), e módulo só soma — ligar um piora o orçamento. Classificar cada tag numa das sete camadas pede julgamento. Pede análise antes da spec.
+
+### i-053 💡 Marcar e desmarcar por origem na importação de fórmulas
+`[capturada pelo chat, 2026-11-14, na 0.20.0]` O `../acervos/formulas.json` tem as 18 fórmulas; cada acervo recebe só as dele (10 na BR, 8 nos reagrupados), e a janela de importar traz todas marcadas: o dono desmarca 8 ou 10 caixas à mão. Uma caixa por `source` (marca ou desmarca o grupo) resolveria; o mesmo valeria para os álbuns da importação de faixas. Esperar o uso dizer se a importação de fórmulas se repete antes de fazer.
 
 ## Feedback para o Kit
 

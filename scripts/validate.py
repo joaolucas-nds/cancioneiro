@@ -5,7 +5,7 @@ Uso:
     python3 scripts/validate.py              # valida todos os data/*.json
     python3 scripts/validate.py data/foo.json  # valida um arquivo
 
-Checa oito coisas:
+Checa nove coisas:
   1. Sintaxe JSON de todos os schemas e datasets.
   2. Conformidade estrutural de cada dataset contra collection.schema.json
      (requer o pacote 'jsonschema'; se ausente, faz so a checagem de sintaxe
@@ -25,6 +25,9 @@ Checa oito coisas:
      qualidade do app (QUALITY_LIMITS): o kit nao envelhece separado (DEC-027).
   8. A SortableJS embutida no app e a 1.15.7 sem mudanca: o sha256 do trecho
      confere com o do Sortable.min.js do npm (DEC-030, DEC-032).
+  9. As formulas de referencia (styleReferences, DEC-037): ids unicos, label e
+     style nao vazios, style sem colchete (colchete e do campo Lyrics). O erro
+     diz o caminho (styleReferences[3].style).
 
 Rode antes de commitar mudanca em data/ ou schema/ (ver CLAUDE.md).
 Saida: codigo 0 se tudo passou, 1 se houve erro.
@@ -133,6 +136,47 @@ def check_bpm(data, rel):
             print(f"   {r}")
     if bad:
         print(f"ERRO de BPM em {rel} ({len(bad)} faixa(s)):")
+        for b in bad[:8]:
+            print(f"   {b}")
+        return 1
+    return 0
+
+
+def check_formulas(data, rel):
+    """As formulas de referencia (DEC-037) sao copiaveis inteiras: o style vai
+    direto para o campo Style of Music. Id repetido, label ou style vazio e
+    colchete no style (instrucao de Lyrics dentro do copiavel) sao erro, com o
+    caminho do item. O esquema confere os tipos; isto confere o resto, e roda
+    tambem sem o pacote jsonschema.
+    """
+    refs = data.get("styleReferences")
+    if refs is None:
+        return 0
+    bad, seen = [], {}
+    if not isinstance(refs, list):
+        bad.append("styleReferences: nao e uma lista")
+        refs = []
+    for i, ref in enumerate(refs):
+        where = f"styleReferences[{i}]"
+        if not isinstance(ref, dict):
+            bad.append(f"{where}: nao e um objeto")
+            continue
+        rid = ref.get("id")
+        if not isinstance(rid, str) or not rid.strip():
+            bad.append(f"{where}.id: vazio")
+        elif rid in seen:
+            bad.append(f"{where}.id: '{rid}' repetido (o mesmo de styleReferences[{seen[rid]}])")
+        else:
+            seen[rid] = i
+        for key in ("label", "style"):
+            val = ref.get(key)
+            if not isinstance(val, str) or not val.strip():
+                bad.append(f"{where}.{key}: vazio")
+        style = ref.get("style")
+        if isinstance(style, str) and ("[" in style or "]" in style):
+            bad.append(f"{where}.style: tem colchete — colchete e do campo Lyrics; leve a instrucao para notes")
+    if bad:
+        print(f"ERRO de formula em {rel} ({len(bad)} problema(s)):")
         for b in bad[:8]:
             print(f"   {b}")
         return 1
@@ -339,6 +383,7 @@ def main(argv):
             # o modo degradado tambem confere referencias (nao depende do pacote)
             errors += check_module_refs(data, rel)
             errors += check_bpm(data, rel)
+            errors += check_formulas(data, rel)
             continue
 
         errs = sorted(validator.iter_errors(data), key=lambda e: list(e.path))
@@ -350,11 +395,14 @@ def main(argv):
             errors += 1
         else:
             n_songs = sum(len(a.get("songs", [])) for a in data.get("albums", []))
-            print(f"OK  {rel}  ({len(data.get('albums', []))} álbuns, {n_songs} faixas)")
+            n_refs = len(data.get("styleReferences") or [])
+            print(f"OK  {rel}  ({len(data.get('albums', []))} álbuns, {n_songs} faixas"
+                  + (f", {n_refs} fórmulas" if n_refs else "") + ")")
 
         # referencia cruzada e BPM: o schema nao alcanca isto
         errors += check_module_refs(data, rel)
         errors += check_bpm(data, rel)
+        errors += check_formulas(data, rel)
 
     # versao: a mesma nos quatro lugares (i-027)
     errors += check_version()
