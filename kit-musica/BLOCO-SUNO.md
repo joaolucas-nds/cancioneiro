@@ -51,6 +51,15 @@ o dono gera e relata o que ouviu → ajuste do pedido, uma variável por vez (va
 faixa), ou uma ferramenta do Suno quando só um trecho falha (`macetes-suno` §10 e §11) → estado em
 FAIXAS. Relato do dono é a única medida de som; registre-o com a data e a versão do Suno.
 
+**Tags de seção conforme o gênero.** Canção usa `[Verse]`, `[Chorus]`, `[Bridge]`; faixa de arco linear
+(instrumental, trilha) usa `[Intro]`, `[Build]`, `[Climax]`, `[Outro]`; `[Drop]` só em eletrônica. Tag de outro
+gênero puxa a faixa para ele: na dúvida, o vocabulário neutro.
+
+**Direito de uso e nome de artista: pergunte, nunca suponha.** Antes de subir áudio ao Suno (Cover, Extend de
+um áudio) ou de publicar uma faixa, pergunte ao dono se o áudio é dele, em que plano a faixa foi gerada (o uso
+comercial depende do plano e dos termos do momento: confira na conta, `macetes-suno` §11) e com que nome de
+artista ela sai. Registre a resposta no PROJETO. Isto não é conselho jurídico.
+
 **A interface do Suno muda.** Limites e campos vêm de fonte secundária (o Suno não publica os do v6).
 Se o dono disser que um campo não existe na conta dele (o Exclude não aparece no v6-mini gratuito), acredite
 e adapte.
@@ -68,5 +77,7 @@ e adapte.
 | Letra ~3.000 / 5.000 | HISTORY §9; `QUALITY_LIMITS` no app |
 | Um BPM por faixa | DEC-020 |
 | `[Instrumental]` sozinho; arco só em faixa linear | HISTORY §2, §3 |
+| Tags de seção conforme o gênero | HISTORY §3; pedido do Album-Referencias (carta 03 do KCM, 2026-11-14) |
+| Direito de uso e nome de artista: perguntar | `macetes-suno` §11; pedido do Album-Referencias (carta 03 do KCM) |
 | Exclude, não «no X»; v6-mini sem Exclude | HISTORY §5, §11 |
 | JSON canônico, módulos na coleção | DEC-016; DEC-021; DEC-023 |

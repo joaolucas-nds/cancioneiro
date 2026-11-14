@@ -570,3 +570,15 @@
 - **O prompt-modelo não muda.**
 **Alternativas consideradas:** cada fórmula como um módulo (fura o contrato de 1 a 3 tags e o orçamento); decompor em módulos de 1 tag (a fórmula deixa de ser copiável inteira — fica na i-052); paleta pelas tags repetidas (outra coisa, i-052); as fórmulas como um álbum de faixas comuns (contam como faixa, e o esquema exige `lyrics`); fechar o item sem fazer; uma vista no lugar da lista em vez da janela; editar no app; as 21 com as listas de voz; ensinar o campo no prompt-modelo.
 **Consequências:** (+) As fórmulas validadas saem dos `.md` e ficam a um clique de copiar, separadas do «por que funciona». (+) Nada muda para quem não tem fórmulas. (−) Um campo a mais no esquema e uma janela a mais. (−) Fórmula envelhece com o Suno; a linha de qualidade e o `source` mostram de onde e de quando ela veio.
+
+## DEC-038 — Carta 03 do KCM: as regras novas do Suno nascem no `kit-musica/`; o prompt de faixa não pede fórmulas; o carimbo é o commit
+
+**Data:** 2026-11-14
+**Status:** aceita
+**Contexto:** A carta 03 do KCM (2026-11-14) anuncia o Suno no nicho Música, copiado do `kit-musica/` com carimbo de origem (a análise deles recomenda a opção B), e faz três perguntas antes da WO deles: onde nascem as duas linhas que o Album-Referencias pediu, se o prompt de faixa deles pede as fórmulas da 0.20.0, e o que mudou desde 31/10.
+**Decisão:**
+- **As duas linhas novas nascem aqui**, na Parte 2 do `BLOCO-SUNO.md` (WO 0039): tags de seção conforme o gênero (HISTORY §3) e direito de uso e nome de artista (perguntar ao dono, nunca supor). É a DEC-027: o KCM copia daqui, não o contrário; uma regra escrita só do lado deles derivaria sem fonte.
+- **O prompt «Gerar faixa para o Suno» do KCM não pede fórmula.** Fórmula é acervo do dono, opcional, e o prompt-modelo não a ensina (DEC-037, ponto 4); pedir ao chat que invente uma seria gerar o que o dono já tem validado. Quem quer uma fórmula copia da janela «Fórmulas» e cola no pedido.
+- **O carimbo é o commit e a data do Cancioneiro de onde o texto foi copiado.** Mudança de limite, de campo do JSON ou de regra do prompt-modelo chega por carta, com o commit.
+**Alternativas consideradas:** o KCM acrescentar as linhas do lado dele (deriva); ensinar `styleReferences` ao prompt de faixa (o prompt cresce, e o chat inventaria fórmula sem validação).
+**Consequências:** (+) Uma fonte só para as regras do Suno. (−) Toda regra nova do kit pede uma carta e uma WO do KCM.

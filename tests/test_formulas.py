@@ -145,7 +145,8 @@ def test_c5_importar_so_formulas(open_app):
     assert page.text_content("#import-dialog-title") == "Importar fórmulas"
     assert page.eval_on_selector_all("#import-formula-list input", "e => e.map(c => c.checked)") == [True] * 3
     page.click("#import-ok-btn")
-    page.wait_for_function("document.getElementById('toast').textContent.includes('importad')")
+    # o aviso NOVO: o «Acervo importado» deixado pelo import_demo tambem tem «importad»
+    page.wait_for_function("document.getElementById('toast').textContent.includes('fórmulas importadas')")
     assert ref_ids(page) == ["f-um", "f-dois", "f-dois-2", "f-nova"]
     assert page.evaluate("App.collection.styleReferences[2].style") == changed["style"]
     toast = page.text_content("#toast")
@@ -166,7 +167,7 @@ def test_c5_importar_faixas_e_formulas_soma(open_app):
     assert page.text_content("#import-dialog-title") == "Importar faixas e fórmulas"
     assert page.is_visible("#import-dest")
     page.click("#import-ok-btn")
-    page.wait_for_function("document.getElementById('toast').textContent.includes('importad')")
+    page.wait_for_function("document.getElementById('toast').textContent.includes('fórmula importada')")
     assert page.text_content("#toast").startswith("1 faixa e 1 fórmula importadas")
 
 

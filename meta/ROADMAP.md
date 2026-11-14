@@ -29,7 +29,7 @@ O mínimo que já é útil: ler o acervo e copiar sem procurar.
 - ✅ Organizar os álbuns: renomear, reordenar, juntar, exportar e excluir (0.18.0, i-049, DEC-035).
 **Marco:** conseguir usar a ferramenta de verdade numa rodada de geração no Suno.
 
-## 🔨 Fase 3 — Qualidade de prompt e modularidade
+## ✅ Fase 3 — Qualidade de prompt e modularidade (2026-11-14)
 O diferencial real sobre os builders genéricos: a ferramenta não só organiza, ela **impede prompt ruim**. Fundamentado em constraints verificados (HISTORY §9-11). Núcleo modular já entregue no v0.
 
 **3a — Painel de qualidade — ✅ concluída em 0.5.0 (DEC-018), conferida na tela pelo dono em 2026-10-27:**
@@ -41,7 +41,7 @@ O diferencial real sobre os builders genéricos: a ferramenta não só organiza,
 **3a.2 — ✅ concluída em 0.6.0 (DEC-019), conferida na tela pelo dono em 2026-10-27:**
 - ✅ O custo de cada módulo em tags, no próprio chip, e a folga do style base na linha de qualidade (i-026). A lista de corte automática foi descartada pela medição: mandaria cortar a voz de rap em faixas de rap-pop.
 
-**3b — Modularidade (continuação):**
+**3b — Modularidade (continuação) — ✅ concluída em 0.20.0, conferida na tela pelo dono em 2026-11-14:**
 - ✅ Módulos de estilo ligáveis/desligáveis por menu, recompondo o style (i-004) — v0 entregue, refinar UX na iteração.
 - ✅ Controle de BPM no cartão (i-005, DEC-020) — 0.7.0, conferido na tela pelo dono em 2026-10-28; campo numérico, não slider, e o chip de andamento vira atalho.
 - ✅ Rampa de BPM preservada e avisada (i-042, DEC-036) — 0.19.0.

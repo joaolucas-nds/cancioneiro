@@ -3,17 +3,16 @@
 > **O agora.** O que funciona, o que está em progresso, o que está quebrado, backlog curto.
 > Rolante: item resolvido sai daqui e vai para o CHANGELOG. Médio/longo prazo vive no ROADMAP.
 
-**Versão atual:** 0.20.0 · **Fase:** 3a, 3a.2, o BPM da 3b, o prompt-modelo e as conveniências de uso concluídos e conferidos · os álbuns antigos convertidos (i-008, fora do repo) · curadoria no app concluída nas três entregas (DEC-028, DEC-029) · frente de interface concluída e conferida nas quatro entregas (DEC-030 a DEC-033) · organizar os álbuns (0.18.0, DEC-035) conferido · rampa de BPM (0.19.0, DEC-036) conferida · fórmulas de referência (0.20.0, DEC-037) entregues, a conferir na tela · a Fase 3b concluída · kit de música lido pelo KCM, à espera da resposta (i-039)
+**Versão atual:** 0.20.0 · **Fase:** 3a, 3a.2, o BPM da 3b, o prompt-modelo e as conveniências de uso concluídos e conferidos · os álbuns antigos convertidos (i-008, fora do repo) · curadoria no app concluída nas três entregas (DEC-028, DEC-029) · frente de interface concluída e conferida nas quatro entregas (DEC-030 a DEC-033) · organizar os álbuns (0.18.0, DEC-035) conferido · rampa de BPM (0.19.0, DEC-036) conferida · fórmulas de referência (0.20.0, DEC-037) conferidas na tela · a Fase 3 concluída · kit de música lido pelo KCM, à espera da resposta (i-039)
 
 ---
 
-## Última conversa (2026-11-14, fórmulas de referência, WO 0038)
+## Última conversa (2026-11-14, 0.20.0 conferida, carta 03 do KCM, WO 0039)
 
-- **0.20.0 implementada pelo chat num clone** pela spec `meta/specs/261111-formulas.md`: o campo `styleReferences`, a janela «Fórmulas», excluir com «Desfazer», a seção «Fórmulas» na importação e o `validate.py`. 61 testes, duas vezes, no clone `[medido pelo chat]`; os 11 novos reprovam no app da 0.19.0.
-- **`../acervos/formulas.json` escrito pelo chat** (18 fórmulas, `albums: []`), conferido contra os guias por `../acervos/conferir-formulas.py`: 18 de 18, com a Grand Anthem como única exceção. As linhas dos blocos que já terminam em vírgula não ganham outra.
-- **Falta conferir na tela** e importar as fórmulas nos dois acervos (pendência do dono abaixo).
-- **Aplicada pelo Code** (`39ff8d8`, empurrado): 12 hashes batem com a chegada; CI vermelho, 2 testes novos (ver «Quebrado»). Pytest local não rodado (trava).
-- **Este bloco substitui o anterior** (rampa conferida, fórmulas decididas, WO 0037). O que ele dizia está no CHANGELOG [0.19.0], na DEC-037 e em `logs/2026-11-14.md`.
+- **0.20.0 conferida na tela pelo dono** («roteiro das fórmulas na tela ok» `[relatado pelo dono, 2026-11-14 11:32]`), com as fórmulas importadas nos dois acervos. O chat conferiu os dois arquivos salvos `[medido pelo chat]`: BR com 10 álbuns, 151 faixas e as 10 fórmulas da BR; reagrupados com 12 álbuns, 205 faixas e as 8 dos `Albuns/`; as 18 idênticas às do `formulas.json`; esquema conforme e nenhuma chave `_`.
+- **CI vermelho do `39ff8d8` era do texto do teste**, não do app: os dois testes C5 esperavam «importad», que o aviso velho «Acervo importado» já satisfazia. A WO 0039 faz esperar o aviso novo.
+- **Carta 03 do KCM respondida pela carta 04** (na pasta-pai do KCM): as duas linhas novas nascem aqui, no `BLOCO-SUNO.md` (WO 0039); o prompt de faixa do KCM não pede fórmulas; desde 31/10 nenhum limite mudou (DEC-038).
+- **Este bloco substitui o anterior** (0.20.0 implementada, WO 0038). O que ele dizia está no CHANGELOG [0.20.0] e em `logs/2026-11-14.md`.
 
 ## Funciona (pronto)
 
@@ -50,20 +49,21 @@
 
 ## Quebrado / pendências que travam
 
-- **CI do `790aa3a` verde** (run `43082294050`, 4 passos success): o passo «Dependencias» novo segurou, e os testes rodaram no CI pela primeira vez desde a 0.18.0. Sem pendência de CI.
-- **CI VERMELHO no `39ff8d8` (0.20.0, WO 0038)** — run `43601104563`, `2 failed, 59 passed` `[medido pelo Code]`: `test_c5_importar_so_formulas` e `test_c5_importar_faixas_e_formulas_soma` leem `#toast` e recebem «Acervo importado: Acervo de demonstracao» (o aviso do `import_demo`). Suspeita, não medida: o `wait_for_function(includes('importad'))` casa com o aviso velho; corrida no texto do teste, não no app. Pede WO de correção (esperar o aviso novo); o Code não corrige sem WO.
+- **CI do `39ff8d8` vermelho em 2 testes da 0.20.0** (run `43601104563`, `[medido pelo Code]`): corrida no texto dos testes C5, não no app; a WO 0039 corrige. O veredito do CI sai no relatório dela.
 
 ## Pendências do dono
 
-- **Conferir a 0.20.0 na tela e importar as fórmulas** — roteiro na conversa de 2026-11-14 (WO 0038): no acervo BR, só as 10 da BR; no reagrupados, só as 8 dos `Albuns/`; salvar os dois.
 - **Apagar à mão o `..\sonda-i4-teste.json`** — arquivo de teste da sonda, na pasta-pai (o chat não apaga arquivo seu).
 - **Instalar o validador de esquema nesta máquina.** Sem `jsonschema` e `referencing`, o `validate.py` só confere sintaxe e diz `ESQUEMA NAO CONFERIDO` na última linha. Uma vez, no CMD: `pip install jsonschema referencing --break-system-packages`. Depois, `python3 scripts/validate.py` deve terminar em `Tudo conforme ao esquema.` Desde a DEC-034 o CI confere o esquema a cada push: instalar aqui passa a ser opcional.
 
 ## Backlog curto (próximas ações concretas)
 
-1. **Kit de música v2, leva 2** (i-039) — as skills `escrever-letra-suno` e `conceber-album`, com prova de campo num projeto de música do dono; depois, a carta 02 ao KCM.
-2. **Pesquisar outras plataformas de música por IA** (i-032) — um turno de pesquisa antes de qualquer mudança de esquema.
-3. **Avisar palavra de andamento que contradiz o BPM** (i-029) — pede uma tabela palavra → faixa de BPM, com fonte e data.
+Ordem decidida pelo dono em 2026-11-14 `[relatado pelo dono]`: primeiro o kit no KCM e os projetos de música; depois a paleta e a leva 2; o resto depois de um recesso.
+
+1. **Kit de música no KCM** (i-039, DEC-038) — o dono decide os três pontos da análise do KCM; o KCM faz a WO dele copiando o `kit-musica/` com carimbo. Depois, o projeto da Rainha da Preguiça abre pelo nicho Música com o Suno ligado.
+2. **Paleta de módulos do acervo** (i-052) — pede análise; depois dos primeiros projetos.
+3. **Kit de música v2, leva 2** (i-039) — as skills `escrever-letra-suno` e `conceber-album`, com prova de campo no projeto da Rainha; depois, uma carta ao KCM.
+4. **Depois de um recesso:** outras plataformas de música por IA (i-032), palavra de andamento contra o BPM (i-029) e arrastar faixa para outro acervo (i-050).
 
 ## Notas de estado
 

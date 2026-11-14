@@ -48,6 +48,7 @@ Comece vazia e escreva quando doer duas vezes: técnica que você precisou expli
 - **`app/index.html` · armazenamento no `file://`.** Todas as páginas locais abertas no mesmo navegador são uma origem só (sonda de 2026-11-04: 9 das 11 chaves eram de outros projetos). Tudo do app tem o nome `cancioneiro` (banco e prefixo `cancioneiro:`), e nenhum código lê, conta ou apaga chave alheia — `localStorage.clear()` é proibido aqui.
 - **Contar por prefixo não é contar.** A spec da entrega 2 disse «7 chaves de outros projetos» contando os `kit-state-*`; eram 9. Contagem que vai para documento sai do item por item, não do padrão que a maioria segue.
 - **Checagem de WO não usa emoji no padrão do `grep`.** No shell do Code, `grep -c '🔨'` devolve 0 com o emoji presente (WO 0017, checagem 5). Conte pelo texto vizinho (`'^### i-03[03-7] '`) ou pelo hash.
+- **Ponte · `device_commit_files` com o mesmo `stagedPath` pode gravar o conteúdo velho.** Em 2026-11-14 o chat regravou o log pelo mesmo nome em `outputs/` e o disco recebeu a versão de horas antes, apagando a seção do Code (recuperada do Git no mesmo turno). Grave cada entrega com um nome novo em `outputs/` e confira o `sha1sum` no disco do dono depois de gravar.
 
 ## Princípios de trabalho
 
