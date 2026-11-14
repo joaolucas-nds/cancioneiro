@@ -49,7 +49,7 @@
 
 ## Quebrado / pendências que travam
 
-- **CI do `39ff8d8` vermelho em 2 testes da 0.20.0** (run `43601104563`, `[medido pelo Code]`): corrida no texto dos testes C5, não no app; a WO 0039 corrige. O veredito do CI sai no relatório dela.
+- **CI do `39ff8d8` vermelho em 2 testes da 0.20.0** (run `43601104563`, `[medido pelo Code]`): corrida no texto dos testes C5, não no app; a WO 0039 corrige. **Corrigido em `110e0ba`: CI verde** (run `43607766930`, `completed success`) `[medido pelo Code]`. Sem pendência de CI.
 
 ## Pendências do dono
 
