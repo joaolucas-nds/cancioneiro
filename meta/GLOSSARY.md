@@ -34,7 +34,7 @@
 
 **Vocal-fantasma** — voz indesejada que o Suno adiciona a uma faixa instrumental depois de ~15–20s. Mitigada por `[Instrumental]` + `no vocals` redundantes.
 
-**Style de referência / prompt pronto** — um texto de style completo já validado (como os dos álbuns). No Cancioneiro, pode virar um módulo de estilo importável.
+**Style de referência / prompt pronto / fórmula** — um texto de style completo já validado (como os dos álbuns). No Cancioneiro é uma **fórmula** (`styleReferences` na coleção, 0.20.0, DEC-037): copiada inteira para começar uma faixa nova. Não é módulo: módulo é um trecho de 1 a 3 tags numa camada.
 
 **Extend** — recurso do Suno que continua uma geração a partir de um ponto, para alongar a faixa. Nota de versão: v5.5 gera até ~8 min por geração (antes ~2 min), o que reduz a necessidade de Extend para faixas longas.
 

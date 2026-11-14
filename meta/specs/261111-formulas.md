@@ -1,6 +1,6 @@
 # SPEC — Fórmulas de referência (0.20.0)
 
-> **Status:** Rascunho — espera os quatro pontos para o dono decidir.
+> **Status:** Pronta para implementar — os quatro pontos decididos pelo dono em 2026-11-14, como recomendados (DEC-037). Implementação e WO na próxima conversa.
 > **Data:** 2026-11-11 (data de criação; não muda depois)
 > **Ideia de origem:** o último ⬜ da Fase 3b («importar prompts prontos dos álbuns como módulos»). Opção D da análise `meta/analises/261111-ANALISE-prompts-prontos.md`, escolhida pelo dono em 2026-11-11 `[relatado pelo dono]`.
 > **Protótipo:** fileira «0.20 · fórmulas» no canvas «Cancioneiro: nova interface» (`https://claude.ai/artifact/Sk1Xf5Rpr26WfGLbZJ2GAD`), computador e celular. Os textos de fórmula do protótipo são inventados.
@@ -87,6 +87,8 @@ Os guias antigos trazem estilos completos já validados («referência rápida»
 - Busca dentro da janela.
 
 ## Pontos para o dono decidir
+
+**Decididos pelo dono em 2026-11-14: os quatro como recomendados (1a, 2a, 3a, 4a) `[relatado pelo dono, 2026-11-14 09:21]` — DEC-037.**
 
 1. **Onde as fórmulas aparecem.**
    - **(a) Uma janela «Fórmulas», aberta pela lateral e pelo «⋯» (recomendado):** funciona igual no computador e no celular, e não se mistura com filtros, busca, seleção e arrastar da lista.

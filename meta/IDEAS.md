@@ -210,6 +210,9 @@ Achado no teste da entrega 2 (2026-11-05): o CSS `.controls { display: flex }` v
 `[capturada pelo chat, 2026-11-06, na I4]` Os testes no Chromium headless de cada entrega (curadoria 1 a 3, I1 a I4) moram só na sessão do chat que os escreveu: a conversa seguinte não os tem, e a regressão da I4 teve de ser por fumaça (importar, lista, detalhe, «⋯», Cartões). Guardar em `tests/` (Playwright, Python) e rodar antes de cada WO de código. Pede decidir onde roda (a máquina do dono não tem Playwright) e o custo de manter.
 **Entregue (2026-11-09, DEC-034):** `tests/` com 32 testes (básico, organizar, salvar no arquivo, ida e volta, celular) e o workflow `.github/workflows/testes.yml`, que roda a cada push. Só dados sintéticos: o dono perguntou se seriam versionados os acervos — não `[relatado pelo dono, 2026-11-09]`.
 
+### i-052 💡 Paleta de módulos do acervo
+`[capturada pelo chat, 2026-11-11, na análise dos prompts prontos]` Os dois acervos reais têm 0 módulos: o painel de módulos fica vazio com dado real. Uma paleta por acervo poderia vir de duas fontes: (1) as tags que se repetem nas faixas (medido em 2026-11-11: 25 tags aparecem em 10 faixas ou mais na BR, 34 nos reagrupados) e (2) as fórmulas decompostas, uma tag por módulo, mais as 3 listas de voz do `album_guia_suno` que ficaram fora das fórmulas (DEC-037). Limite medido: os styles das faixas já têm de 10 a 17 tags (mediana 12), e módulo só soma — ligar um piora o orçamento. Classificar cada tag numa das sete camadas pede julgamento. Pede análise antes da spec.
+
 ## Feedback para o Kit
 
 - **[2026-07-19] Nicho pediria uma variante "ferramenta+conteúdo".** Este projeto é dev, mas o "produto" é metade código (app) e metade dado curado (acervo JSON). O template de Desenvolvimento cobre bem a parte código; a parte "acervo de dados como entregável" ficou por conta do CONTEXT. Não faltou nada crítico, mas um nicho híbrido "ferramenta que consome conteúdo estruturado" seria útil.

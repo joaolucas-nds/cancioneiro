@@ -3,17 +3,17 @@
 > **O agora.** O que funciona, o que está em progresso, o que está quebrado, backlog curto.
 > Rolante: item resolvido sai daqui e vai para o CHANGELOG. Médio/longo prazo vive no ROADMAP.
 
-**Versão atual:** 0.19.0 · **Fase:** 3a, 3a.2, o BPM da 3b, o prompt-modelo e as conveniências de uso concluídos e conferidos · os álbuns antigos convertidos (i-008, fora do repo) · curadoria no app concluída nas três entregas (DEC-028, DEC-029) · frente de interface concluída e conferida nas quatro entregas (DEC-030 a DEC-033) · organizar os álbuns (0.18.0, DEC-035) conferido · rampa de BPM (0.19.0, DEC-036) à espera da conferência na tela · kit de música lido pelo KCM, à espera da resposta (i-039)
+**Versão atual:** 0.19.0 · **Fase:** 3a, 3a.2, o BPM da 3b, o prompt-modelo e as conveniências de uso concluídos e conferidos · os álbuns antigos convertidos (i-008, fora do repo) · curadoria no app concluída nas três entregas (DEC-028, DEC-029) · frente de interface concluída e conferida nas quatro entregas (DEC-030 a DEC-033) · organizar os álbuns (0.18.0, DEC-035) conferido · rampa de BPM (0.19.0, DEC-036) conferida · fórmulas de referência (0.20.0, DEC-037) com spec pronta, a implementar · kit de música lido pelo KCM, à espera da resposta (i-039)
 
 ---
 
-## Última conversa (2026-11-11, 0.18 conferida, CI e rampa de BPM, WO 0036)
+## Última conversa (2026-11-11 a 2026-11-14, rampa conferida, fórmulas decididas, WO 0037)
 
-- **0.18.0 conferida na tela pelo dono** em 2026-11-11 (os 8 itens do roteiro OK `[relatado pelo dono]`): organizar os álbuns está fechado.
-- **WO 0035 recusada** na Edição 0 (o HEAD andou para `0d639f7` depois da leitura do chat); o conteúdo dela foi para a WO 0036.
-- **CI:** o passo «Dependencias» deixa de depender do `apt` do runner (o navegador sozinho; as bibliotecas do sistema com três tentativas de 3 minutos, sem derrubar o job). Os testes não rodavam no CI desde a 0.18.0; o push da WO 0036 (`790aa3a`) fechou verde.
-- **Rampa de BPM (0.19.0, DEC-036):** o app copiava «95 BPM building to 115 BPM» como «95 BPM building to 95 bpm», desde a 0.7.0; agora a rampa sai como foi escrita, com rótulo no lugar do controle, aviso âmbar e AVISO no `validate.py`. Os quatro pontos decididos pelo dono como recomendados; 7 de 7 critérios e 6 testes novos (`tests/test_bpm.py`), testados pelo chat. Falta a conferência na tela pelo dono.
-- **Este bloco substitui o anterior, da WO 0034** (organizar os álbuns). O que ele dizia está no CHANGELOG [0.18.0], na spec `meta/specs/261109-organizar-os-albuns.md` e em `logs/2026-11-09.md` e `logs/2026-11-11.md`.
+- **0.19.0 conferida na tela pelo dono** («rampa ok» `[relatado pelo dono, 2026-11-11 16:20]`): a rampa de BPM está fechada. CI verde no `790aa3a` (run `43082294050`, `[medido pelo Code, relatório 261111-1555]`).
+- **Prompts prontos — análise** `meta/analises/261111-ANALISE-prompts-prontos.md`: os dois acervos reais têm 0 módulos e styles de 10 a 17 tags; uma fórmula tem de 5 a 14 tags, contra 1 a 3 de um módulo. O dono escolheu a opção D, fórmula de referência copiável inteira `[relatado pelo dono, 2026-11-11 17:12]` (DEC-037).
+- **Spec da 0.20.0** `meta/specs/261111-formulas.md`, com protótipo na fileira «0.20» do canvas; os quatro pontos como recomendados `[relatado pelo dono, 2026-11-14 09:21]`. **A implementação não começou:** nenhum código e nenhum `../acervos/formulas.json` escrito.
+- **Conversa do chat encerrada** em 2026-11-14 a pedido do dono (pesada); a próxima arranca pelo `../261114-HANDOFF-BRIEF.md`.
+- **Este bloco substitui o anterior, da WO 0036** (rampa de BPM). O que ele dizia está no CHANGELOG [0.19.0], na spec `meta/specs/261111-rampa-de-bpm.md` e em `logs/2026-11-11.md`.
 
 ## Funciona (pronto)
 
@@ -53,13 +53,12 @@
 
 ## Pendências do dono
 
-- **Conferir a rampa de BPM na tela** — roteiro na conversa de 2026-11-11 (WO 0036), depois do push, com uma das três faixas BR com rampa.
 - **Apagar à mão o `..\sonda-i4-teste.json`** — arquivo de teste da sonda, na pasta-pai (o chat não apaga arquivo seu).
 - **Instalar o validador de esquema nesta máquina.** Sem `jsonschema` e `referencing`, o `validate.py` só confere sintaxe e diz `ESQUEMA NAO CONFERIDO` na última linha. Uma vez, no CMD: `pip install jsonschema referencing --break-system-packages`. Depois, `python3 scripts/validate.py` deve terminar em `Tudo conforme ao esquema.` Desde a DEC-034 o CI confere o esquema a cada push: instalar aqui passa a ser opcional.
 
 ## Backlog curto (próximas ações concretas)
 
-1. **Importar prompts prontos dos álbuns como módulos** — o último ⬜ da 3b no ROADMAP; o índice-mestre da BR e os «estilos originais» do VOL5 trazem fórmulas de estilo.
+1. **Fórmulas de referência (0.20.0, DEC-037)** — spec `meta/specs/261111-formulas.md` pronta, com os pontos decididos: implementar num clone (chat), escrever `../acervos/formulas.json` com as 18 fórmulas conferidas contra os guias, WO para o Code. Fecha a 3b.
 2. **Kit de música v2, leva 2** (i-039) — as skills `escrever-letra-suno` e `conceber-album`, com prova de campo num projeto de música do dono; depois, a carta 02 ao KCM.
 3. **Pesquisar outras plataformas de música por IA** (i-032) — um turno de pesquisa antes de qualquer mudança de esquema.
 4. **Avisar palavra de andamento que contradiz o BPM** (i-029) — pede uma tabela palavra → faixa de BPM, com fonte e data.

@@ -47,7 +47,7 @@ O diferencial real sobre os builders genéricos: a ferramenta não só organiza,
 - ✅ Rampa de BPM preservada e avisada (i-042, DEC-036) — 0.19.0.
 - ✅ Campo de exclusão de estilos (i-009) — no esquema e com botão de copiar na ferramenta.
 - ✅ Export MD completo (i-006).
-- ⬜ Importar prompts prontos dos álbuns como módulos.
+- ⬜ Fórmulas de referência dos álbuns, copiáveis inteiras (0.20.0, DEC-037). Era «importar prompts prontos como módulos»: a análise `meta/analises/261111-ANALISE-prompts-prontos.md` mediu que como módulo não serve.
 
 ## 💭 Fase 4 — Refino e escala (futura, sob demanda)
 Só se o uso pedir.

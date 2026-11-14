@@ -556,3 +556,17 @@
 - **No `validate.py`, AVISO** (código 0); o campo `bpm`, se houver, é a partida. Dois números soltos continuam ERRO (DEC-020).
 **Alternativas consideradas:** um campo `bpmEnd` no esquema (muda o contrato dos chats); o controle deslocar os dois números juntos (mais código, para algo que o Suno não segue); sem aviso; aviso com um botão que troca a rampa (o app passaria a editar o Style); manter o erro (forçaria editar as três faixas à mão).
 **Consequências:** (+) O que se copia é o que está escrito, também na rampa — a promessa da DEC-020. (+) As três faixas passam no `validate.py` com aviso. (−) Uma forma de ligação fora da lista cai na DEC-020 e o validador reprova: falha alta, não silenciosa. (−) A lista de formas mora em dois lugares (app e validador), com um comentário apontando um para o outro.
+
+## DEC-037 — Prompts prontos viram fórmulas de referência copiáveis inteiras (`styleReferences`), não módulos
+
+**Data:** 2026-11-14
+**Status:** aceita — implementação pendente (0.20.0)
+**Contexto:** O último ⬜ da Fase 3b dizia «importar prompts prontos dos álbuns como módulos». A análise `meta/analises/261111-ANALISE-prompts-prontos.md` mediu em 2026-11-11: os dois acervos reais têm 0 módulos; os styles das faixas têm de 10 a 17 tags (mediana 12), acima do orçamento da DEC-021; um prompt pronto tem de 5 a 14 tags e atravessa camadas, contra 1 a 3 tags numa camada de um módulo; 100 das 151 faixas da BR não têm nenhuma fórmula do índice-mestre a ≥ 25%. O dono escolheu a opção D em 2026-11-11 `[relatado pelo dono]` e os quatro pontos da spec `meta/specs/261111-formulas.md` como recomendados em 2026-11-14 `[relatado pelo dono]`.
+**Decisão:**
+- **Campo opcional `styleReferences[]` na coleção:** `id`, `label`, `style` (só o copiável, sem colchetes nem rótulo), `notes` e `source` opcionais; nenhum outro campo. Faixas e módulos não mudam.
+- **Uma janela «Fórmulas»**, aberta pela lateral (≥ 1280 px) e pelo «⋯», só quando o acervo tem fórmulas; agrupada por `source`, com a linha de qualidade do cartão, «Copiar Style», as notas recolhidas e «Excluir» com «Desfazer». Editar, no arquivo.
+- **Entram pela janela de importar faixas**, que aceita `albums: []` com fórmulas; idêntica pula, mesmo id e conteúdo diferente entra com sufixo.
+- **As 18 do dono** (índice-mestre BR 6, BR VOL1 4, VOL5 4, `album_guia_suno` 4 de clima) num `../acervos/formulas.json` escrito pelo chat e conferido por script contra os guias; as 3 listas de voz ficam de fora (i-052). O `[SILENCE - 4 beats] antes do drop final` da Grand Anthem é instrução de Lyrics e vai para `notes`.
+- **O prompt-modelo não muda.**
+**Alternativas consideradas:** cada fórmula como um módulo (fura o contrato de 1 a 3 tags e o orçamento); decompor em módulos de 1 tag (a fórmula deixa de ser copiável inteira — fica na i-052); paleta pelas tags repetidas (outra coisa, i-052); as fórmulas como um álbum de faixas comuns (contam como faixa, e o esquema exige `lyrics`); fechar o item sem fazer; uma vista no lugar da lista em vez da janela; editar no app; as 21 com as listas de voz; ensinar o campo no prompt-modelo.
+**Consequências:** (+) As fórmulas validadas saem dos `.md` e ficam a um clique de copiar, separadas do «por que funciona». (+) Nada muda para quem não tem fórmulas. (−) Um campo a mais no esquema e uma janela a mais. (−) Fórmula envelhece com o Suno; a linha de qualidade e o `source` mostram de onde e de quando ela veio.
