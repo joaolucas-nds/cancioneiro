@@ -12,6 +12,7 @@
 - **0.20.0 implementada pelo chat num clone** pela spec `meta/specs/261111-formulas.md`: o campo `styleReferences`, a janela «Fórmulas», excluir com «Desfazer», a seção «Fórmulas» na importação e o `validate.py`. 61 testes, duas vezes, no clone `[medido pelo chat]`; os 11 novos reprovam no app da 0.19.0.
 - **`../acervos/formulas.json` escrito pelo chat** (18 fórmulas, `albums: []`), conferido contra os guias por `../acervos/conferir-formulas.py`: 18 de 18, com a Grand Anthem como única exceção. As linhas dos blocos que já terminam em vírgula não ganham outra.
 - **Falta conferir na tela** e importar as fórmulas nos dois acervos (pendência do dono abaixo).
+- **Aplicada pelo Code** (`39ff8d8`, empurrado): 12 hashes batem com a chegada; CI vermelho, 2 testes novos (ver «Quebrado»). Pytest local não rodado (trava).
 - **Este bloco substitui o anterior** (rampa conferida, fórmulas decididas, WO 0037). O que ele dizia está no CHANGELOG [0.19.0], na DEC-037 e em `logs/2026-11-14.md`.
 
 ## Funciona (pronto)
@@ -50,6 +51,7 @@
 ## Quebrado / pendências que travam
 
 - **CI do `790aa3a` verde** (run `43082294050`, 4 passos success): o passo «Dependencias» novo segurou, e os testes rodaram no CI pela primeira vez desde a 0.18.0. Sem pendência de CI.
+- **CI VERMELHO no `39ff8d8` (0.20.0, WO 0038)** — run `43601104563`, `2 failed, 59 passed` `[medido pelo Code]`: `test_c5_importar_so_formulas` e `test_c5_importar_faixas_e_formulas_soma` leem `#toast` e recebem «Acervo importado: Acervo de demonstracao» (o aviso do `import_demo`). Suspeita, não medida: o `wait_for_function(includes('importad'))` casa com o aviso velho; corrida no texto do teste, não no app. Pede WO de correção (esperar o aviso novo); o Code não corrige sem WO.
 
 ## Pendências do dono
 
