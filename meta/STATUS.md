@@ -12,7 +12,8 @@
 - **O KCM copiou o kit do `110e0ba`** com carimbo (D-179, wo0167, v1.141.0; o campo «Produção» com dois valores). O projeto **Rainha da Preguiça** abriu pelo nicho Música, com o Suno, em `C:\Users\alexk\Music\- Compositor\Album - Rainha da Preguiça` `[relatado pelo dono]`, e levou o acervo dele.
 - **Variety confirmado:** o FAQ do v6 diz que o controle reescreve o style e que só em 0 as tags ficam como escritas; o projeto Rainha mediu style fixo e Variety em Off repetindo cantora e gênero em quatro faixas. A WO 0040 leva isso à `macetes-suno` (§10, §11, §12 nova), à `revisar-faixa` (conferência 4) e ao HISTORY (i-054).
 - **Cartas 01 e 02 do projeto Rainha respondidas** pela carta 01 do Cancioneiro (na pasta-pai deles): a 02 entra na WO 0040; o fim de faixa (01) espera a medição deles (i-056). **Carta 05 ao KCM:** a `macetes-suno` e a `revisar-faixa` mudaram depois do `110e0ba`.
-- **WO 0040 aplicada** (`fb9cd70`); o CI ficou vermelho num teste antigo, por corrida (Quebrado, abaixo); a WO 0041 corrige e fecha a Fase 2 no ROADMAP (o marco veio com o projeto Rainha).
+- **WO 0040 aplicada** (`fb9cd70`); o CI ficou vermelho num teste antigo, por corrida (Quebrado, abaixo); a WO 0041 corrigiu (`c1648ee`, CI verde, run `43764492829`) e fechou a Fase 2.
+- **Leva 2 do kit v2 em prova de campo:** spec e rascunhos em `meta/specs/261115-kit-v2-leva-2/`; carta 02 do Cancioneiro ao projeto Rainha com os rascunhos. Ideias novas do dono: i-057 (vários `.json`, zonas de soltar) e i-058 (começar vazio).
 - **Este bloco substitui o anterior** (0.20.0 conferida, carta 03, WO 0039). O que ele dizia está na DEC-038 e em `logs/2026-11-14.md`.
 
 ## Funciona (pronto)
@@ -50,7 +51,7 @@
 
 ## Quebrado / pendências que travam
 
-- **CI do `fb9cd70` vermelho em 1 teste antigo** (run `43760238300`, `test_ctrl_z_na_busca_nao_mexe_no_acervo`, `[medido pelo Code]`), num commit só de doc: corrida no teste, não no app. A descida devolve o foco à linha no fim, e no CI lento o `Ctrl+Z` chegava antes, fora da busca, e desfazia. O chat reproduziu atrasando a descida em 400 ms: o teste velho reprova com o mesmo 0, o novo passa. A WO 0041 faz o teste esperar a descida.
+- **Nada quebrado.** O CI do `fb9cd70` (1 teste por corrida) voltou ao verde no `c1648ee` (run `43764492829`, `[medido pelo Code]`).
 
 ## Pendências do dono
 
@@ -63,8 +64,9 @@ Ordem decidida pelo dono em 2026-11-14 `[relatado pelo dono]`: primeiro o kit no
 
 1. **Responder ao projeto Rainha quando a medição chegar** — o fim de faixa (i-056, número F-1) e o teste de Voice v6 com Variety em Off; o que for regra vai ao kit e, por carta, ao KCM.
 2. **Paleta de módulos do acervo** (i-052) — pede análise; depois dos primeiros projetos.
-3. **Kit de música v2, leva 2** (i-039) — as skills `escrever-letra-suno` e `conceber-album`, com prova de campo no projeto da Rainha; depois, uma carta ao KCM.
-4. **Depois de um recesso:** outras plataformas de música por IA (i-032), palavra de andamento contra o BPM (i-029) e arrastar faixa para outro acervo (i-050).
+3. **Kit de música v2, leva 2** (i-039) — **em prova de campo** desde 2026-11-15: rascunhos e critérios em `meta/specs/261115-kit-v2-leva-2.md`; o projeto Rainha usa no próximo lote e devolve por carta. Passando, WO para o kit e carta ao KCM.
+4. **Antes do recesso, quando der** (pedido do dono em 2026-11-15): marcar e desmarcar por origem na importação (i-053), o texto da janela de importar quando só há fórmulas, começar vazio (i-058) e a palavra de andamento contra o BPM (i-029, que pede uma tabela com fonte antes do código). Importar vários `.json` e as zonas de soltar (i-057) pedem spec.
+5. **Depois de um recesso:** outras plataformas de música por IA (i-032) e arrastar faixa para outro acervo (i-050).
 
 ## Notas de estado
 
