@@ -12,6 +12,7 @@
 - **O KCM copiou o kit do `110e0ba`** com carimbo (D-179, wo0167, v1.141.0; o campo «Produção» com dois valores). O projeto **Rainha da Preguiça** abriu pelo nicho Música, com o Suno, em `C:\Users\alexk\Music\- Compositor\Album - Rainha da Preguiça` `[relatado pelo dono]`, e levou o acervo dele.
 - **Variety confirmado:** o FAQ do v6 diz que o controle reescreve o style e que só em 0 as tags ficam como escritas; o projeto Rainha mediu style fixo e Variety em Off repetindo cantora e gênero em quatro faixas. A WO 0040 leva isso à `macetes-suno` (§10, §11, §12 nova), à `revisar-faixa` (conferência 4) e ao HISTORY (i-054).
 - **Cartas 01 e 02 do projeto Rainha respondidas** pela carta 01 do Cancioneiro (na pasta-pai deles): a 02 entra na WO 0040; o fim de faixa (01) espera a medição deles (i-056). **Carta 05 ao KCM:** a `macetes-suno` e a `revisar-faixa` mudaram depois do `110e0ba`.
+- **WO 0040 aplicada** (`fb9cd70`); o CI ficou vermelho num teste antigo, por corrida (Quebrado, abaixo); a WO 0041 corrige e fecha a Fase 2 no ROADMAP (o marco veio com o projeto Rainha).
 - **Este bloco substitui o anterior** (0.20.0 conferida, carta 03, WO 0039). O que ele dizia está na DEC-038 e em `logs/2026-11-14.md`.
 
 ## Funciona (pronto)
@@ -49,12 +50,12 @@
 
 ## Quebrado / pendências que travam
 
-- **CI do `39ff8d8` vermelho em 2 testes da 0.20.0** (run `43601104563`, `[medido pelo Code]`): corrida no texto dos testes C5, não no app; a WO 0039 corrige. **Corrigido em `110e0ba`: CI verde** (run `43607766930`, `completed success`) `[medido pelo Code]`. Sem pendência de CI.
+- **CI do `fb9cd70` vermelho em 1 teste antigo** (run `43760238300`, `test_ctrl_z_na_busca_nao_mexe_no_acervo`, `[medido pelo Code]`), num commit só de doc: corrida no teste, não no app. A descida devolve o foco à linha no fim, e no CI lento o `Ctrl+Z` chegava antes, fora da busca, e desfazia. O chat reproduziu atrasando a descida em 400 ms: o teste velho reprova com o mesmo 0, o novo passa. A WO 0041 faz o teste esperar a descida.
 
 ## Pendências do dono
 
 - **Apagar à mão o `..\sonda-i4-teste.json`** — arquivo de teste da sonda, na pasta-pai (o chat não apaga arquivo seu).
-- **Instalar o validador de esquema nesta máquina.** Sem `jsonschema` e `referencing`, o `validate.py` só confere sintaxe e diz `ESQUEMA NAO CONFERIDO` na última linha. Uma vez, no CMD: `pip install jsonschema referencing --break-system-packages`. Depois, `python3 scripts/validate.py` deve terminar em `Tudo conforme ao esquema.` Desde a DEC-034 o CI confere o esquema a cada push: instalar aqui passa a ser opcional.
+- **Instalar o validador de esquema nesta máquina.** Sem `jsonschema` e `referencing`, o `validate.py` só confere sintaxe e diz `ESQUEMA NAO CONFERIDO` na última linha. Uma vez, no CMD: `python -m pip install jsonschema referencing` (no Windows, `python3` é o atalho da loja, não o Python instalado — relatório da WO 0040). Depois, `python scripts\validate.py` deve terminar em `Tudo conforme ao esquema.` Desde a DEC-034 o CI confere o esquema a cada push: instalar aqui passa a ser opcional.
 
 ## Backlog curto (próximas ações concretas)
 

@@ -13,7 +13,7 @@ Arquitetura, esquema e documentação.
 - ✅ Dataset de prova (1 faixa convertida).
 - ✅ Documentação de contexto (`meta/`) e arquivos-raiz.
 
-## 🔨 Fase 2 — Ferramenta v0 (MVP de leitura + cópia)
+## ✅ Fase 2 — Ferramenta v0 (MVP de leitura + cópia) (2026-11-15: o marco, usar numa rodada de geração de verdade, veio com o projeto Rainha da Preguiça)
 O mínimo que já é útil: ler o acervo e copiar sem procurar.
 - ✅ `app/index.html`: importar/carregar JSON, renderizar álbuns → canções como cartões (i-001).
 - ✅ Botão copiar por campo (Style / Lyrics separados), com marcação de "já copiado" + "usei" manual (i-003).

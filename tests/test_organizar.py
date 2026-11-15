@@ -77,6 +77,9 @@ def test_ctrl_z_na_busca_nao_mexe_no_acervo(open_app):
     import_demo(page)
     menu(page, A0[0])
     page.click("#tm-down")
+    # espera a descida terminar: no fim ela devolve o foco a linha, e um Ctrl+Z
+    # que chegue antes disso cai fora da busca e desfaz (CI do fb9cd70)
+    page.wait_for_function("App.changes === 1")
     page.fill("#search", "x")
     page.focus("#search")
     page.keyboard.press("Control+z")
