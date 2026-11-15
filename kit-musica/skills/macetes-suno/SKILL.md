@@ -1,12 +1,12 @@
 ---
 name: macetes-suno
-description: O que tem efeito no Suno e o que é mito — os dois campos, o style em camadas, o orçamento de tags, os limites que cortam em silêncio, BPM, instrumental, exclusão, o que fazer depois de ouvir e as ferramentas do Suno (Replace Section, Extend, Remaster, Cover, Persona). USE ao escrever ou reescrever o style ou a letra de uma faixa para o Suno, ao montar variantes, quando o dono relatar o que ouviu, e quando perguntar «por que saiu assim?» ou «como faço o Suno fazer X?». Para conferir uma faixa pronta, use a skill revisar-faixa.
+description: O que tem efeito no Suno e o que é mito — os dois campos, o style em camadas, o orçamento de tags, os limites que cortam em silêncio, BPM, instrumental, exclusão, o que fazer depois de ouvir, as ferramentas do Suno (Replace Section, Extend, Remaster, Cover, Voices, Letrista) e as configurações de geração do v6 (Variety, Max Mode). USE ao escrever ou reescrever o style ou a letra de uma faixa para o Suno, ao montar variantes, quando o dono relatar o que ouviu, e quando perguntar «por que saiu assim?» ou «como faço o Suno fazer X?». Para conferir uma faixa pronta, use a skill revisar-faixa.
 ---
 
 # Macetes do Suno — o que tem efeito
 
 > Parte do kit de música do Cancioneiro (`kit-musica/`). Fonte: `meta/HISTORY.md` do Cancioneiro, que
-> traz cada item com data, fonte e nível de confiança. **Conferido em 2026-10, Suno v6; §10 e §11 em 2026-11.** A interface
+> traz cada item com data, fonte e nível de confiança. **Conferido em 2026-10, Suno v6; §10 e §11 em 2026-11; §12 em 2026-11-15.** A interface
 > do Suno muda: se o dono disser que um botão ou campo não existe na conta dele, acredite nele.
 
 ## 1. Dois campos, dois trabalhos
@@ -103,7 +103,9 @@ e mude **uma coisa só** por rodada — duas mudanças juntas não dizem qual fu
 |---|---|
 | «o gênero/clima não é esse» | as primeiras tags do style (o começo pesa mais) |
 | «tem instrumento sobrando/faltando» | uma tag de instrumento, ou o Exclude |
-| «a voz não é essa» | a tag de voz; para manter a mesma voz em várias faixas, Persona (§11) |
+| «o style que aparece na faixa não é o que eu colei» | nada no texto: ponha **Variety em Off** e gere de novo (§12) |
+| «a voz não é essa» | a tag de voz; para manter a mesma voz em várias faixas, style fixo com Variety em Off, ou Voices (§11) |
+| «a faixa segue tocando depois que a letra acaba» | o fim: `[Outro]` curto e de corte seco (sem «fading»), `[End]` depois da última linha, última linha sem repetir a anterior; a sobra, corte (Crop) em vez de gerar de novo. Hipótese do projeto Rainha da Preguiça (2026-11-15), ainda sem medição |
 | «correu / pulou parte da letra» | a letra: está acima de ~3.000? refrão por extenso repetido? (`revisar-faixa`) |
 | «cantou onde era instrumental» | `[Instrumental]` sozinho no Lyrics (§6) |
 | «está bom, mas um trecho ficou fraco» | não peça de novo: Replace Section ou Extend (§11) |
@@ -127,12 +129,36 @@ de cada vez é sinal de que o pedido brigou consigo mesmo (sinais opostos no sty
 | Falta uma seção, um final, espaço para crescer | **Extend** (continua de um ponto escolhido) | quanto mais cedo o ponto, mais do resto muda |
 | A faixa está certa; só o som (clareza, equilíbrio) | **Remaster** | variação sutil: não muda letra nem estrutura |
 | A faixa funciona; quer outro gênero ou outra interpretação | **Cover** | é transformação grande; para polir, Remaster |
-| A mesma voz e o mesmo clima em várias faixas (um álbum) | **Persona** (vocal, estilo e clima salvos num perfil) | o style da faixa continua dizendo o que muda |
+| A mesma voz e o mesmo clima em várias faixas (um álbum) | **Voices**: a Persona virou «Style Voice (legacy)», que guarda a essência de uma faixa (voz, estilo, clima); «Voice (new)» é a voz do próprio dono, gravada ou enviada, com verificação por frase falada | não copia o cantor de uma faixa gerada; plano gratuito, acesso limitado; descrever a voz em palavras compete com ela. Sem Voices, o style fixo com Variety em Off já repete cantora e gênero (§12) |
+| Letras com o mesmo jeito de escrever | **Letrista** (nome, personalidade de até 240 caracteres, letras de referência) | é a escrita, não a voz; compare o mesmo pedido com e sem ele antes de gerar |
 | Arranjo fino, stems, MIDI | **Studio** | aí o trabalho já é de produção, fora do pedido |
 
 **Uso comercial:** o que sai de remix de faixa de outra pessoa pode ter uso só pessoal pelos termos de
 setembro de 2026. Antes de publicar, o dono confere os termos; isto não é conselho jurídico.
 
-Fontes da §11: [Suno — produtos](https://suno.com/pt-br/products) ·
+Fontes da §11: [Suno — Voices](https://suno.com/voices) ·
+[Suno — produtos](https://suno.com/pt-br/products) ·
 [Suno — central de ajuda, «Making Music»](https://help.suno.com/en/categories/550017) ·
 [Jack Righteous — Suno Remix Guide: Covers, Song Edits, Studio](https://jackrighteous.com/blogs/guides-using-suno-ai-music-creation/suno-remix-covers-edits-studio)
+
+## 12. Configurações de geração do v6: Variety em Off
+
+> Lido em 2026-11-15 no FAQ do v6 do Suno e numa referência aberta (CC0) atualizada em 2026-11-14; medido no
+> mesmo dia pelo projeto Rainha da Preguiça, no plano gratuito (v6-mini). Fontes no fim.
+
+- **Variety reescreve o style.** O FAQ do Suno diz que o controle introduz variedade «ajustando e atualizando os
+  seus prompts de estilo», e que, para manter o controle total das tags, é preciso baixá-lo a 0. O padrão é
+  Normal no v6 e no v6-mini: sem mexer, o style que aparece na faixa gerada já não é o que foi colado.
+  **Style escrito à mão (ou copiado do Cancioneiro) = Variety em Off.** Personalize (a varinha) fica desligado.
+- **Medido no campo** (Rainha da Preguiça, 2026-11-15, v6-mini): mesmo style e Variety em Off deram cantora
+  parecida e o mesmo gênero em quatro faixas, sem Voice.
+- **Max Mode** gasta o dobro de créditos para manter a faixa consistente do começo ao fim. É o que se
+  recomenda para faixa acima de ~2 min, Cover e Voices (fonte secundária). No plano gratuito, pesa no limite diário.
+- **Advanced, não Simple.** Pela fonte secundária, o modo Simple expande a letra dada em vez de cantá-la como
+  está: letra pronta vai no Advanced.
+- **Modelos:** v6-mini no plano gratuito; v6 e v6-wild no Pro e no Premier.
+- **Registre o que usou:** modelo, Variety e Max Mode vão com o relato no `FAIXAS.md` — sem isso, duas gerações
+  diferentes não dizem se mudou o pedido ou a configuração.
+
+Fontes da §12: [Suno — FAQ do v6 e Variety](https://help.suno.com/en/articles/13924481) ·
+[bitwize-music-studio/claude-ai-music-skills — creative-sliders e a issue #562 (CC0)](https://github.com/bitwize-music-studio/claude-ai-music-skills)

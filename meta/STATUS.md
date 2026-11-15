@@ -7,12 +7,12 @@
 
 ---
 
-## Última conversa (2026-11-14, 0.20.0 conferida, carta 03 do KCM, WO 0039)
+## Última conversa (2026-11-15, o v6 no kit, cartas do projeto Rainha, WO 0040)
 
-- **0.20.0 conferida na tela pelo dono** («roteiro das fórmulas na tela ok» `[relatado pelo dono, 2026-11-14 11:32]`), com as fórmulas importadas nos dois acervos. O chat conferiu os dois arquivos salvos `[medido pelo chat]`: BR com 10 álbuns, 151 faixas e as 10 fórmulas da BR; reagrupados com 12 álbuns, 205 faixas e as 8 dos `Albuns/`; as 18 idênticas às do `formulas.json`; esquema conforme e nenhuma chave `_`.
-- **CI vermelho do `39ff8d8` era do texto do teste**, não do app: os dois testes C5 esperavam «importad», que o aviso velho «Acervo importado» já satisfazia. A WO 0039 faz esperar o aviso novo.
-- **Carta 03 do KCM respondida pela carta 04** (na pasta-pai do KCM): as duas linhas novas nascem aqui, no `BLOCO-SUNO.md` (WO 0039); o prompt de faixa do KCM não pede fórmulas; desde 31/10 nenhum limite mudou (DEC-038).
-- **Este bloco substitui o anterior** (0.20.0 implementada, WO 0038). O que ele dizia está no CHANGELOG [0.20.0] e em `logs/2026-11-14.md`.
+- **O KCM copiou o kit do `110e0ba`** com carimbo (D-179, wo0167, v1.141.0; o campo «Produção» com dois valores). O projeto **Rainha da Preguiça** abriu pelo nicho Música, com o Suno, em `C:\Users\alexk\Music\- Compositor\Album - Rainha da Preguiça` `[relatado pelo dono]`, e levou o acervo dele.
+- **Variety confirmado:** o FAQ do v6 diz que o controle reescreve o style e que só em 0 as tags ficam como escritas; o projeto Rainha mediu style fixo e Variety em Off repetindo cantora e gênero em quatro faixas. A WO 0040 leva isso à `macetes-suno` (§10, §11, §12 nova), à `revisar-faixa` (conferência 4) e ao HISTORY (i-054).
+- **Cartas 01 e 02 do projeto Rainha respondidas** pela carta 01 do Cancioneiro (na pasta-pai deles): a 02 entra na WO 0040; o fim de faixa (01) espera a medição deles (i-056). **Carta 05 ao KCM:** a `macetes-suno` e a `revisar-faixa` mudaram depois do `110e0ba`.
+- **Este bloco substitui o anterior** (0.20.0 conferida, carta 03, WO 0039). O que ele dizia está na DEC-038 e em `logs/2026-11-14.md`.
 
 ## Funciona (pronto)
 
@@ -23,7 +23,7 @@
 - **Rampa de BPM** (0.19.0, DEC-036): dois BPM no mesmo trecho do Style, ligados por «to» e afins, saem como foram escritos; o controle vira o rótulo «rampa 95 → 115 bpm», os chips de andamento ficam desligados e a linha de qualidade avisa em âmbar. O `validate.py` dá AVISO; dois números soltos continuam ERRO.
 - **Fórmulas de referência** (0.20.0, DEC-037): `styleReferences` na coleção; a janela «Fórmulas», pela lateral e pelo «⋯», com a linha de qualidade, «Copiar Style» byte a byte, as notas recolhidas e «Excluir» com «Desfazer»; entram pela janela «Importar faixas» (`albums: []` aceito). Salvar leva; exportar faixa ou álbum, não.
 - **Esquema JSON canônico** (`schema/`). Biblioteca de referência para autoria em `schema/style-modules.json` (27 módulos, sete camadas); cada acervo traz os seus (DEC-016).
-- **Datasets:** `data/exemplo-cinzeiro.json` (1 faixa, com os 5 módulos que cita) e `data/demo.json` (2 álbuns, 3 faixas). Os acervos do dono moram fora do repo (DEC-026): `../album-referencias (1).json` (7 faixas, 50 módulos) `../acervos/rainha-da-preguica.json` (10 álbuns, 151 faixas) e `../acervos/albuns-reagrupados.json` (12 álbuns, 205 faixas), os dois gerados pelos conversores.
+- **Datasets:** `data/exemplo-cinzeiro.json` (1 faixa, com os 5 módulos que cita) e `data/demo.json` (2 álbuns, 3 faixas). Os acervos do dono moram fora do repo (DEC-026): `../album-referencias (1).json` (7 faixas, 50 módulos) `rainha-da-preguica.json` (10 álbuns, 151 faixas; desde 2026-11-15 no projeto da Rainha, `C:\Users\alexk\Music\- Compositor\Album - Rainha da Preguiça\album-rainha-da-preguica\cancioneiro\`) e `../acervos/albuns-reagrupados.json` (12 álbuns, 205 faixas), os dois gerados pelos conversores.
 - **Conversor da família BR** (`scripts/convert_br.py`, 0.9.1, DEC-026): guias `..._VOL<n>_GUIA.md` → coleção no esquema, um álbum por volume, rótulos fora do copiável, variantes e referência levadas; relata o que passa do limite do Suno sem cortar. Teste: `python3 scripts/test_convert_br.py`.
 - **Conversor dos guias de `Albuns/`** (`scripts/convert_guides.py`, 0.10.0): formatos mistos → coleção, com mapa de grupos que reprova faixa perdida. Teste: `python3 scripts/test_convert_guides.py`.
 - **Kit de música** (`kit-musica/`, 0.10.0, DEC-027): bloco para Instruções e CEREBRO de um projeto de música, skills `macetes-suno` e `revisar-faixa`. Uso à mão em `kit-musica/README.md`.
@@ -60,7 +60,7 @@
 
 Ordem decidida pelo dono em 2026-11-14 `[relatado pelo dono]`: primeiro o kit no KCM e os projetos de música; depois a paleta e a leva 2; o resto depois de um recesso.
 
-1. **Kit de música no KCM** (i-039, DEC-038) — o dono decide os três pontos da análise do KCM; o KCM faz a WO dele copiando o `kit-musica/` com carimbo. Depois, o projeto da Rainha da Preguiça abre pelo nicho Música com o Suno ligado.
+1. **Responder ao projeto Rainha quando a medição chegar** — o fim de faixa (i-056, número F-1) e o teste de Voice v6 com Variety em Off; o que for regra vai ao kit e, por carta, ao KCM.
 2. **Paleta de módulos do acervo** (i-052) — pede análise; depois dos primeiros projetos.
 3. **Kit de música v2, leva 2** (i-039) — as skills `escrever-letra-suno` e `conceber-album`, com prova de campo no projeto da Rainha; depois, uma carta ao KCM.
 4. **Depois de um recesso:** outras plataformas de música por IA (i-032), palavra de andamento contra o BPM (i-029) e arrastar faixa para outro acervo (i-050).

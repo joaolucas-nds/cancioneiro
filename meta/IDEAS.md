@@ -218,6 +218,15 @@ Achado no teste da entrega 2 (2026-11-05): o CSS `.controls { display: flex }` v
 ### i-053 💡 Marcar e desmarcar por origem na importação de fórmulas
 `[capturada pelo chat, 2026-11-14, na 0.20.0]` O `../acervos/formulas.json` tem as 18 fórmulas; cada acervo recebe só as dele (10 na BR, 8 nos reagrupados), e a janela de importar traz todas marcadas: o dono desmarca 8 ou 10 caixas à mão. Uma caixa por `source` (marca ou desmarca o grupo) resolveria; o mesmo valeria para os álbuns da importação de faixas. Esperar o uso dizer se a importação de fórmulas se repete antes de fazer.
 
+### i-054 ✅ O v6 no kit: Variety em Off, Voices e Letrista
+`[capturada pelo chat, 2026-11-15; pedida pela carta 02 do projeto Rainha da Preguiça]` A `macetes-suno` dizia «Persona» para manter a voz e não falava de Variety. **Entregue (2026-11-15, WO 0040):** §10 com a linha «o style não é o que colei» e a hipótese do fim de faixa; §11 com Voices (a Persona virou «Style Voice (legacy)») e o Letrista; §12 nova, Variety em Off como padrão para style escrito à mão, Max Mode, Advanced; a `revisar-faixa` (conferência 4) lembra o rótulo que chega pela Voice salva. Carta 05 ao KCM.
+
+### i-055 💡 Configurações da geração junto da faixa
+`[capturada pelo chat, 2026-11-15]` O Variety muda o resultado tanto quanto o texto, e o JSON não registra modelo, Variety nem Max Mode. Uma referência aberta (`claude-ai-music-skills`) põe os três no molde da faixa. Pode ser campo opcional da faixa ou só uma linha no `FAIXAS.md` dos projetos (já pedida na §12 da `macetes-suno`). Esperar o projeto Rainha dizer se a linha no FAIXAS basta.
+
+### i-056 💡 Conferir o fim da faixa
+`[pedida pela carta 01 do projeto Rainha da Preguiça, 2026-11-15]` O Suno segue tocando 10 a 30 s depois da letra e repete eco final. Pedido: aviso âmbar no painel e na `revisar-faixa` para faixa cantada sem tag de fim (`[End]`, `[Fade Out]`) e última linha igual à anterior. Sem medição de `[End]` × `[Fade Out]` × nada ainda: espera o número F-1 do projeto Rainha antes de virar regra. Por ora, só a hipótese na §10 da `macetes-suno`.
+
 ## Feedback para o Kit
 
 - **[2026-07-19] Nicho pediria uma variante "ferramenta+conteúdo".** Este projeto é dev, mas o "produto" é metade código (app) e metade dado curado (acervo JSON). O template de Desenvolvimento cobre bem a parte código; a parte "acervo de dados como entregável" ficou por conta do CONTEXT. Não faltou nada crítico, mas um nicho híbrido "ferramenta que consome conteúdo estruturado" seria útil.

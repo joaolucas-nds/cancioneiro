@@ -27,7 +27,7 @@ dono, escritos sem esta revisão: 72 de 151 letras acima de 5.000 caracteres, 13
 | 1 | Caracteres da **letra** (`lyrics`) | acima de 5.000 | acima de 3.000 — o Suno começa a correr |
 | 2 | Caracteres do **style** | acima de 1.000 | acima de 850 |
 | 3 | **Tags** do style (trechos entre vírgulas) | — | acima de 10 (as últimas perdem efeito) ou abaixo de 4 (vago) |
-| 4 | **Rótulo** dentro do copiável: `ESTILO SUNO`, `[LETRA]`, `Style:`, `Letra:` em `style`/`lyrics` | sempre | — |
+| 4 | **Rótulo** dentro do copiável: `ESTILO SUNO`, `[LETRA]`, `Style:`, `Letra:` em `style`/`lyrics` — e no style salvo numa Voice ou Persona, que entra junto sem estar no JSON (pergunte ao dono) | sempre | — |
 | 5 | **Colchete** no style | sempre (colchete é do Lyrics) | — |
 | 6 | **«no X»** no style | — | vai para `excludeStyles` (se o plano tiver o campo) |
 | 7 | **BPM**: dois números no style, ou campo `bpm` diferente do style | — | um BPM por faixa; rampa num trecho só («95 BPM building to 115 BPM») o app preserva e avisa, mas o Suno não segue: prefira um BPM e descreva a subida |
