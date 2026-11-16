@@ -594,3 +594,17 @@
 - `data/exemplo-cinzeiro.json` sai: nada o lia.
 **Alternativas consideradas:** manter o demo no Pages e só esconder quando há acervo (o vazio de quem esqueceu tudo continuaria trazendo o exemplo de volta); um interruptor nas preferências (uma opção a mais para um caso só).
 **Consequências:** (+) O que aparece é sempre um acervo do dono. (+) Esquecer tudo é um gesto, não um por um. (−) Quem abre o Pages pela primeira vez vê a tela vazia; o exemplo fica a dois cliques.
+
+## DEC-040 — Importar vários `.json`: uma janela por arquivo, a lateral como zona de «acervo novo»
+
+**Data:** 2026-11-16
+**Status:** aceita — implementação pendente (0.22.0)
+**Contexto:** O app lê um arquivo por vez (`files[0]`): soltar três importa o primeiro e cala os outros. O dono pediu (i-057, 2026-11-15) escolher por arquivo entre acervo novo e faixas no aberto, e soltar na lateral para guardar direto como acervo. A spec `meta/specs/261116-varios-json.md` trouxe quatro pontos; o dono escolheu os quatro como recomendados em 2026-11-16 `[relatado pelo dono]`.
+**Decisão:**
+- Um arquivo: nada muda.
+- Vários fora da lateral: a janela «Importar N arquivos», uma linha por arquivo (acervo novo, faixas no aberto, pular); **o padrão vem da forma do arquivo** — uma faixa exportada sozinha (1 álbum, 1 faixa) vem em «Faixas», o resto em «Acervo novo»; sem acervo aberto, tudo «Acervo novo». As faixas de todos os arquivos vão para um destino só, com um «Desfazer».
+- Depois de guardar vários como acervo novo, **o que estava aberto continua aberto**; sem nenhum aberto, abre o primeiro.
+- **A lateral, fora de um álbum, é zona de «acervo novo» direto**, sem janela — **também para um arquivo só**: a zona faz sempre a mesma coisa. Sobre um álbum da lateral, continua «faixas neste álbum».
+- O aviso do arraste diz a zona; os botões de importar aceitam vários arquivos.
+**Alternativas consideradas:** tudo «Acervo novo» ou tudo «Faixas» como padrão; abrir o último importado; só a janela, sem a lateral como zona; um arquivo na lateral continuar como hoje.
+**Consequências:** (+) Vários arquivos num gesto, sem perder nenhum em silêncio. (+) A lateral vira o atalho de guardar. (−) Um arquivo solto na lateral passa a não abrir o acervo (muda o gesto de hoje). (−) O vínculo do «Salvar» de cada arquivo tem de ser pego durante o `drop`.

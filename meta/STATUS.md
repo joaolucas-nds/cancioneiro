@@ -7,12 +7,13 @@
 
 ---
 
-## Última conversa (2026-11-16, i-029 fechada, spec da i-057, WO 0045)
+## Última conversa (2026-11-14 a 2026-11-16, 0.20.0 a 0.21.0, kit v2 completo, i-057 decidida; encerrada por handoff)
 
-- **i-029 fechada sem código** (opção A, decidida pelo dono em 2026-11-16 `[relatado pelo dono]`; análise `meta/analises/261116-ANALISE-palavra-de-andamento.md`): 0 conflitos nos 806 styles; uma linha na `macetes-suno` §5. Carta 07 ao KCM.
-- **Spec da i-057 em rascunho** (`meta/specs/261116-varios-json.md`): vários `.json` numa janela, por arquivo «acervo novo» ou «faixas no aberto»; a lateral como zona de «acervo novo» direto; quatro pontos para o dono.
-- **A leva 2 entrou no kit** antes disso (`94235bd`, WO 0044, CI verde); o kit v2 está completo.
-- **Este bloco substitui o anterior** (0.21.0 conferida, leva 2 no kit). O que ele dizia está em `logs/2026-11-16.md`.
+- **Entregue e conferido nesta conversa do chat:** 0.20.0 (fórmulas de referência, DEC-037) e 0.21.0 (começar vazio, esquecer todos, importação por grupo, DEC-039), as duas conferidas na tela pelo dono `[relatado pelo dono]`; o v6 no kit (Variety em Off, Voices, Letrista); a leva 2 do kit v2 (provada no projeto Rainha); a i-029 fechada sem código. CI verde no `e13b9d9` (run `43877057878`, `[medido pelo Code]`).
+- **i-057 decidida** (DEC-040, os quatro pontos como recomendados `[relatado pelo dono, 2026-11-16 10:45]`); a implementação (0.22.0) fica para a conversa nova.
+- **O KCM copiou o kit do `94235bd`** (D-183, v1.145.0); a carta 07 entra numa cópia curta depois do `e13b9d9` `[relatado pelo KCM]`.
+- **Conversa do chat encerrada** em 2026-11-16 a pedido do dono (pesada); a próxima arranca pelo `../261116-HANDOFF-BRIEF.md`.
+- **Este bloco substitui o anterior** (i-029 fechada, spec da i-057, WO 0045). O que ele dizia está em `logs/2026-11-16.md`.
 
 ## Funciona (pronto)
 
@@ -61,11 +62,10 @@
 
 Ordem decidida pelo dono em 2026-11-14 `[relatado pelo dono]`: primeiro o kit no KCM e os projetos de música; depois a paleta e a leva 2; o resto depois de um recesso.
 
-1. **Responder ao projeto Rainha quando a medição chegar** — o fim de faixa (i-056, número F-1) e o teste de Voice v6 com Variety em Off; o que for regra vai ao kit e, por carta, ao KCM.
-2. **Paleta de módulos do acervo** (i-052) — pede análise; depois dos primeiros projetos.
-3. **Kit de música v2 completo** (i-039): a leva 2 entrou no kit pela WO 0044; o KCM copia pela carta 06. Próximo gatilho: o que o projeto Rainha relatar nas próximas faixas.
-4. **Antes do recesso:** importar vários `.json` e a lateral como zona de «acervo novo» (i-057, 0.22.0) — spec em rascunho em `meta/specs/261116-varios-json.md`, à espera dos quatro pontos do dono. A i-029 fechou sem código (uma linha na `macetes-suno` §5).
-5. **Depois de um recesso:** outras plataformas de música por IA (i-032) e arrastar faixa para outro acervo (i-050).
+1. **Importar vários `.json` (i-057, 0.22.0, DEC-040)** — spec `meta/specs/261116-varios-json.md` pronta, os quatro pontos decididos: implementar num clone (chat), testes V1 a V8, WO para o Code. Último item antes do recesso.
+2. **Paleta de módulos do acervo** (i-052) — pede análise; depois dos primeiros projetos. Com o estilo-base fixo e o Variety em Off virando a regra, a análise pode concluir que não compensa.
+3. **Kit de música v2 completo** (i-039) — próximo gatilho: o que o projeto Rainha relatar das próximas faixas (cartas na pasta deles); o que virar regra vai ao kit e, por carta, ao KCM. Ideias à espera do campo: i-055 (configuração junto da faixa) e i-060 (medir a referência).
+4. **Depois de um recesso:** outras plataformas de música por IA (i-032) e arrastar faixa para outro acervo (i-050).
 
 ## Notas de estado
 
