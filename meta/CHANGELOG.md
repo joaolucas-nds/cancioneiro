@@ -4,6 +4,25 @@
 
 ---
 
+## [0.21.0] — 2026-11-16
+
+Começar vazio, esquecer todos os acervos e a importação por grupo (i-058, i-059, i-053, DEC-039).
+
+### Changed
+- **O app abre vazio** quando não há acervo guardado, também no GitHub Pages: o `data/demo.json` deixou de carregar sozinho (revê a DEC-006). O exemplo continua em «⋯» → «Baixar exemplo», e a tela vazia diz isso.
+- **Janela de importar:** cada álbum (nas faixas) e cada origem (nas fórmulas) tem uma caixa que marca ou desmarca o grupo inteiro, e fica meio marcada quando só parte está marcada. As fórmulas vêm agrupadas por origem, na ordem do arquivo.
+- O texto da janela diz o que vem: «Fórmula idêntica…» quando só há fórmulas, «Faixa ou fórmula idêntica…» com as duas.
+
+### Added
+- **«Esquecer todos os acervos…»** no seletor de acervo, com dois ou mais guardados: conta os acervos e as alterações não salvas antes de confirmar e volta à tela vazia. As marcas «usei» ficam, como no esquecer de um só; os arquivos no computador não são tocados.
+
+### Removed
+- `data/exemplo-cinzeiro.json`: nem o app nem os testes o liam.
+
+Spec `meta/specs/261116-importar-e-comecar-vazio.md`: 4 de 4 critérios, com 6 testes novos em `tests/test_vazio_e_importar.py` (67 no total).
+
+---
+
 ## [0.20.0] — 2026-11-14
 
 Fórmulas de referência (DEC-037): os styles validados dos guias antigos, para copiar inteiros. Fecha a Fase 3b.

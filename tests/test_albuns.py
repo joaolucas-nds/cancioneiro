@@ -49,9 +49,6 @@ def test_c1_menu_no_cabecalho_e_na_lateral(open_app):
 
 def test_c1_sem_copia_guardada_so_exporta(open_app):
     page = open_app()
-    # Em http://, o app carrega sozinho o exemplo do repositorio (DEC-006); espera ele
-    # chegar, senao ele chega depois e cobre este acervo.
-    page.wait_for_function("App.collection && App.collection.albums")
     page.evaluate("d => { setCollection(d); App.saved = false; render(); }", COLL)
     head_menu(page, "al-00")
     got = dict(items(page))

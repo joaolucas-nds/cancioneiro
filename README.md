@@ -2,7 +2,7 @@
 
 Ferramenta local para **organizar, copiar e variar** prompts de música gerados por IA (Suno hoje; agnóstica por design), a partir de um **acervo de canções em JSON canônico**.
 
-> **Estado:** v0.20.0 — ferramenta em uso. Lê, guarda e edita vários acervos, grava direto no arquivo do acervo (Chrome e Edge), copia por campo, troca módulos de estilo, ajusta o BPM, **mede cada prompt contra os limites do Suno**, guarda as **fórmulas de referência** dos guias para copiar inteiras, exporta Markdown, exporta uma faixa como `.json` e **entrega o prompt para chats gerarem canções no esquema**. Publicada no GitHub Pages. Ver `meta/ROADMAP.md`.
+> **Estado:** v0.21.0 — ferramenta em uso. Lê, guarda e edita vários acervos, grava direto no arquivo do acervo (Chrome e Edge), copia por campo, troca módulos de estilo, ajusta o BPM, **mede cada prompt contra os limites do Suno**, guarda as **fórmulas de referência** dos guias para copiar inteiras, exporta Markdown, exporta uma faixa como `.json` e **entrega o prompt para chats gerarem canções no esquema**. Publicada no GitHub Pages. Ver `meta/ROADMAP.md`.
 
 ## O problema
 
@@ -31,9 +31,9 @@ cancioneiro/
 
 ## Como começar
 
-1. **Pelo navegador (recomendado):** abra a versão publicada no GitHub Pages — o acervo carrega sozinho.
+1. **Pelo navegador (recomendado):** abra a versão publicada no GitHub Pages; ela abre vazia, à espera do seu acervo (o exemplo está em «⋯» → *Baixar exemplo*).
    **Ou local:** duplo-clique em `app/index.html` (modo `file://`), clique em *Abrir um acervo*, no começo da barra, e em *Importar .json…* — ou arraste o arquivo para a tela. Cada acervo importado fica guardado no navegador, pelo nome do arquivo: o app reabre no último que você usou, e o seletor de acervo (o mesmo botão, que passa a mostrar o título do aberto) troca de um para outro sem procurar o arquivo.
-2. Escolha um acervo de `data/` (ex.: `demo.json`).
+2. Escolha o seu acervo (`.json`), ou o exemplo baixado.
 3. As faixas aparecem numa **lista**, uma por linha, agrupadas por álbum: copie o Style ou a Lyrics pelos botões da linha, marque o que usou no ✓ e veja a saúde do prompt (● dentro, ▲ atenção, ■ o Suno vai cortar). Clique no título para abrir o **cartão** ao lado, com tudo o que ele tem; ‹ › e as setas ↑ ↓ andam de faixa, e o endereço guarda a aberta. *Cartões*, na barra, volta à grade de antes, onde clicar no título copia o título. Na lateral (em telas largas), clique num álbum para filtrar ou noutro acervo para abri-lo. *Filtros*, na barra, escolhe álbum, estado e uso; cada filtro ligado vira uma etiqueta com ×, e a tecla `/` leva à busca. Em *Estrutura do cartão* (no «⋯», à direita da barra), arraste os blocos para mudar a ordem e esconda os que você não usa (o Exclude já vem oculto: o formulário gratuito do Suno v6 não tem o campo).
 4. Ligue/desligue **módulos de estilo** por camada para gerar variações — o Style recompõe ao vivo. Para mudar o andamento, use o campo de **BPM** do cartão (ou um chip da camada Andamento, que é atalho para ele): o número muda em todo o Style, nunca aparecem dois. O Suno trata BPM como aproximação.
 5. Leia a linha embaixo de cada campo antes de copiar: **vermelho** = o Suno vai cortar o texto (passou do limite, ele trunca sem avisar); **âmbar** = vai funcionar, mas pior (tags demais, ou negação «no X» que rende mais no campo Exclude). Com os módulos abertos, cada chip mostra quantas tags ele põe ou tira (`+2`, `−2`, ou `0` quando não muda nada) — use isso para decidir o que desligar.

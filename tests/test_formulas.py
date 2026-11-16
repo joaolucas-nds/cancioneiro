@@ -143,7 +143,7 @@ def test_c5_importar_so_formulas(open_app):
     assert page.is_visible("#import-formulas")
     assert page.is_hidden("#import-dest")              # o destino vale so para as faixas
     assert page.text_content("#import-dialog-title") == "Importar fórmulas"
-    assert page.eval_on_selector_all("#import-formula-list input", "e => e.map(c => c.checked)") == [True] * 3
+    assert page.eval_on_selector_all("#import-formula-list input[data-ref]", "e => e.map(c => c.checked)") == [True] * 3
     page.click("#import-ok-btn")
     # o aviso NOVO: o «Acervo importado» deixado pelo import_demo tambem tem «importad»
     page.wait_for_function("document.getElementById('toast').textContent.includes('fórmulas importadas')")

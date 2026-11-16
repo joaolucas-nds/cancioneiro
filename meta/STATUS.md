@@ -3,18 +3,16 @@
 > **O agora.** O que funciona, o que está em progresso, o que está quebrado, backlog curto.
 > Rolante: item resolvido sai daqui e vai para o CHANGELOG. Médio/longo prazo vive no ROADMAP.
 
-**Versão atual:** 0.20.0 · **Fase:** 3a, 3a.2, o BPM da 3b, o prompt-modelo e as conveniências de uso concluídos e conferidos · os álbuns antigos convertidos (i-008, fora do repo) · curadoria no app concluída nas três entregas (DEC-028, DEC-029) · frente de interface concluída e conferida nas quatro entregas (DEC-030 a DEC-033) · organizar os álbuns (0.18.0, DEC-035) conferido · rampa de BPM (0.19.0, DEC-036) conferida · fórmulas de referência (0.20.0, DEC-037) conferidas na tela · a Fase 3 concluída · kit de música lido pelo KCM, à espera da resposta (i-039)
+**Versão atual:** 0.21.0 · **Fase:** 3a, 3a.2, o BPM da 3b, o prompt-modelo e as conveniências de uso concluídos e conferidos · os álbuns antigos convertidos (i-008, fora do repo) · curadoria no app concluída nas três entregas (DEC-028, DEC-029) · frente de interface concluída e conferida nas quatro entregas (DEC-030 a DEC-033) · organizar os álbuns (0.18.0, DEC-035) conferido · rampa de BPM (0.19.0, DEC-036) conferida · fórmulas de referência (0.20.0, DEC-037) conferidas na tela · a Fase 3 concluída · kit de música lido pelo KCM, à espera da resposta (i-039)
 
 ---
 
-## Última conversa (2026-11-15, o v6 no kit, cartas do projeto Rainha, WO 0040)
+## Última conversa (2026-11-16, 0.21.0 e as cartas 03 a 05 do projeto Rainha, WO 0043)
 
-- **O KCM copiou o kit do `110e0ba`** com carimbo (D-179, wo0167, v1.141.0; o campo «Produção» com dois valores). O projeto **Rainha da Preguiça** abriu pelo nicho Música, com o Suno, em `C:\Users\alexk\Music\- Compositor\Album - Rainha da Preguiça` `[relatado pelo dono]`, e levou o acervo dele.
-- **Variety confirmado:** o FAQ do v6 diz que o controle reescreve o style e que só em 0 as tags ficam como escritas; o projeto Rainha mediu style fixo e Variety em Off repetindo cantora e gênero em quatro faixas. A WO 0040 leva isso à `macetes-suno` (§10, §11, §12 nova), à `revisar-faixa` (conferência 4) e ao HISTORY (i-054).
-- **Cartas 01 e 02 do projeto Rainha respondidas** pela carta 01 do Cancioneiro (na pasta-pai deles): a 02 entra na WO 0040; o fim de faixa (01) espera a medição deles (i-056). **Carta 05 ao KCM:** a `macetes-suno` e a `revisar-faixa` mudaram depois do `110e0ba`.
-- **WO 0040 aplicada** (`fb9cd70`); o CI ficou vermelho num teste antigo, por corrida (Quebrado, abaixo); a WO 0041 corrigiu (`c1648ee`, CI verde, run `43764492829`) e fechou a Fase 2.
-- **Leva 2 do kit v2 em prova de campo:** spec e rascunhos em `meta/specs/261115-kit-v2-leva-2/`; carta 02 do Cancioneiro ao projeto Rainha com os rascunhos. Ideias novas do dono: i-057 (vários `.json`, zonas de soltar) e i-058 (começar vazio).
-- **Este bloco substitui o anterior** (0.20.0 conferida, carta 03, WO 0039). O que ele dizia está na DEC-038 e em `logs/2026-11-14.md`.
+- **0.21.0 implementada pelo chat num clone** (spec `meta/specs/261116-importar-e-comecar-vazio.md`): abrir vazio, esquecer todos, a caixa do grupo na importação e o texto dela (i-058, i-059, i-053, DEC-039). 67 testes no clone `[medido pelo chat]`.
+- **Cartas 03 a 05 do projeto Rainha respondidas** pela carta 03 do Cancioneiro: o `[End]` não encurtou a cauda (i-056 fechada sem fazer); medir a referência por sinal vira ideia (i-060); a leva 2 passou na prova (WO de entrada no kit na próxima rodada).
+- **Achado nas capturas do dono (2026-11-15):** «Personalizar» só liga com Variety acima de Off («Aumente Variedade para usar Personalizar»); Recortar é do plano gratuito, Fade out e Substituir trecho são Pro.
+- **Este bloco substitui o anterior** (o v6 no kit, WO 0040 a 0042). O que ele dizia está em `logs/2026-11-15.md`.
 
 ## Funciona (pronto)
 
@@ -24,13 +22,14 @@
 - **Controle de BPM no cartão (0.7.0, DEC-020):** campo 20-300 com `−5`/`+5` e «voltar a N» governa todo «NN bpm» do Style principal; o chip de andamento é atalho (no máximo um ligado); variantes e «Baixar .json» não mudam; o valor é só da sessão.
 - **Rampa de BPM** (0.19.0, DEC-036): dois BPM no mesmo trecho do Style, ligados por «to» e afins, saem como foram escritos; o controle vira o rótulo «rampa 95 → 115 bpm», os chips de andamento ficam desligados e a linha de qualidade avisa em âmbar. O `validate.py` dá AVISO; dois números soltos continuam ERRO.
 - **Fórmulas de referência** (0.20.0, DEC-037): `styleReferences` na coleção; a janela «Fórmulas», pela lateral e pelo «⋯», com a linha de qualidade, «Copiar Style» byte a byte, as notas recolhidas e «Excluir» com «Desfazer»; entram pela janela «Importar faixas» (`albums: []` aceito). Salvar leva; exportar faixa ou álbum, não.
+- **Começar vazio e esquecer todos** (0.21.0, DEC-039): sem acervo guardado, o app abre vazio também no Pages; «Esquecer todos os acervos…» no seletor, com dois ou mais. Na importação, a caixa de cada álbum e de cada origem marca o grupo.
 - **Esquema JSON canônico** (`schema/`). Biblioteca de referência para autoria em `schema/style-modules.json` (27 módulos, sete camadas); cada acervo traz os seus (DEC-016).
-- **Datasets:** `data/exemplo-cinzeiro.json` (1 faixa, com os 5 módulos que cita) e `data/demo.json` (2 álbuns, 3 faixas). Os acervos do dono moram fora do repo (DEC-026): `../album-referencias (1).json` (7 faixas, 50 módulos) `rainha-da-preguica.json` (10 álbuns, 151 faixas; desde 2026-11-15 no projeto da Rainha, `C:\Users\alexk\Music\- Compositor\Album - Rainha da Preguiça\album-rainha-da-preguica\cancioneiro\`) e `../acervos/albuns-reagrupados.json` (12 álbuns, 205 faixas), os dois gerados pelos conversores.
+- **Datasets:** `data/demo.json` (2 álbuns, 3 faixas: o «Baixar exemplo» e a base dos testes; desde a 0.21.0 não abre sozinho). Os acervos do dono moram fora do repo (DEC-026): `../album-referencias (1).json` (7 faixas, 50 módulos) `rainha-da-preguica.json` (10 álbuns, 151 faixas; desde 2026-11-15 no projeto da Rainha, `C:\Users\alexk\Music\- Compositor\Album - Rainha da Preguiça\album-rainha-da-preguica\cancioneiro\`) e `../acervos/albuns-reagrupados.json` (12 álbuns, 205 faixas), os dois gerados pelos conversores.
 - **Conversor da família BR** (`scripts/convert_br.py`, 0.9.1, DEC-026): guias `..._VOL<n>_GUIA.md` → coleção no esquema, um álbum por volume, rótulos fora do copiável, variantes e referência levadas; relata o que passa do limite do Suno sem cortar. Teste: `python3 scripts/test_convert_br.py`.
 - **Conversor dos guias de `Albuns/`** (`scripts/convert_guides.py`, 0.10.0): formatos mistos → coleção, com mapa de grupos que reprova faixa perdida. Teste: `python3 scripts/test_convert_guides.py`.
 - **Kit de música** (`kit-musica/`, 0.10.0, DEC-027): bloco para Instruções e CEREBRO de um projeto de música, skills `macetes-suno` e `revisar-faixa`. Uso à mão em `kit-musica/README.md`.
 - **Validação** (`scripts/validate.py`): sintaxe, esquema (com `jsonschema`), integridade referencial dos módulos (id ausente ou objeto no lugar do id, sem traceback — FIX-009), versão igual nos quatro lugares, um BPM só por faixa (DEC-020) e as marcações do prompt que o app lê (DEC-021) e os limites da skill `revisar-faixa` contra o app (DEC-027); código 1 se falhar; a última linha diz se o esquema foi de fato conferido.
-- **Testes do navegador no CI** (DEC-034): `tests/` (pytest e Playwright, 61 testes desde a 0.20.0, dados só sintéticos) e `.github/workflows/testes.yml`, que roda o `validate.py` com esquema, os testes dos conversores e o `pytest tests` a cada push na `main`. O resultado é o ✓ ou ✗ no commit e a aba Actions.
+- **Testes do navegador no CI** (DEC-034): `tests/` (pytest e Playwright, 67 testes desde a 0.21.0, dados só sintéticos) e `.github/workflows/testes.yml`, que roda o `validate.py` com esquema, os testes dos conversores e o `pytest tests` a cada push na `main`. O resultado é o ✓ ou ✗ no commit e a aba Actions.
 - **Export MD** (faixa / álbum / acervo), com o rótulo fora do bloco e o Style da tela nos três (0.9.0, D5).
 - **Exportar faixa como `.json`** (0.11.0, DEC-028): botão no rodapé do cartão; a faixa sai como acervo — o álbum de origem (id e título), a faixa e os módulos que ela cita — e importa como qualquer acervo. Sai o dado do acervo, não os módulos ligados nem o BPM da tela; o toast conta os módulos e os citados que não existem. Conferido na tela pelo dono em 2026-11-04.
 - **Vários acervos no navegador** (0.12.0, DEC-028): cada importado fica no IndexedDB pelo nome do arquivo; o seletor de acervo, na barra, abre ou esquece cada um; reabre no último aberto; marcas «usei» por acervo. Sem IndexedDB, guarda só o último, como antes.
@@ -64,8 +63,8 @@ Ordem decidida pelo dono em 2026-11-14 `[relatado pelo dono]`: primeiro o kit no
 
 1. **Responder ao projeto Rainha quando a medição chegar** — o fim de faixa (i-056, número F-1) e o teste de Voice v6 com Variety em Off; o que for regra vai ao kit e, por carta, ao KCM.
 2. **Paleta de módulos do acervo** (i-052) — pede análise; depois dos primeiros projetos.
-3. **Kit de música v2, leva 2** (i-039) — **em prova de campo** desde 2026-11-15: rascunhos e critérios em `meta/specs/261115-kit-v2-leva-2.md`; o projeto Rainha usa no próximo lote e devolve por carta. Passando, WO para o kit e carta ao KCM.
-4. **Antes do recesso, quando der** (pedido do dono em 2026-11-15): marcar e desmarcar por origem na importação (i-053), o texto da janela de importar quando só há fórmulas, começar vazio (i-058) e a palavra de andamento contra o BPM (i-029, que pede uma tabela com fonte antes do código). Importar vários `.json` e as zonas de soltar (i-057) pedem spec.
+3. **Kit de música v2, leva 2** (i-039) — **passou na prova de campo** (carta 05 do projeto Rainha, 2026-11-15: 3 de 3 sem vermelho, 3 de 3 no orçamento, 2 de 3 aprovadas na escuta). Falta a WO que põe as duas skills no kit com os dois acréscimos pedidos (o Cover como jeito de manter a cantora no plano gratuito; tag de modo de canto no style-base empurra o álbum inteiro) e a §10 e a §12 da `macetes-suno` (o `[End]` sem efeito; Personalize exige Variety acima de Off); depois, a carta 06 ao KCM.
+4. **Antes do recesso, quando der:** a palavra de andamento contra o BPM (i-029, pede uma tabela com fonte antes do código). Importar vários `.json` e as zonas de soltar (i-057) pedem spec. A i-053, o texto da importação e a i-058 saíram na 0.21.0.
 5. **Depois de um recesso:** outras plataformas de música por IA (i-032) e arrastar faixa para outro acervo (i-050).
 
 ## Notas de estado

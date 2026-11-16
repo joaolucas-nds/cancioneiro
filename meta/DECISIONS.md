@@ -582,3 +582,15 @@
 - **O carimbo é o commit e a data do Cancioneiro de onde o texto foi copiado.** Mudança de limite, de campo do JSON ou de regra do prompt-modelo chega por carta, com o commit.
 **Alternativas consideradas:** o KCM acrescentar as linhas do lado dele (deriva); ensinar `styleReferences` ao prompt de faixa (o prompt cresce, e o chat inventaria fórmula sem validação).
 **Consequências:** (+) Uma fonte só para as regras do Suno. (−) Toda regra nova do kit pede uma carta e uma WO do KCM.
+
+## DEC-039 — O app abre vazio, também no GitHub Pages (revê a DEC-006)
+
+**Data:** 2026-11-16
+**Status:** aceita (0.21.0)
+**Contexto:** Desde a DEC-006, servido por `https://`, o app carregava sozinho o `data/demo.json`. Com os acervos do dono guardados no navegador, o exemplo só aparecia na primeira vez ou depois de esquecer tudo, e misturava um acervo de mentira com os de verdade. O dono pediu, em 2026-11-15, que sem acervo o app abra vazio (i-058) e que dê para esquecer todos de uma vez (i-059) `[relatado pelo dono]`.
+**Decisão:**
+- Sem acervo guardado, o app abre na tela vazia nos dois modos; o `tryAutoLoad` sai. O `data/demo.json` fica no repo: é o que «Baixar exemplo» entrega e a base dos testes.
+- «Esquecer todos os acervos…» no seletor, com dois ou mais guardados, confirmando com a contagem de acervos e de alterações não salvas. As marcas «usei» ficam, como no esquecer de um só.
+- `data/exemplo-cinzeiro.json` sai: nada o lia.
+**Alternativas consideradas:** manter o demo no Pages e só esconder quando há acervo (o vazio de quem esqueceu tudo continuaria trazendo o exemplo de volta); um interruptor nas preferências (uma opção a mais para um caso só).
+**Consequências:** (+) O que aparece é sempre um acervo do dono. (+) Esquecer tudo é um gesto, não um por um. (−) Quem abre o Pages pela primeira vez vê a tela vazia; o exemplo fica a dois cliques.

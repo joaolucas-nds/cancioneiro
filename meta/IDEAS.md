@@ -216,8 +216,9 @@ Achado no teste da entrega 2 (2026-11-05): o CSS `.controls { display: flex }` v
 ### i-052 💡 Paleta de módulos do acervo
 `[capturada pelo chat, 2026-11-11, na análise dos prompts prontos]` Os dois acervos reais têm 0 módulos: o painel de módulos fica vazio com dado real. Uma paleta por acervo poderia vir de duas fontes: (1) as tags que se repetem nas faixas (medido em 2026-11-11: 25 tags aparecem em 10 faixas ou mais na BR, 34 nos reagrupados) e (2) as fórmulas decompostas, uma tag por módulo, mais as 3 listas de voz do `album_guia_suno` que ficaram fora das fórmulas (DEC-037). Limite medido: os styles das faixas já têm de 10 a 17 tags (mediana 12), e módulo só soma — ligar um piora o orçamento. Classificar cada tag numa das sete camadas pede julgamento. Pede análise antes da spec.
 
-### i-053 💡 Marcar e desmarcar por origem na importação de fórmulas
+### i-053 ✅ Marcar e desmarcar por origem na importação de fórmulas
 `[capturada pelo chat, 2026-11-14, na 0.20.0]` O `../acervos/formulas.json` tem as 18 fórmulas; cada acervo recebe só as dele (10 na BR, 8 nos reagrupados), e a janela de importar traz todas marcadas: o dono desmarca 8 ou 10 caixas à mão. Uma caixa por `source` (marca ou desmarca o grupo) resolveria; o mesmo valeria para os álbuns da importação de faixas. Esperar o uso dizer se a importação de fórmulas se repete antes de fazer.
+**Entregue (0.21.0, 2026-11-16):** a caixa do grupo vale para as origens das fórmulas e para os álbuns das faixas.
 
 ### i-054 ✅ O v6 no kit: Variety em Off, Voices e Letrista
 `[capturada pelo chat, 2026-11-15; pedida pela carta 02 do projeto Rainha da Preguiça]` A `macetes-suno` dizia «Persona» para manter a voz e não falava de Variety. **Entregue (2026-11-15, WO 0040):** §10 com a linha «o style não é o que colei» e a hipótese do fim de faixa; §11 com Voices (a Persona virou «Style Voice (legacy)») e o Letrista; §12 nova, Variety em Off como padrão para style escrito à mão, Max Mode, Advanced; a `revisar-faixa` (conferência 4) lembra o rótulo que chega pela Voice salva. Carta 05 ao KCM.
@@ -225,14 +226,22 @@ Achado no teste da entrega 2 (2026-11-05): o CSS `.controls { display: flex }` v
 ### i-055 💡 Configurações da geração junto da faixa
 `[capturada pelo chat, 2026-11-15]` O Variety muda o resultado tanto quanto o texto, e o JSON não registra modelo, Variety nem Max Mode. Uma referência aberta (`claude-ai-music-skills`) põe os três no molde da faixa. Pode ser campo opcional da faixa ou só uma linha no `FAIXAS.md` dos projetos (já pedida na §12 da `macetes-suno`). Esperar o projeto Rainha dizer se a linha no FAIXAS basta.
 
-### i-056 💡 Conferir o fim da faixa
+### i-056 ❌ Conferir o fim da faixa
 `[pedida pela carta 01 do projeto Rainha da Preguiça, 2026-11-15]` O Suno segue tocando 10 a 30 s depois da letra e repete eco final. Pedido: aviso âmbar no painel e na `revisar-faixa` para faixa cantada sem tag de fim (`[End]`, `[Fade Out]`) e última linha igual à anterior. Sem medição de `[End]` × `[Fade Out]` × nada ainda: espera o número F-1 do projeto Rainha antes de virar regra. Por ora, só a hipótese na §10 da `macetes-suno`.
+**Fechada sem fazer (2026-11-16):** a carta 03 do projeto Rainha relata que, com e sem `[End]`, a cauda não encurtou de forma visível («é uma questão de sorte»). Sem efeito medido, o aviso não se justifica; a saída é cortar o fim no Suno (Recortar). A §10 da `macetes-suno` muda na entrada da leva 2.
 
 ### i-057 💡 Importar vários .json de uma vez, e onde soltar decide o que vira
 `[relatado pelo dono, 2026-11-15]` Arrastar mais de um `.json` de uma vez (faixas e álbuns misturados) abre uma janela que pergunta, por arquivo: importar como **acervo novo** ou como **faixas no acervo e álbum abertos**. Variante do dono: o lugar onde se solta decide — soltar na **lateral esquerda** importa direto, rápido, como acervo separado (vai para «Acervos neste navegador»); soltar na lista importa como faixas. Hoje: um arquivo por vez; soltar sobre um álbum já importa faixas nele (0.16.0). Pede spec (a janela de vários arquivos e as duas zonas).
 
-### i-058 💡 Começar vazio: sem acervo de exemplo
+### i-058 ✅ Começar vazio: sem acervo de exemplo
 `[relatado pelo dono, 2026-11-15]` Sem acervo importado, o app deve abrir **vazio**, e não com o exemplo. Medido em 2026-11-15: `data/exemplo-cinzeiro.json` não é lido pelo app nem pelos testes (só citado em docs) e pode sair; `data/demo.json` é o que o Pages carrega sozinho, o que «Baixar exemplo» entrega e a base dos testes — ele fica no repo, só deixa de abrir sozinho. Mudança pequena no app, mas mexe no `tryAutoLoad` e nos testes que contam com ele.
+**Entregue (0.21.0, 2026-11-16, DEC-039):** abre vazio também no Pages; o `exemplo-cinzeiro.json` saiu.
+
+### i-059 ✅ Esquecer todos os acervos
+`[relatado pelo dono, 2026-11-15]` Hoje só se esquece um por um. **Entregue (0.21.0, 2026-11-16, DEC-039):** «Esquecer todos os acervos…» no seletor, com dois ou mais guardados, confirmando com a contagem.
+
+### i-060 💡 Medir a referência: andamento, tonalidade e energia de um áudio
+`[pedida pela carta 04 do projeto Rainha, 2026-11-15]` Para refazer uma faixa antiga, o Suno não devolve o style (o mp3 traz a letra e a data nos metadados, não o style), e a descrição que ele «extrai» do áudio saiu genérica e errada. O projeto Rainha mediu por análise de sinal (librosa): andamento, tonalidade provável, energia por trecho. Pergunta deles: vale virar passo do kit, para escrever o style com números reais? Contra: timbre e jeito de cantar, que é o que falta, nenhuma medida dá com confiança; o BPM medido pode sair dobrado ou pela metade (152 ou 76). Esperar uma segunda faixa em que o número tenha mudado o resultado antes de pôr no kit.
 
 ## Feedback para o Kit
 

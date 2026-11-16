@@ -9,7 +9,8 @@
   Arquivo unico: HTML + CSS (<style>) + JS (<script>). Sem build, sem dependencias.
 
   Como carrega o acervo (auto-deteccao de ambiente):
-   - Servido por http(s):// (ex.: GitHub Pages): faz fetch de data/demo.json ao abrir.
+   - Servido por http(s):// (ex.: GitHub Pages) ou aberto como arquivo: abre vazio, sem
+     acervo de exemplo (0.21.0, i-058, DEC-039); o exemplo esta em «⋯ > Baixar exemplo».
    - Aberto como file:// (duplo-clique): fetch e bloqueado pelo navegador, entao
      mostra o botao de importar. O usuario escolhe o .json do disco.
    - Em qualquer modo: botoes "Importar .json" e "Baixar .json" sempre disponiveis.
@@ -516,6 +517,7 @@
     display: flex; flex-direction: column; gap: 8px; }
   .import-list li { display: flex; flex-direction: column; gap: 2px; padding: 6px 10px; background: var(--paper-2); border-radius: 6px; }
   .import-list label { font-size: 13px; margin: 0; }
+  .import-list label.grp { font-weight: 600; }   /* 0.21: a caixa do grupo (album ou origem), i-053 */
   .import-dialog h3, .formulas-dialog h3 { font-size: 13px; font-weight: 600; margin: 10px 0 0; }
 
   /* ---- 0.20: formulas de referencia (DEC-037) ----
@@ -642,7 +644,7 @@
     <h1>Cancioneiro</h1>
     <!-- Versao: a mesma do topo do meta/CHANGELOG.md. O scripts/validate.py confere
          que app, CHANGELOG, README e STATUS dizem a mesma (i-027). -->
-    <span class="version" data-role="app-version">v0.20.0</span>
+    <span class="version" data-role="app-version">v0.21.0</span>
   </div>
   <div class="pop-wrap" id="acervo-wrap">
     <button type="button" id="acervo-btn" class="acervo-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="acervo-pop" title="Os acervos guardados neste navegador">
@@ -657,6 +659,7 @@
       <button type="button" role="menuitem" id="import-btn">Importar outro .json…</button>
       <button type="button" role="menuitem" id="unlink-btn" hidden>Desvincular do arquivo</button>
       <button type="button" role="menuitem" id="forget-btn" class="danger" hidden>Esquecer este acervo</button>
+      <button type="button" role="menuitem" id="forget-all-btn" class="danger" hidden>Esquecer todos os acervos…</button>
       <p class="pop-note" id="origin"></p>
       <p class="pop-note" id="link-note" hidden></p>
       <p class="pop-note" id="acervos-persist"></p>
@@ -757,8 +760,8 @@
 <main id="main">
   <div class="empty" id="empty">
     <p><strong>Nenhum acervo carregado.</strong></p>
-    <p>Clique em <strong>Abrir um acervo</strong>, no topo, ou <strong>arraste o arquivo para esta tela</strong><br>
-    (ex.: <code>data/demo.json</code>). Cada acervo importado fica guardado neste navegador.</p>
+    <p>Clique em <strong>Abrir um acervo</strong>, no topo, ou <strong>arraste o arquivo para esta tela</strong>.<br>
+    Cada acervo importado fica guardado neste navegador. Para ver como é um acervo, «⋯» → <strong>Baixar exemplo</strong>.</p>
   </div>
 </main>
 <aside class="detail" id="detail" aria-label="Detalhe da faixa" hidden>
@@ -902,7 +905,7 @@
 
 <dialog class="prompt-dialog import-dialog" id="import-dialog" aria-labelledby="import-dialog-title">
   <h2 id="import-dialog-title">Importar faixas</h2>
-  <p>De <span id="import-source"></span>. Desmarque o que não quer trazer. Faixa idêntica a uma que já está
+  <p>De <span id="import-source"></span>. Desmarque o que não quer trazer. <span id="import-what">Faixa idêntica a uma</span> que já está
   aqui é pulada; com o mesmo id e conteúdo diferente, entra com sufixo (-2).</p>
   <ul class="import-list" id="import-list"></ul>
   <!-- 0.20 (DEC-037): so quando a origem traz styleReferences. -->
@@ -1030,28 +1033,6 @@ function toggleUsed(id) {
 /* ===================================================================
    Carregamento do acervo — auto-deteccao de ambiente
    =================================================================== */
-async function tryAutoLoad() {
-  // file:// nao permite fetch de arquivos locais: nem tenta, mostra o import.
-  if (location.protocol === "file:") return;
-  // Tenta caminhos plausiveis: app servido na raiz (data/) ou em subpasta app/ (../data/).
-  // O default e demo.json; troque aqui ou use "Importar" para outro acervo.
-  const candidates = ["data/demo.json", "../data/demo.json"];
-  for (const path of candidates) {
-    try {
-      const res = await fetch(path, { cache: "no-store" });
-      if (!res.ok) continue;
-      const json = await res.json();
-      App.source = DEMO_SOURCE;   // as marcas do demo, o mesmo de quem importa demo.json
-      App.saved = false; App.changes = 0;   // sem copia guardada, sem curadoria
-      setCollection(json);
-      setOrigin("carregado de " + path.replace(/^\.\.\//, "") + " (GitHub Pages)", false);
-      toast("Acervo carregado de " + path + moduleRefsNotice(json));
-      return;
-    } catch (e) { /* tenta o proximo */ }
-  }
-  // Nenhum encontrado: fica no estado vazio, aguardando import manual.
-}
-
 /** Le o texto de um .json. Aceita tambem a resposta de chat colada inteira: se
     o texto nao for JSON, procura um bloco de codigo (```json ... ```) e, sem ele,
     o trecho do primeiro "{" ao ultimo "}". Devolve {json, extracted} ou lanca.
@@ -2301,7 +2282,7 @@ function renderLayoutDialog() {
    =================================================================== */
 const CACHE_KEY = "cancioneiro:acervo";   // formato da 0.9.0 a 0.11.0, e o modo sem IndexedDB
 const DB_NAME = "cancioneiro", DB_STORE = "acervos";
-const DEMO_SOURCE = "demo.json";           // chave das marcas do acervo que o Pages carrega sozinho
+const DEMO_SOURCE = "demo.json";           // chave das marcas do demo (o Pages o carregava sozinho ate a 0.20.0)
 // db: o banco, ou null = sem IndexedDB (modo da 0.11.0). count: quantos guardados.
 const Store = { db: null, count: 0, noDbNoticeShown: false };
 App.source = null;                         // o nome do arquivo do acervo aberto
@@ -2478,7 +2459,7 @@ async function boot() {
   Store.count = Store.db ? records.length : 0;
   migrateMarks(records);
   const pick = records.find(r => r.source === App.ui.open) || newest(records);
-  if (!pick) { tryAutoLoad(); return; }
+  if (!pick) return;   // 0.21 (i-058): sem acervo guardado, abre vazio
   openRecord(pick);
   toast("Acervo do navegador: " + (pick.json.title || pick.source) + " · importado em " + fmtDate(pick.savedAt)
         + moduleRefsNotice(pick.json) + noDbNotice());
@@ -2486,7 +2467,7 @@ async function boot() {
 
 /** Esquece um acervo: so ele sai do navegador. As marcas «usei» dele ficam, e
     reimportar o arquivo as traz de volta. Se era o aberto, abre o importado mais
-    recente que sobrou; sem nenhum, volta ao estado inicial (no Pages, o demo). */
+    recente que sobrou; sem nenhum, volta ao estado inicial, vazio (0.21.0). */
 async function forgetAcervo(source) {
   if (!source) return;
   const pending = await recordChanges(source);
@@ -2504,6 +2485,13 @@ async function forgetAcervo(source) {
   let rest = [];
   if (Store.db) { try { rest = await dbAll(); } catch (e) { rest = []; } }
   if (rest.length) { openRecord(newest(rest)); toast(msg); return; }
+  showEmpty();
+  toast(msg);
+}
+
+/** Volta ao estado inicial: nenhum acervo aberto, a tela vazia (desde a 0.21.0,
+    tambem no Pages: sem acervo de exemplo, i-058). */
+function showEmpty() {
   App.collection = null; App.activeModules = {}; App.bpm = {}; App.modulesById = {}; App.source = null;
   App.saved = false; App.changes = 0; App.originText = ""; App.unsavedInMemory = false;
   App.link = null; App.lastWrite = null;   // I4
@@ -2512,8 +2500,28 @@ async function forgetAcervo(source) {
   document.getElementById("origin").textContent = "";
   document.getElementById("stats").textContent = "";
   render();
-  toast(msg);
-  tryAutoLoad();
+}
+
+/** Esquece todos os acervos guardados neste navegador (0.21.0, i-059). Conta e
+    avisa as alteracoes nao salvas antes; as marcas «usei» ficam, como no
+    esquecer de um so; os arquivos no computador nao sao tocados. */
+async function forgetAllAcervos() {
+  if (!Store.db) return;
+  let recs = [];
+  try { recs = await dbAll(); } catch (e) { toast("Não consegui ler os acervos guardados: " + e.message); return; }
+  if (!recs.length) return;
+  const pending = recs.reduce((n, r) =>
+    n + (r.source === App.source && App.saved ? App.changes : (r.changes || 0)), 0);
+  const ask = "Esquecer " + nPlural(recs.length, "o acervo guardado", "os " + recs.length + " acervos guardados")
+    + " neste navegador?" + (pending ? " " + nPlural(pending, "alteração não salva se perde", "alterações não salvas se perdem") + "." : "")
+    + " Os arquivos no seu computador não são tocados.";
+  if (!(await confirmAsk(ask, "esquecer todos"))) return;
+  try { await dbDo("readwrite", st => st.clear()); } catch (e) { toast("Não consegui esquecer: " + e.message); return; }
+  await refreshCount();
+  showEmpty();
+  renderAcervosDialog();
+  toast(nPlural(recs.length, "acervo esquecido", "acervos esquecidos")
+    + ". As marcas «usei» ficam: reimportar os arquivos as traz de volta. Os arquivos no seu computador não foram tocados.");
 }
 
 /** Redesenha a linha de origem do acervo aberto (depois de mudar a contagem). */
@@ -2531,6 +2539,8 @@ async function renderAcervosDialog() {
   let recs = [];
   try { recs = await dbAll(); } catch (e) { recs = []; }
   recs.sort((a, b) => String(b.savedAt).localeCompare(String(a.savedAt)));
+  // 0.21 (i-059): com dois ou mais guardados; com um so, «esquecer este» ja basta
+  document.getElementById("forget-all-btn").hidden = recs.length < 2;
   list.textContent = "";
   const plural = (n, um, varios) => n + " " + (n === 1 ? um : varios);
   recs.forEach(r => {
@@ -2820,11 +2830,14 @@ function openImportDialog(src, name, dest) {
   document.getElementById("import-dest").hidden = !hasSongs && refs.list.length > 0;
   document.getElementById("import-dialog-title").textContent = !refs.list.length ? "Importar faixas"
     : hasSongs ? "Importar faixas e fórmulas" : "Importar fórmulas";
+  // 0.21: o texto diz o que de fato vem (antes dizia «Faixa» mesmo so com formulas)
+  document.getElementById("import-what").textContent = !refs.list.length ? "Faixa idêntica a uma"
+    : hasSongs ? "Faixa ou fórmula idêntica a uma" : "Fórmula idêntica a uma";
   const list = document.getElementById("import-list");
   list.textContent = "";
   src.albums.forEach((a, ai) => {
     const li = document.createElement("li");
-    const h = document.createElement("strong"); h.textContent = a.title || a.id || "álbum"; li.appendChild(h);
+    li.appendChild(groupBox(a.title || a.id || "álbum", li));   // 0.21 (i-053): marca ou desmarca o album
     (a.songs || []).forEach((s, si) => {
       const lab = document.createElement("label");
       const cb = document.createElement("input");
@@ -2849,9 +2862,9 @@ function openImportDialog(src, name, dest) {
   document.getElementById("import-cancel-btn").onclick = () => dlg.close();
   document.getElementById("import-ok-btn").onclick = async () => {
     if (sel.value === "__new" && !inp.value.trim()) { inp.focus(); return; }
-    const keys = new Set([...list.querySelectorAll('input[type="checkbox"]')]
+    const keys = new Set([...list.querySelectorAll("input[data-key]")]
       .filter(c => c.checked).map(c => c.dataset.key));
-    const refKeys = new Set([...document.querySelectorAll('#import-formula-list input[type="checkbox"]')]
+    const refKeys = new Set([...document.querySelectorAll("#import-formula-list input[data-ref]")]
       .filter(c => c.checked).map(c => Number(c.dataset.ref)));
     dlg.close();
     await importTracks(src, keys, sel.value, inp.value.trim(), { refs: refs.list, keys: refKeys, invalid: refs.invalid });
@@ -2964,21 +2977,49 @@ function importableRefs(src) {
   return { list, invalid: all.length - list.length };
 }
 
-/** A secao «Formulas» da janela de importar: uma caixa por formula, marcadas. */
+/** A caixa de um grupo na janela de importar (0.21.0, i-053): o titulo do album
+    ou da origem, com uma caixa que marca ou desmarca as caixas do grupo. Fica
+    meio marcada quando so parte do grupo esta marcada. Nao tem data-key nem
+    data-ref: a importacao so le as caixas dos itens. */
+function groupBox(title, li) {
+  const lab = document.createElement("label"); lab.className = "grp";
+  const cb = document.createElement("input");
+  cb.type = "checkbox"; cb.checked = true;
+  cb.setAttribute("aria-label", "Marcar ou desmarcar todos de " + title);
+  lab.appendChild(cb); lab.appendChild(document.createTextNode(" " + title));
+  const items = () => [...li.querySelectorAll("input[data-key], input[data-ref]")];
+  cb.addEventListener("change", () => { items().forEach(c => { c.checked = cb.checked; }); });
+  li.addEventListener("change", e => {
+    if (e.target === cb) return;
+    const on = items().filter(c => c.checked).length;
+    cb.checked = on > 0; cb.indeterminate = on > 0 && on < items().length;
+  });
+  return lab;
+}
+
+/** A secao «Formulas» da janela de importar: agrupada por origem (`source`), na
+    ordem do arquivo, com a caixa do grupo (0.21.0, i-053); todas marcadas. */
 function fillImportFormulas(list) {
   const box = document.getElementById("import-formulas"), ul = document.getElementById("import-formula-list");
   ul.textContent = "";
   box.hidden = !list.length;
+  const groups = new Map();
   list.forEach((r, i) => {
-    const li = document.createElement("li");
+    const key = r.source || "Sem origem";
+    if (!groups.has(key)) {
+      const li = document.createElement("li");
+      li.appendChild(groupBox(key, li));
+      groups.set(key, li); ul.appendChild(li);
+    }
+    const li = groups.get(key);
     const lab = document.createElement("label");
     const cb = document.createElement("input");
     cb.type = "checkbox"; cb.checked = true; cb.dataset.ref = String(i);
     lab.appendChild(cb);
     lab.appendChild(document.createTextNode(" " + (r.label || r.id) + " "));
-    const m = document.createElement("span"); m.className = "acervo-meta"; m.textContent = r.source ? r.id + " · " + r.source : r.id;
+    const m = document.createElement("span"); m.className = "acervo-meta"; m.textContent = r.id;
     lab.appendChild(m);
-    li.appendChild(lab); ul.appendChild(li);
+    li.appendChild(lab);
   });
 }
 
@@ -3344,6 +3385,7 @@ document.getElementById("save-as").addEventListener("click", saveAsOther);
 document.getElementById("save-download").addEventListener("click", downloadCollection);
 document.getElementById("unlink-btn").addEventListener("click", unlinkFile);
 document.getElementById("forget-btn").addEventListener("click", () => forgetAcervo(App.source));
+document.getElementById("forget-all-btn").addEventListener("click", forgetAllAcervos);
 document.getElementById("menu-import").addEventListener("click", pickAndImport);   // I4
 document.getElementById("menu-import-tracks").addEventListener("click", pickTracksFile);
 document.getElementById("more-brand").textContent =
