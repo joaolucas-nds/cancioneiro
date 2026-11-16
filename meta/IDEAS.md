@@ -116,8 +116,9 @@ A API expõe pesos 0.00-1.00 para aderência ao estilo e desvio criativo (os Cre
 **Em trabalho (2026-10-28, DEC-021, WO 0015).** O teste base do prompt (tres chats, `meta/specs/261028-prompt-modelo-e-modulos.md`) confirmou o base no limite (10+ tags em 5 de 9 faixas) e mostrou um problema maior: o prompt nao ensinava o contrato de modulo, e os tres chats inventaram tres formatos. O prompt agora pede style com 6 a 8 tags e ate 10 com os modulos ligados. Fecha com o reteste do dono.
 **Entregue em 0.8.0.** Reteste (2026-10-29, dois chats): base com 7 ou 8 tags e recomposto com 8 a 10 em 6 de 6 faixas.
 
-### i-029 💡 Avisar quando a palavra de andamento contradiz o BPM
+### i-029 ❌ Avisar quando a palavra de andamento contradiz o BPM
 `[nascido da spec do BPM, 2026-10-28]` Com o controle, ar-04 vai a 140 e continua dizendo «downtempo» e «slow build». A linha de qualidade poderia avisar, em ambar, quando uma palavra de andamento do Style («downtempo», «slow», «uptempo», «fast») briga com o numero. Pesar contra: exige uma tabela palavra → faixa de BPM, conhecimento de dominio que muda com o Suno — o mesmo motivo que tirou a tabela de generos vocais da DEC-019. Se entrar, a tabela mora num objeto unico com fonte e data, como o `QUALITY_LIMITS`.
+**Fechada sem código (2026-11-16, decidido pelo dono: opção A da análise `meta/analises/261116-ANALISE-palavra-de-andamento.md`):** nos 806 styles dos dois acervos, 0 conflitos; a palavra crua dá falso positivo («fast rap verses», «slow build»); as tabelas de BPM discordam em até 40. Virou uma linha na `macetes-suno` §5 («ao mudar o BPM, reveja a palavra»). Se o campo mostrar uma faixa errada por isso, a opção B da análise (aviso só depois de mexer no controle, sem tabela) está pronta.
 
 ### i-030 ✅ Ordem dos campos no cartao: Lyrics acima do Style, como no Suno
 `[relatado pelo dono, 2026-10-28]` O cartao mostra Style em cima e Lyrics embaixo; no Suno e o contrario, e copiar na ordem da tela agilizaria. O dono prefere que seja **configuravel**. A preferencia e estado de interface e pode morar no navegador (DEC-004). A decidir na spec: se o export MD segue a ordem escolhida, e onde fica o controle (cabecalho ou cartao).
@@ -233,6 +234,7 @@ Achado no teste da entrega 2 (2026-11-05): o CSS `.controls { display: flex }` v
 
 ### i-057 💡 Importar vários .json de uma vez, e onde soltar decide o que vira
 `[relatado pelo dono, 2026-11-15]` Arrastar mais de um `.json` de uma vez (faixas e álbuns misturados) abre uma janela que pergunta, por arquivo: importar como **acervo novo** ou como **faixas no acervo e álbum abertos**. Variante do dono: o lugar onde se solta decide — soltar na **lateral esquerda** importa direto, rápido, como acervo separado (vai para «Acervos neste navegador»); soltar na lista importa como faixas. Hoje: um arquivo por vez; soltar sobre um álbum já importa faixas nele (0.16.0). Pede spec (a janela de vários arquivos e as duas zonas).
+**Spec em rascunho (2026-11-16):** `meta/specs/261116-varios-json.md`, com quatro pontos para o dono (o padrão de cada linha, qual acervo fica aberto, a lateral como zona e um arquivo na lateral).
 
 ### i-058 ✅ Começar vazio: sem acervo de exemplo
 `[relatado pelo dono, 2026-11-15]` Sem acervo importado, o app deve abrir **vazio**, e não com o exemplo. Medido em 2026-11-15: `data/exemplo-cinzeiro.json` não é lido pelo app nem pelos testes (só citado em docs) e pode sair; `data/demo.json` é o que o Pages carrega sozinho, o que «Baixar exemplo» entrega e a base dos testes — ele fica no repo, só deixa de abrir sozinho. Mudança pequena no app, mas mexe no `tryAutoLoad` e nos testes que contam com ele.

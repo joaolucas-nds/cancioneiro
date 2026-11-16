@@ -6,7 +6,7 @@ description: O que tem efeito no Suno e o que é mito — os dois campos, o styl
 # Macetes do Suno — o que tem efeito
 
 > Parte do kit de música do Cancioneiro (`kit-musica/`). Fonte: `meta/HISTORY.md` do Cancioneiro, que
-> traz cada item com data, fonte e nível de confiança. **Conferido em 2026-10, Suno v6; §10 e §11 em 2026-11; §12 em 2026-11-15 e 2026-11-16.** A interface
+> traz cada item com data, fonte e nível de confiança. **Conferido em 2026-10, Suno v6; §10 e §11 em 2026-11; §12 em 2026-11-15 e 2026-11-16; a palavra de andamento (§5) em 2026-11-16.** A interface
 > do Suno muda: se o dono disser que um botão ou campo não existe na conta dele, acredite nele.
 
 ## 1. Dois campos, dois trabalhos
@@ -65,6 +65,9 @@ e marque as repetições com a tag (`[Chorus]`).
   Se a rampa for escolha consciente, escreva-a num trecho só (`95 BPM building to 115 BPM`): desde a 0.19.0 o
   Cancioneiro a reconhece, copia como está e avisa em âmbar; dois números soltos continuam sendo erro.
 - O campo `bpm` do JSON repete o número do style.
+- **A palavra de andamento acompanha o número** («slow tempo» com 70, «uptempo» com 128): palavra e número que
+  brigam («slow jazz» com 140) mandam sinais opostos. **Ao mudar o BPM, reveja a palavra.** «Fast» e «slow» que
+  falam do canto ou do arranjo («fast rap verses», «slow build») não são andamento.
 
 ## 6. Instrumental
 

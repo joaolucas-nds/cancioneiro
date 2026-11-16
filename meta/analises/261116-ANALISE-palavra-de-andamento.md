@@ -1,6 +1,6 @@
 # ANÁLISE — Avisar quando a palavra de andamento contradiz o BPM (i-029)
 
-> **Status:** Em discussão — aguarda o dono (ponto de decisão no fim)
+> **Status:** Decidida — opção A, pelo dono em 2026-11-16 `[relatado pelo dono]`; aplicada pela WO 0045
 > **Data:** 2026-11-16 (data de criação; não muda depois)
 > **Ideia de origem:** i-029 (nascida da spec do BPM, 2026-10-28). Frente escolhida pelo dono em 2026-11-16 `[relatado pelo dono]`.
 

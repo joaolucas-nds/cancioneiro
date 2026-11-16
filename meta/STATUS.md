@@ -7,11 +7,12 @@
 
 ---
 
-## Última conversa (2026-11-16, 0.21.0 conferida, a leva 2 no kit, WO 0044)
+## Última conversa (2026-11-16, i-029 fechada, spec da i-057, WO 0045)
 
-- **0.21.0 conferida na tela pelo dono** («roteiro da 0.21.0 ok» `[relatado pelo dono, 2026-11-16 06:28]`). Aplicada em dois commits (`5a35acb` só a remoção do exemplo, `822b70d` o resto), por um `git add` da WO que listava o arquivo já removido; CI verde nos dois `[medido pelo Code]`.
-- **A leva 2 entrou no kit** (WO 0044): `escrever-letra-suno` e `conceber-album` em `kit-musica/skills/`, com os acréscimos da prova; a `macetes-suno` §10 e §12; o README do kit e o `BLOCO-SUNO.md` (só o cabeçalho e a Parte 2; a Parte 1 não muda). Carta 06 ao KCM; carta 04 ao projeto Rainha.
-- **Este bloco substitui o anterior** (0.21.0 e as cartas 03 a 05, WO 0043). O que ele dizia está em `logs/2026-11-16.md`, Conversa 1.
+- **i-029 fechada sem código** (opção A, decidida pelo dono em 2026-11-16 `[relatado pelo dono]`; análise `meta/analises/261116-ANALISE-palavra-de-andamento.md`): 0 conflitos nos 806 styles; uma linha na `macetes-suno` §5. Carta 07 ao KCM.
+- **Spec da i-057 em rascunho** (`meta/specs/261116-varios-json.md`): vários `.json` numa janela, por arquivo «acervo novo» ou «faixas no aberto»; a lateral como zona de «acervo novo» direto; quatro pontos para o dono.
+- **A leva 2 entrou no kit** antes disso (`94235bd`, WO 0044, CI verde); o kit v2 está completo.
+- **Este bloco substitui o anterior** (0.21.0 conferida, leva 2 no kit). O que ele dizia está em `logs/2026-11-16.md`.
 
 ## Funciona (pronto)
 
@@ -63,7 +64,7 @@ Ordem decidida pelo dono em 2026-11-14 `[relatado pelo dono]`: primeiro o kit no
 1. **Responder ao projeto Rainha quando a medição chegar** — o fim de faixa (i-056, número F-1) e o teste de Voice v6 com Variety em Off; o que for regra vai ao kit e, por carta, ao KCM.
 2. **Paleta de módulos do acervo** (i-052) — pede análise; depois dos primeiros projetos.
 3. **Kit de música v2 completo** (i-039): a leva 2 entrou no kit pela WO 0044; o KCM copia pela carta 06. Próximo gatilho: o que o projeto Rainha relatar nas próximas faixas.
-4. **Antes do recesso, quando der:** a palavra de andamento contra o BPM (i-029, pede uma tabela com fonte antes do código). Importar vários `.json` e as zonas de soltar (i-057) pedem spec. A i-053, o texto da importação e a i-058 saíram na 0.21.0.
+4. **Antes do recesso:** importar vários `.json` e a lateral como zona de «acervo novo» (i-057, 0.22.0) — spec em rascunho em `meta/specs/261116-varios-json.md`, à espera dos quatro pontos do dono. A i-029 fechou sem código (uma linha na `macetes-suno` §5).
 5. **Depois de um recesso:** outras plataformas de música por IA (i-032) e arrastar faixa para outro acervo (i-050).
 
 ## Notas de estado
