@@ -5,7 +5,7 @@
 > e não tocada: o pedido ao Suno vira o artefato, e o Cancioneiro organiza e copia.
 >
 > **Como usar:** cole a **Parte 1** no fim das Instruções do projeto (cabe no teto do KCM: medir antes e
-> depois) e a **Parte 2** no `meta/CEREBRO.md` do projeto. Suba ao projeto as duas skills de
+> depois) e a **Parte 2** no `meta/CEREBRO.md` do projeto. Suba ao projeto as quatro skills de
 > `kit-musica/skills/` e o prompt-modelo (`schema/PROMPT-PARA-CHATS.md`, ou o botão «Prompt» do app).
 
 ---
@@ -46,7 +46,8 @@ Os números são os do painel de qualidade do Cancioneiro, que os mantém com fo
 conversa tiver execução, nunca de cabeça. Vermelho (o Suno corta) se resolve antes de entregar, com proposta
 concreta de corte; cortar letra é decisão do dono.
 
-**Ciclo de uma faixa.** Conceito (PROJETO) → letra com prosódia (LETRAS) → pedido ao Suno (JSON, revisado) →
+**Ciclo de uma faixa.** Conceito (PROJETO; o álbum pela `conceber-album`) → letra com prosódia (LETRAS, pela
+`escrever-letra-suno`) → pedido ao Suno (JSON, revisado) →
 o dono gera e relata o que ouviu → ajuste do pedido, uma variável por vez (variante ou módulo, sem reescrever a
 faixa), ou uma ferramenta do Suno quando só um trecho falha (`macetes-suno` §10 e §11) → estado em
 FAIXAS. Relato do dono é a única medida de som; registre-o com a data e a versão do Suno.

@@ -6,7 +6,7 @@ description: O que tem efeito no Suno e o que é mito — os dois campos, o styl
 # Macetes do Suno — o que tem efeito
 
 > Parte do kit de música do Cancioneiro (`kit-musica/`). Fonte: `meta/HISTORY.md` do Cancioneiro, que
-> traz cada item com data, fonte e nível de confiança. **Conferido em 2026-10, Suno v6; §10 e §11 em 2026-11; §12 em 2026-11-15.** A interface
+> traz cada item com data, fonte e nível de confiança. **Conferido em 2026-10, Suno v6; §10 e §11 em 2026-11; §12 em 2026-11-15 e 2026-11-16.** A interface
 > do Suno muda: se o dono disser que um botão ou campo não existe na conta dele, acredite nele.
 
 ## 1. Dois campos, dois trabalhos
@@ -105,7 +105,7 @@ e mude **uma coisa só** por rodada — duas mudanças juntas não dizem qual fu
 | «tem instrumento sobrando/faltando» | uma tag de instrumento, ou o Exclude |
 | «o style que aparece na faixa não é o que eu colei» | nada no texto: ponha **Variety em Off** e gere de novo (§12) |
 | «a voz não é essa» | a tag de voz; para manter a mesma voz em várias faixas, style fixo com Variety em Off, ou Voices (§11) |
-| «a faixa segue tocando depois que a letra acaba» | o fim: `[Outro]` curto e de corte seco (sem «fading»), `[End]` depois da última linha, última linha sem repetir a anterior; a sobra, corte (Crop) em vez de gerar de novo. Hipótese do projeto Rainha da Preguiça (2026-11-15), ainda sem medição |
+| «a faixa segue tocando depois que a letra acaba» | não peça de novo: **Recortar** o fim (plano gratuito). `[End]` no fim da letra não encurtou a cauda de forma visível no projeto Rainha da Preguiça (2026-11-15); a última linha sem repetir a anterior ainda ajuda (`escrever-letra-suno` §6, §9) |
 | «correu / pulou parte da letra» | a letra: está acima de ~3.000? refrão por extenso repetido? (`revisar-faixa`) |
 | «cantou onde era instrumental» | `[Instrumental]` sozinho no Lyrics (§6) |
 | «está bom, mas um trecho ficou fraco» | não peça de novo: Replace Section ou Extend (§11) |
@@ -149,7 +149,10 @@ Fontes da §11: [Suno — Voices](https://suno.com/voices) ·
 - **Variety reescreve o style.** O FAQ do Suno diz que o controle introduz variedade «ajustando e atualizando os
   seus prompts de estilo», e que, para manter o controle total das tags, é preciso baixá-lo a 0. O padrão é
   Normal no v6 e no v6-mini: sem mexer, o style que aparece na faixa gerada já não é o que foi colado.
-  **Style escrito à mão (ou copiado do Cancioneiro) = Variety em Off.** Personalize (a varinha) fica desligado.
+  **Style escrito à mão (ou copiado do Cancioneiro) = Variety em Off.** Com Variety em Off, «Personalizar» não
+  liga (a tela diz «Aumente Variedade para usar Personalizar»): o perfil «Meu gosto» do dono não entra na geração.
+  Ele ainda entra pela **varinha** do campo de estilos, com «Meus estilos» ligado: não use a varinha num style
+  já escrito (capturas do dono, 2026-11-15).
 - **Medido no campo** (Rainha da Preguiça, 2026-11-15, v6-mini): mesmo style e Variety em Off deram cantora
   parecida e o mesmo gênero em quatro faixas, sem Voice.
 - **Max Mode** gasta o dobro de créditos para manter a faixa consistente do começo ao fim. É o que se

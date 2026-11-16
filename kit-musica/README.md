@@ -12,13 +12,15 @@ pedido (style e letra) — e entram regras que o nicho não traz: limites que co
 tags, rótulo fora do copiável, o JSON que o Cancioneiro lê. Medido nos guias antigos do dono, escritos sem
 essas regras: 72 de 151 letras acima do limite, 138 de 151 styles com tags demais.
 
-## As três peças
+## As peças
 
 | Peça | O que é | Quando é lida |
 |---|---|---|
 | `BLOCO-SUNO.md` | Parte 1: cinco linhas para as Instruções do projeto (679 caracteres). Parte 2: seção para o CEREBRO do projeto | sempre (Parte 1); sob demanda (Parte 2) |
 | `skills/macetes-suno/SKILL.md` | o que tem efeito no Suno e o que é mito, com exemplo bom e ruim; o que mudar depois de ouvir e as ferramentas do Suno | ao escrever ou reescrever style e letra, e quando o dono relata o que ouviu |
 | `skills/revisar-faixa/SKILL.md` | oito conferências por faixa, com script que conta (não estima) | antes de entregar faixa ou álbum |
+| `skills/escrever-letra-suno/SKILL.md` | a cena antes da rima, o orçamento, o tamanho da linha, as tags de seção, os parênteses, a repetição que trava, a pronúncia em pt-BR e o refino (leva 2, 2026-11-15) | ao escrever, reescrever ou limpar uma letra, e ao receber letra reescrita pelo Suno |
+| `skills/conceber-album/SKILL.md` | o que une o álbum, o estilo-base fixo com Variety em Off, a voz (Cover no gratuito, Voices no pago), a faixa-piloto, o arco e a bíblia do projeto (leva 2, 2026-11-15) | ao começar ou reagrupar um álbum, e quando as faixas «não parecem da mesma cantora» |
 
 O contrato do JSON não é peça nova: é o prompt-modelo (`schema/PROMPT-PARA-CHATS.md`, ou o botão «Prompt»
 do app), que o projeto recebe junto.
@@ -28,7 +30,7 @@ do app), que o projeto recebe junto.
 1. Crie o projeto de música pelo KCM, nicho Música.
 2. Cole a Parte 1 do `BLOCO-SUNO.md` no fim das Instruções do projeto (meça: o KCM tem teto) e a Parte 2 no
    `meta/CEREBRO.md` dele.
-3. Suba ao projeto as duas skills e o prompt-modelo.
+3. Suba ao projeto as quatro skills e o prompt-modelo.
 4. Peça faixas; o chat entrega o `.json`; arraste para o Cancioneiro. Para juntar a um acervo que já existe,
    solte o `.json` sobre um álbum (a lista ou a lateral): abre «importar faixas» com ele escolhido.
 5. Organize no Cancioneiro (arrastar, o «⋯» de cada faixa, várias de uma vez). No Chrome e no Edge do
@@ -46,7 +48,7 @@ tocada:
 | eixo «música tocada × gerada por IA» | um seletor no `topbar` (hoje há «DAW / ferramenta»), que liga o resto |
 | Parte 1 do bloco | `behaviors` (curto nas Instruções, inteiro no CEREBRO) e `conventions` |
 | Parte 2 do bloco | seção do CEREBRO gerado |
-| `macetes-suno`, `revisar-faixa` | `skillsPack.skills` (o formato dele: `name`, `gatilho`, `description`, `body`) |
+| `macetes-suno`, `revisar-faixa`, `escrever-letra-suno`, `conceber-album` | `skillsPack.skills` (o formato dele: `name`, `gatilho`, `description`, `body`) |
 | pedido de faixa no JSON | `promptsExtra` («Gerar faixa para o Suno») e `outputs` (o `.json`) |
 | catálogo | `FAIXAS.md` segue com estado e o que falta; o JSON é o copiável |
 

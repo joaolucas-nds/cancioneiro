@@ -7,12 +7,11 @@
 
 ---
 
-## Última conversa (2026-11-16, 0.21.0 e as cartas 03 a 05 do projeto Rainha, WO 0043)
+## Última conversa (2026-11-16, 0.21.0 conferida, a leva 2 no kit, WO 0044)
 
-- **0.21.0 implementada pelo chat num clone** (spec `meta/specs/261116-importar-e-comecar-vazio.md`): abrir vazio, esquecer todos, a caixa do grupo na importação e o texto dela (i-058, i-059, i-053, DEC-039). 67 testes no clone `[medido pelo chat]`.
-- **Cartas 03 a 05 do projeto Rainha respondidas** pela carta 03 do Cancioneiro: o `[End]` não encurtou a cauda (i-056 fechada sem fazer); medir a referência por sinal vira ideia (i-060); a leva 2 passou na prova (WO de entrada no kit na próxima rodada).
-- **Achado nas capturas do dono (2026-11-15):** «Personalizar» só liga com Variety acima de Off («Aumente Variedade para usar Personalizar»); Recortar é do plano gratuito, Fade out e Substituir trecho são Pro.
-- **Este bloco substitui o anterior** (o v6 no kit, WO 0040 a 0042). O que ele dizia está em `logs/2026-11-15.md`.
+- **0.21.0 conferida na tela pelo dono** («roteiro da 0.21.0 ok» `[relatado pelo dono, 2026-11-16 06:28]`). Aplicada em dois commits (`5a35acb` só a remoção do exemplo, `822b70d` o resto), por um `git add` da WO que listava o arquivo já removido; CI verde nos dois `[medido pelo Code]`.
+- **A leva 2 entrou no kit** (WO 0044): `escrever-letra-suno` e `conceber-album` em `kit-musica/skills/`, com os acréscimos da prova; a `macetes-suno` §10 e §12; o README do kit e o `BLOCO-SUNO.md` (só o cabeçalho e a Parte 2; a Parte 1 não muda). Carta 06 ao KCM; carta 04 ao projeto Rainha.
+- **Este bloco substitui o anterior** (0.21.0 e as cartas 03 a 05, WO 0043). O que ele dizia está em `logs/2026-11-16.md`, Conversa 1.
 
 ## Funciona (pronto)
 
@@ -63,7 +62,7 @@ Ordem decidida pelo dono em 2026-11-14 `[relatado pelo dono]`: primeiro o kit no
 
 1. **Responder ao projeto Rainha quando a medição chegar** — o fim de faixa (i-056, número F-1) e o teste de Voice v6 com Variety em Off; o que for regra vai ao kit e, por carta, ao KCM.
 2. **Paleta de módulos do acervo** (i-052) — pede análise; depois dos primeiros projetos.
-3. **Kit de música v2, leva 2** (i-039) — **passou na prova de campo** (carta 05 do projeto Rainha, 2026-11-15: 3 de 3 sem vermelho, 3 de 3 no orçamento, 2 de 3 aprovadas na escuta). Falta a WO que põe as duas skills no kit com os dois acréscimos pedidos (o Cover como jeito de manter a cantora no plano gratuito; tag de modo de canto no style-base empurra o álbum inteiro) e a §10 e a §12 da `macetes-suno` (o `[End]` sem efeito; Personalize exige Variety acima de Off); depois, a carta 06 ao KCM.
+3. **Kit de música v2 completo** (i-039): a leva 2 entrou no kit pela WO 0044; o KCM copia pela carta 06. Próximo gatilho: o que o projeto Rainha relatar nas próximas faixas.
 4. **Antes do recesso, quando der:** a palavra de andamento contra o BPM (i-029, pede uma tabela com fonte antes do código). Importar vários `.json` e as zonas de soltar (i-057) pedem spec. A i-053, o texto da importação e a i-058 saíram na 0.21.0.
 5. **Depois de um recesso:** outras plataformas de música por IA (i-032) e arrastar faixa para outro acervo (i-050).
 

@@ -49,6 +49,7 @@ Comece vazia e escreva quando doer duas vezes: técnica que você precisou expli
 - **Contar por prefixo não é contar.** A spec da entrega 2 disse «7 chaves de outros projetos» contando os `kit-state-*`; eram 9. Contagem que vai para documento sai do item por item, não do padrão que a maioria segue.
 - **Checagem de WO não usa emoji no padrão do `grep`.** No shell do Code, `grep -c '🔨'` devolve 0 com o emoji presente (WO 0017, checagem 5). Conte pelo texto vizinho (`'^### i-03[03-7] '`) ou pelo hash.
 - **Ponte · `device_commit_files` com o mesmo `stagedPath` pode gravar o conteúdo velho.** Em 2026-11-14 o chat regravou o log pelo mesmo nome em `outputs/` e o disco recebeu a versão de horas antes, apagando a seção do Code (recuperada do Git no mesmo turno). Grave cada entrega com um nome novo em `outputs/` e confira o `sha1sum` no disco do dono depois de gravar.
+- **WO que remove arquivo: o `git rm` já põe a remoção no índice; o `git add` do commit não cita o arquivo removido.** Na WO 0043 o `git add` listava o `data/exemplo-cinzeiro.json` já removido, abortou com «pathspec» sem adicionar nada, e o commit saiu só com a remoção (`5a35acb`); o resto foi num segundo commit. Gerar o bloco de commit da WO a partir da lista dos arquivos que existem na chegada.
 
 ## Princípios de trabalho
 
