@@ -598,7 +598,7 @@
 ## DEC-040 — Importar vários `.json`: uma janela por arquivo, a lateral como zona de «acervo novo»
 
 **Data:** 2026-11-16
-**Status:** aceita — implementação pendente (0.22.0)
+**Status:** aceita (0.22.0)
 **Contexto:** O app lê um arquivo por vez (`files[0]`): soltar três importa o primeiro e cala os outros. O dono pediu (i-057, 2026-11-15) escolher por arquivo entre acervo novo e faixas no aberto, e soltar na lateral para guardar direto como acervo. A spec `meta/specs/261116-varios-json.md` trouxe quatro pontos; o dono escolheu os quatro como recomendados em 2026-11-16 `[relatado pelo dono]`.
 **Decisão:**
 - Um arquivo: nada muda.
@@ -608,3 +608,4 @@
 - O aviso do arraste diz a zona; os botões de importar aceitam vários arquivos.
 **Alternativas consideradas:** tudo «Acervo novo» ou tudo «Faixas» como padrão; abrir o último importado; só a janela, sem a lateral como zona; um arquivo na lateral continuar como hoje.
 **Consequências:** (+) Vários arquivos num gesto, sem perder nenhum em silêncio. (+) A lateral vira o atalho de guardar. (−) Um arquivo solto na lateral passa a não abrir o acervo (muda o gesto de hoje). (−) O vínculo do «Salvar» de cada arquivo tem de ser pego durante o `drop`.
+**Na implementação (0.22.0), o que a decisão deixou aberto:** os textos são os da spec, quase literais. O mesmo nome do acervo aberto, em «Acervo novo», substitui o que está na tela (guardar sem abrir deixaria a tela com um rascunho que já não é o guardado). Sem IndexedDB (um acervo só), a lateral não é zona e a janela abre o último guardado. Os acervos novos entram no seletor pela regra de sempre, o mais recente primeiro. Pelos botões, o padrão de cada linha é o do botão («Importar .json…» → acervo novo; «Importar faixas…» → faixas), como diz a spec, item 5; a forma do arquivo decide só no arraste.

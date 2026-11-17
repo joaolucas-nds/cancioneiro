@@ -1,6 +1,6 @@
 # SPEC — Importar vários `.json` de uma vez, e onde soltar decide o que vira (i-057)
 
-> **Status:** Pronta para implementar — os quatro pontos decididos pelo dono em 2026-11-16, como recomendados (1a, 2a, 3a, 4a; DEC-040). Implementação na próxima conversa (0.22.0).
+> **Status:** Implementada (0.22.0, 2026-11-16) — os quatro pontos decididos pelo dono em 2026-11-16, como recomendados (1a, 2a, 3a, 4a; DEC-040). V1 a V8 em `tests/test_varios_json.py` (14 testes); o que a DEC-040 deixou aberto está na própria DEC, «Na implementação».
 > **Data:** 2026-11-16 (data de criação; não muda depois)
 > **Ideia de origem:** i-057 `[relatado pelo dono, 2026-11-15]`; frente escolhida pelo dono em 2026-11-16.
 > **Depende de:** 0.21.0 (`822b70d`).

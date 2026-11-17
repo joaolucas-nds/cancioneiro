@@ -519,6 +519,20 @@
   .import-list label { font-size: 13px; margin: 0; }
   .import-list label.grp { font-weight: 600; }   /* 0.21: a caixa do grupo (album ou origem), i-053 */
   .import-dialog h3, .formulas-dialog h3 { font-size: 13px; font-weight: 600; margin: 10px 0 0; }
+  /* 0.22 (i-057, DEC-040): a janela de varios arquivos. Nome que nao quebra empurraria a
+     janela para os lados: quebra em qualquer ponto. No celular, em tela cheia, alvos de 44 px. */
+  .multi-list .multi-name { font-size: 13px; overflow-wrap: anywhere; }
+  .multi-list .acervo-meta { font-size: 12px; color: var(--ink-soft); overflow-wrap: anywhere; }
+  .multi-list select { margin: 4px 0 0; }
+  .multi-list li.is-off { opacity: .6; }
+  .multi-list .multi-warn { color: var(--amber); font-size: 12px; font-weight: 600; }
+  dialog.prompt-dialog.multi-dialog { box-sizing: border-box; max-height: calc(100vh - 48px); overflow: auto; }
+  @media (max-width: 719px) {
+    dialog.prompt-dialog.multi-dialog { width: 100vw; max-width: 100vw; height: 100dvh; max-height: 100dvh; margin: 0;
+      border: 0; border-radius: 0; }
+    .multi-dialog select, .multi-dialog input[type="text"], .multi-dialog button { min-height: 44px; }
+    .multi-dialog .import-list { max-height: none; }
+  }
 
   /* ---- 0.20: formulas de referencia (DEC-037) ----
      Uma janela so, aberta pela lateral e pelo «⋯». No celular, em tela cheia. */
@@ -644,7 +658,7 @@
     <h1>Cancioneiro</h1>
     <!-- Versao: a mesma do topo do meta/CHANGELOG.md. O scripts/validate.py confere
          que app, CHANGELOG, README e STATUS dizem a mesma (i-027). -->
-    <span class="version" data-role="app-version">v0.21.0</span>
+    <span class="version" data-role="app-version">v0.22.0</span>
   </div>
   <div class="pop-wrap" id="acervo-wrap">
     <button type="button" id="acervo-btn" class="acervo-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="acervo-pop" title="Os acervos guardados neste navegador">
@@ -735,7 +749,7 @@
       <button type="button" role="menuitemradio" class="mobile-only" id="menu-view-cards" aria-checked="false">Visão: Cartões</button>
     </div>
   </div>
-  <input type="file" id="file-input" accept=".json,application/json" hidden>
+  <input type="file" id="file-input" accept=".json,application/json" multiple hidden>
 </header>
 <div class="chips" id="chips" hidden>
   <span class="chips-count" id="chips-count"></span>
@@ -923,7 +937,23 @@
     <button type="button" id="import-ok-btn" class="spacer">importar</button>
   </div>
 </dialog>
-<input type="file" id="tracks-input" accept=".json,application/json" hidden>
+<!-- 0.22 (i-057, DEC-040): varios .json de uma vez. Uma linha por arquivo, com o
+     que ele vira; o destino vale para as faixas de todos e so aparece com «Faixas». -->
+<dialog class="prompt-dialog import-dialog multi-dialog" id="multi-dialog" aria-labelledby="multi-dialog-title">
+  <h2 id="multi-dialog-title">Importar arquivos</h2>
+  <p id="multi-intro"></p>
+  <ul class="import-list multi-list" id="multi-list"></ul>
+  <div id="multi-dest" hidden>
+  <label for="multi-target">Destino das faixas</label>
+  <select id="multi-target"></select>
+  <input type="text" id="multi-new-title" placeholder="título do álbum novo" hidden>
+  </div>
+  <div class="dialog-actions">
+    <button type="button" id="multi-cancel-btn">cancelar</button>
+    <button type="button" id="multi-ok-btn" class="spacer">importar</button>
+  </div>
+</dialog>
+<input type="file" id="tracks-input" accept=".json,application/json" multiple hidden>
 
 <!-- 0.20 (DEC-037): as formulas de referencia do acervo. O Style de cada uma e
      o copiavel; label, notes e source sao referencia e ficam fora do bloco. -->
@@ -937,7 +967,7 @@
   <div class="formulas-body" id="formulas-body"></div>
 </dialog>
 
-<div class="drop-hint" aria-hidden="true">Solte o .json para importar</div>
+<div class="drop-hint" aria-hidden="true">Solte para importar</div>
 
 <script id="lib-sortable">
 /* SortableJS 1.15.7 (https://github.com/SortableJS/Sortable), embutida pela I3 (DEC-030, DEC-032).
@@ -2878,15 +2908,24 @@ function openImportDialog(src, name, dest) {
     importada passa a citar o id novo; o que nao existe em lugar nenhum fica
     citado e e contado (FIX-006: nada de saneamento mudo). */
 async function importTracks(src, keys, dest, newTitle, refPick) {
+  return importTracksMany([{ src, keys, refPick }], dest, newTitle);
+}
+
+/** O miolo do importTracks, para uma ou varias origens (0.22.0, i-057): todas entram
+    numa operacao so, com um «Desfazer». A regra e a mesma por faixa; os ids ja
+    trazidos de um arquivo contam para o seguinte, entao a mesma faixa em dois
+    arquivos entra uma vez, e o mesmo id com conteudo diferente ganha -2.
+    `items`: [{src, keys (Set de "album:faixa"; null = todas), refPick}].
+    `opts.extra`: texto que vai no fim do aviso, mas nao no rotulo do «Desfazer»
+    (os acervos guardados na mesma janela, que o «Desfazer» nao desfaz). */
+async function importTracksMany(items, dest, newTitle, opts) {
+  const extra = (opts && opts.extra) || "";
   const coll = App.collection;
   const prevUndo = App.undo;
   beginEdit();   // I3: a volta do «Desfazer» (sem nada importado, fica a anterior)
   const n = { imported: 0, same: 0, renamed: 0, modsAdded: 0, modsRenamed: 0, missing: 0 };
   const ids = allSongIds();
-  const srcMods = {};
-  (src.styleModules || []).forEach(m => { if (m && typeof m.id === "string") srcMods[m.id] = m; });
   const modIds = new Set(Object.keys(App.modulesById));
-  const renamedMods = {};
   const findSong = id => {
     for (const a of coll.albums) { const s = (a.songs || []).find(x => x.id === id); if (s) return s; }
     return null;
@@ -2895,46 +2934,54 @@ async function importTracks(src, keys, dest, newTitle, refPick) {
   if (dest === "__new") fixed = { id: nextFreeId(idSlug(newTitle), albumIdSet()), title: newTitle, songs: [] };
   else if (dest !== "__keep") fixed = coll.albums.find(a => a.id === dest) || null;
 
-  src.albums.forEach((a, ai) => (a.songs || []).forEach((orig, si) => {
-    if (!keys.has(ai + ":" + si)) return;
-    const s = JSON.parse(JSON.stringify(orig));
-    const ex = ids.has(s.id) ? findSong(s.id) : null;
-    if (ex && JSON.stringify(ex) === JSON.stringify(s)) { n.same++; return; }
-    if (ids.has(s.id)) { s.id = nextFreeId(s.id, ids); n.renamed++; }
-    if (Array.isArray(s.styleModules)) {
-      s.styleModules = s.styleModules.map(ref => {
-        if (typeof ref !== "string") { n.missing++; return ref; }
-        const sm = srcMods[ref], em = App.modulesById[ref];
-        if (!sm) { if (!em) n.missing++; return ref; }
-        if (!em) { addModule(JSON.parse(JSON.stringify(sm))); modIds.add(ref); n.modsAdded++; return ref; }
-        if (JSON.stringify(em) === JSON.stringify(sm)) return ref;
-        if (!renamedMods[ref]) {
-          const nid = nextFreeId(ref, modIds); modIds.add(nid);
-          const copy = JSON.parse(JSON.stringify(sm)); copy.id = nid;
-          addModule(copy); renamedMods[ref] = nid; n.modsRenamed++;
-        }
-        return renamedMods[ref];
-      });
-    }
-    let target = fixed;
-    if (!target) {
-      target = coll.albums.find(x => x.id === a.id);
+  const f = { imported: 0, same: 0, renamed: 0, invalid: 0 };
+  items.forEach(({ src, keys, refPick }) => {
+    // Os modulos sao por origem: o mesmo id pode ser outro modulo em outro arquivo.
+    const srcMods = {};
+    (src.styleModules || []).forEach(m => { if (m && typeof m.id === "string") srcMods[m.id] = m; });
+    const renamedMods = {};
+    src.albums.forEach((a, ai) => (a.songs || []).forEach((orig, si) => {
+      if (keys && !keys.has(ai + ":" + si)) return;
+      const s = JSON.parse(JSON.stringify(orig));
+      const ex = ids.has(s.id) ? findSong(s.id) : null;
+      if (ex && JSON.stringify(ex) === JSON.stringify(s)) { n.same++; return; }
+      if (ids.has(s.id)) { s.id = nextFreeId(s.id, ids); n.renamed++; }
+      if (Array.isArray(s.styleModules)) {
+        s.styleModules = s.styleModules.map(ref => {
+          if (typeof ref !== "string") { n.missing++; return ref; }
+          const sm = srcMods[ref], em = App.modulesById[ref];
+          if (!sm) { if (!em) n.missing++; return ref; }
+          if (!em) { addModule(JSON.parse(JSON.stringify(sm))); modIds.add(ref); n.modsAdded++; return ref; }
+          if (JSON.stringify(em) === JSON.stringify(sm)) return ref;
+          if (!renamedMods[ref]) {
+            const nid = nextFreeId(ref, modIds); modIds.add(nid);
+            const copy = JSON.parse(JSON.stringify(sm)); copy.id = nid;
+            addModule(copy); renamedMods[ref] = nid; n.modsRenamed++;
+          }
+          return renamedMods[ref];
+        });
+      }
+      let target = fixed;
       if (!target) {
-        const taken = albumIdSet();
-        target = { id: a.id && !taken.has(a.id) ? a.id : nextFreeId(idSlug(a.title), taken),
-                   title: a.title || a.id || "Álbum importado", songs: [] };
+        target = coll.albums.find(x => x.id === a.id);
+        if (!target) {
+          const taken = albumIdSet();
+          target = { id: a.id && !taken.has(a.id) ? a.id : nextFreeId(idSlug(a.title), taken),
+                     title: a.title || a.id || "Álbum importado", songs: [] };
+          coll.albums.push(target);
+        }
+      } else if (!coll.albums.includes(target)) {
         coll.albums.push(target);
       }
-    } else if (!coll.albums.includes(target)) {
-      coll.albums.push(target);
-    }
-    target.songs.push(s);
-    ids.add(s.id);
-    n.imported++;
-  }));
+      target.songs.push(s);
+      ids.add(s.id);
+      n.imported++;
+    }));
 
-  // 0.20 (DEC-037): as formulas marcadas, pela mesma regra das faixas
-  const f = importFormulas(refPick);
+    // 0.20 (DEC-037): as formulas marcadas, pela mesma regra das faixas
+    const fi = importFormulas(refPick);
+    Object.keys(f).forEach(k => { f[k] += fi[k]; });
+  });
 
   const parts = [];
   if (n.same) parts.push(n.same + (n.same === 1 ? " já estava" : " já estavam"));
@@ -2946,12 +2993,208 @@ async function importTracks(src, keys, dest, newTitle, refPick) {
   if (f.renamed) parts.push(nPlural(f.renamed, "fórmula renomeada", "fórmulas renomeadas") + " (id repetido)");
   if (f.invalid) parts.push(nPlural(f.invalid, "fórmula sem id ou style ignorada", "fórmulas sem id ou style ignoradas"));
   const tail = parts.length ? " · " + parts.join(" · ") : "";
-  if (!n.imported && !f.imported) { App.undo = prevUndo; toast("Nada importado" + tail); return; }
+  // 0.22: com varios arquivos, o aviso diz de quantos veio
+  const from = items.length > 1 ? nPlural(items.length, "arquivo", "arquivos") + ": " : "";
+  if (!n.imported && !f.imported) { App.undo = prevUndo; toast(from + "Nada importado" + tail + extra); return; }
   // O aviso soma faixas e formulas; so faixas, o texto de antes
   const head = !f.imported ? nPlural(n.imported, "faixa importada", "faixas importadas")
     : (n.imported ? nPlural(n.imported, "faixa", "faixas") + " e " : "")
       + nPlural(f.imported, "fórmula", "fórmulas") + (n.imported + f.imported === 1 ? " importada" : " importadas");
-  await afterEdit(head + tail);
+  if (extra && App.undo) App.undo.label = from + head + tail;   // o «Desfazer» nao desfaz os acervos guardados
+  await afterEdit(from + head + tail + extra);
+}
+
+/* ---- Importar varios .json (0.22.0, i-057, DEC-040 — spec meta/specs/261116-varios-json.md) ----
+   Um arquivo segue o caminho de sempre (importFromFile, readTracksFile). Varios abrem a
+   janela «Importar N arquivos»; soltos na lateral, fora de um album, viram acervos
+   guardados direto (tambem um so). Acervo novo e guardado SEM trocar o aberto; sem
+   nenhum aberto, abre o primeiro. */
+
+/** Le um arquivo como texto (Promise). */
+function readFileText(file) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(r.result);
+    r.onerror = () => reject(r.error || new Error("leitura"));
+    r.readAsText(file);
+  });
+}
+
+/** Le e classifica cada arquivo: {name, file, handle, json, extracted, removed, why}.
+    `why` diz por que o arquivo nao serve (e a linha vem desligada); null = serve. */
+async function readEntries(entries) {
+  const out = [];
+  for (const { file, handle } of entries) {
+    const e = { name: file.name, file, handle: handle || null, json: null, extracted: false, removed: 0, why: null };
+    let text = null;
+    try { text = await readFileText(file); } catch (err) { e.why = "não consegui ler o arquivo"; }
+    if (text !== null) {
+      try {
+        ({ json: e.json, extracted: e.extracted } = parseCollectionText(text));
+        e.removed = stripInternalKeys(e.json);
+        if (!e.json || !Array.isArray(e.json.albums)) { e.json = null; e.why = "não é um acervo do Cancioneiro"; }
+      } catch (err) { e.json = null; e.why = "não é um JSON válido"; }
+    }
+    out.push(e);
+  }
+  return out;
+}
+
+/** O que o arquivo tem, para a linha da janela: «2 álbuns · 14 faixas · 3 fórmulas». */
+function entrySummary(json) {
+  const albums = json.albums.length;
+  const songs = json.albums.reduce((k, a) => k + (a.songs || []).length, 0);
+  const refs = importableRefs(json).list.length;
+  return nPlural(albums, "álbum", "álbuns") + " · " + nPlural(songs, "faixa", "faixas")
+    + (refs ? " · " + nPlural(refs, "fórmula", "fórmulas") : "");
+}
+
+/** A forma do «Exportar faixa» (DEC-028): um album com uma faixa. E o que vem em
+    «Faixas» por padrao (DEC-040, ponto 1a). */
+const isTrackExport = json => json.albums.length === 1 && (json.albums[0].songs || []).length === 1;
+
+/** Ha acervo aberto com copia guardada, onde as faixas podem entrar. */
+const canImportTracks = () => !!(App.collection && App.saved);
+
+/** Guarda cada entrada como acervo, pelo nome do arquivo, sem trocar o aberto
+    (DEC-040, ponto 2a). Abre um so quando precisa: o de mesmo nome do aberto (o
+    arquivo substitui o que esta na tela), o primeiro se nenhum estava aberto, ou,
+    sem IndexedDB (um acervo so), o ultimo. Devolve o trecho do aviso. */
+async function storeEntries(list) {
+  if (!list.length) return "";
+  await bootDone;
+  const stored = [], failed = [];
+  let toOpen = null, removed = 0;
+  for (const e of list) {
+    const link = e.handle && Store.db ? { handle: e.handle, stamp: stampOf(e.file) } : null;
+    const r = await saveAcervo(e.json, e.name, link);
+    if (!r.ok) { failed.push(e.name); continue; }
+    stored.push(e.name); removed += e.removed;
+    const rec = { source: e.name, title: e.json.title || e.name, savedAt: r.savedAt, json: e.json };
+    if (link) { rec.fileHandle = link.handle; rec.fileStamp = link.stamp; }
+    if (!Store.db) toOpen = rec;
+    else if (e.name === App.source) toOpen = rec;
+    else if (!App.collection && !toOpen) toOpen = rec;
+  }
+  let opened = "";
+  if (toOpen && openRecord(toOpen)) opened = " · aberto: " + (toOpen.json.title || toOpen.source);
+  else setOrigin();   // a lista da lateral e o seletor ganham os novos
+  const parts = [];
+  if (stored.length) parts.push(nPlural(stored.length, "acervo guardado", "acervos guardados") + ": " + stored.join(", ") + opened);
+  if (failed.length) parts.push("não coube no navegador: " + failed.join(", "));
+  if (removed) parts.push(removed + " campo(s) interno(s) removido(s) — baixe de novo para gravar limpo");
+  return parts.join(" · ") + noDbNotice();
+}
+
+/** Quantas alteracoes nao salvas cada nome ja guardado perderia; o aberto conta tambem. */
+async function pendingByName(list) {
+  const out = {};
+  for (const e of list) out[e.name] = await recordChanges(e.name);
+  return out;
+}
+
+/** Soltar na lateral, fora de um album (DEC-040, pontos 3a e 4a): cada arquivo vira
+    um acervo guardado, sem janela. Mesmo nome com alteracoes: confirma so esse. */
+async function dropOnSide(entries) {
+  const all = await readEntries(entries);
+  const ok = all.filter(e => e.json), bad = all.filter(e => !e.json);
+  await bootDone;
+  const pending = await pendingByName(ok);
+  const keep = [];
+  for (const e of ok) {
+    if (pending[e.name] > 0 && !(await confirmAsk("Guardar " + e.name + " substitui o guardado, e "
+        + nPlural(pending[e.name], "alteração não salva se perde", "alterações não salvas se perdem") + ".", "substituir"))) continue;
+    keep.push(e);
+  }
+  const msg = await storeEntries(keep);
+  const skipped = bad.length ? nPlural(bad.length, "arquivo ignorado", "arquivos ignorados") + " ("
+    + bad.map(e => e.name + ": " + e.why).join("; ") + ")" : "";
+  toast([msg, skipped].filter(Boolean).join(" · ") || "Nada guardado");
+}
+
+/** A janela «Importar N arquivos». `mode`: "shape" (o padrao pela forma do arquivo,
+    DEC-040 ponto 1a), "new" (o botao «Importar .json…») ou "tracks" («Importar
+    faixas…», ou solto sobre um album). `dest`: o album ja escolhido, se houver. */
+async function openMultiDialog(entries, mode, dest) {
+  const all = await readEntries(entries);
+  await bootDone;
+  const tracksOk = canImportTracks();
+  const pending = await pendingByName(all.filter(e => e.json));
+  const dlg = document.getElementById("multi-dialog");
+  document.getElementById("multi-dialog-title").textContent = "Importar " + all.length + " arquivos";
+  document.getElementById("multi-intro").textContent = "Escolha o que cada arquivo vira. «Acervo novo» guarda o arquivo"
+    + " neste navegador sem trocar o que está aberto; «Faixas» traz as faixas e as fórmulas para "
+    + (tracksOk ? "o acervo aberto." : "um acervo aberto — sem nenhum aberto, tudo vira acervo novo.");
+  const list = document.getElementById("multi-list");
+  list.textContent = "";
+  const names = all.filter(e => e.json).map(e => e.name);
+  const rows = all.map((e, i) => {
+    const li = document.createElement("li");
+    li.dataset.i = String(i);
+    const nm = document.createElement("strong"); nm.className = "multi-name"; nm.textContent = e.name;
+    const info = document.createElement("span"); info.className = "acervo-meta multi-info";
+    info.textContent = e.json ? entrySummary(e.json) + (e.extracted ? " · JSON extraído de um bloco de código" : "") : e.why;
+    const sel = document.createElement("select");
+    sel.className = "multi-choice";
+    sel.setAttribute("aria-label", "O que " + e.name + " vira");
+    sel.appendChild(new Option("Acervo novo", "new"));
+    const ot = new Option(tracksOk ? "Faixas no acervo aberto" : "Faixas no acervo aberto (nenhum aberto)", "tracks");
+    ot.disabled = !tracksOk;
+    sel.appendChild(ot);
+    sel.appendChild(new Option("Pular", "skip"));
+    const warn = document.createElement("span"); warn.className = "multi-warn"; warn.hidden = true;
+    if (!e.json) {
+      li.classList.add("is-off"); sel.value = "skip"; sel.disabled = true;
+    } else {
+      sel.value = tracksOk && (mode === "tracks" || (mode === "shape" && isTrackExport(e.json))) ? "tracks" : "new";
+      // O aviso de substituir aparece so com «Acervo novo» (a confirmacao final repete)
+      const notes = [];
+      if (e.name === App.source) notes.push("é o acervo aberto: a tela passa a mostrar este arquivo");
+      if (pending[e.name] > 0) notes.push("substitui o guardado; "
+        + nPlural(pending[e.name], "alteração se perde", "alterações se perdem"));
+      if (names.filter(x => x === e.name).length > 1) notes.push("outro arquivo desta lista tem o mesmo nome; fica o último");
+      warn.textContent = notes.join(" · ");
+      const syncWarn = () => { warn.hidden = !notes.length || sel.value !== "new"; };
+      sel.addEventListener("change", () => { syncWarn(); syncDest(); });
+      syncWarn();
+    }
+    li.appendChild(nm); li.appendChild(info); li.appendChild(sel); li.appendChild(warn);
+    list.appendChild(li);
+    return { e, sel };
+  });
+  // O destino de hoje, valendo para as faixas de todos os arquivos
+  const box = document.getElementById("multi-dest");
+  const tsel = document.getElementById("multi-target"), inp = document.getElementById("multi-new-title");
+  tsel.innerHTML = "";
+  tsel.appendChild(new Option("manter os álbuns de origem", "__keep"));
+  if (App.collection) App.collection.albums.forEach(a => tsel.appendChild(new Option(a.title, a.id)));
+  tsel.appendChild(new Option("novo álbum…", "__new"));
+  if (dest && App.collection && App.collection.albums.some(a => a.id === dest)) tsel.value = dest;
+  inp.value = "";
+  const syncNew = () => { inp.hidden = tsel.value !== "__new"; };
+  tsel.onchange = syncNew; syncNew();
+  function syncDest() { box.hidden = !rows.some(r => r.sel.value === "tracks"); }
+  syncDest();
+  document.getElementById("multi-cancel-btn").onclick = () => dlg.close();
+  document.getElementById("multi-ok-btn").onclick = async () => {
+    const asNew = rows.filter(r => r.e.json && r.sel.value === "new").map(r => r.e);
+    const asTracks = rows.filter(r => r.e.json && r.sel.value === "tracks").map(r => r.e);
+    if (asTracks.length && tsel.value === "__new" && !inp.value.trim()) { inp.focus(); return; }
+    const lose = asNew.filter(e => pending[e.name] > 0);
+    if (lose.length && !(await confirmAsk("Guardar como acervo novo substitui o guardado de "
+        + lose.map(e => e.name + " (" + nPlural(pending[e.name], "alteração", "alterações") + ")").join(", ")
+        + ". As alterações não salvas se perdem.", "substituir"))) return;
+    dlg.close();
+    if (!asNew.length && !asTracks.length) { toast("Nada importado"); return; }
+    const stored = await storeEntries(asNew);
+    if (!asTracks.length) { toast(stored); return; }
+    const items = asTracks.map(e => {
+      const refs = importableRefs(e.json);
+      return { src: e.json, keys: null, refPick: { refs: refs.list, keys: new Set(refs.list.map((_, i) => i)), invalid: refs.invalid } };
+    });
+    await importTracksMany(items, tsel.value, inp.value.trim(), { extra: stored ? " · " + stored : "" });
+  };
+  dlg.showModal();
 }
 
 /* ===================================================================
@@ -3154,7 +3397,10 @@ document.getElementById("formulas-close-btn").addEventListener("click", () =>
   document.getElementById("formulas-dialog").close());
 
 document.getElementById("tracks-input").addEventListener("change", e => {
-  if (e.target.files[0]) readTracksFile(e.target.files[0]);
+  const files = Array.from(e.target.files || []);
+  // 0.22 (i-057): varios abrem a janela de varios, com «Faixas» por padrao
+  if (files.length > 1) openMultiDialog(files.map(file => ({ file })), "tracks");
+  else if (files[0]) readTracksFile(files[0]);
   e.target.value = "";
 });
 // So avisa ao fechar a aba se o rascunho NAO esta gravado (a gravacao falhou).
@@ -3168,7 +3414,10 @@ window.addEventListener("beforeunload", e => {
 const EMPTY_HTML = document.getElementById("main").innerHTML;
 document.getElementById("import-btn").addEventListener("click", pickAndImport);   // I4
 document.getElementById("file-input").addEventListener("change", e => {
-  if (e.target.files[0]) importFromFile(e.target.files[0]);
+  const files = Array.from(e.target.files || []);
+  // 0.22 (i-057): varios abrem a janela de varios, com «Acervo novo» por padrao
+  if (files.length > 1) openMultiDialog(files.map(file => ({ file })), "new");
+  else if (files[0]) importFromFile(files[0]);
   e.target.value = "";
 });
 document.getElementById("download-btn").addEventListener("click", downloadCollection);
@@ -3204,21 +3453,37 @@ document.addEventListener("dragleave", e => {
   dragDepth = Math.max(0, dragDepth - 1);
   if (!dragDepth) document.body.classList.remove("dragging");
 });
+/** O vinculo de um item solto (I4), como Promise de handle ou null. So vale chamado
+    durante o drop; se o navegador recusar (ou nao tiver a API), resolve null. */
+function handleOf(item) {
+  if (!canWriteFile() || !item || !item.getAsFileSystemHandle) return Promise.resolve(null);
+  try { return item.getAsFileSystemHandle().then(h => (h && h.kind === "file" ? h : null), () => null); }
+  catch (e) { return Promise.resolve(null); }
+}
 document.addEventListener("drop", e => {
   if (!hasFiles(e)) return;
   e.preventDefault(); dragDepth = 0; document.body.classList.remove("dragging");
-  const f = e.dataTransfer.files[0];
+  const files = Array.from(e.dataTransfer.files || []);
+  const f = files[0];
   // I3: sobre um album (o cabecalho na Lista, ou a lateral), as faixas vao para ele.
-  const alb = fileDropAlbum(e.target);
+  // 0.22: a lateral fora de um album guarda cada arquivo como acervo (DEC-040).
+  const zone = dropZone(e.target);
   markFileTarget(null);
-  if (f && alb && App.saved) { readTracksFile(f, alb.id); return; }
   if (!f) return;
   // I4: no Chrome, o arquivo solto traz o vinculo. getAsFileSystemHandle so pode
-  // ser chamado durante o drop; sem ele (ou se falhar), importa como antes.
-  const item = Array.from(e.dataTransfer.items || []).find(i => i.kind === "file");
-  const hp = canWriteFile() && item && item.getAsFileSystemHandle ? item.getAsFileSystemHandle() : null;
-  if (!hp) { importFromFile(f); return; }
-  hp.then(h => importFromFile(f, h && h.kind === "file" ? h : null), () => importFromFile(f));
+  // ser chamado durante o drop: 0.22, TODOS aqui, antes de qualquer await (com
+  // varios, a janela abre depois e o drop ja acabou). Sem ele, importa como antes.
+  const items = Array.from(e.dataTransfer.items || []).filter(i => i.kind === "file");
+  const hps = files.map((_, i) => handleOf(items[i]));
+  const withHandles = () => Promise.all(hps).then(hs => files.map((file, i) => ({ file, handle: hs[i] })));
+  if (zone.kind === "side") { withHandles().then(dropOnSide); return; }
+  if (files.length > 1) {
+    withHandles().then(en => openMultiDialog(en, zone.kind === "album" ? "tracks" : "shape", zone.kind === "album" ? zone.id : null));
+    return;
+  }
+  // Um arquivo: o caminho de sempre (V1)
+  if (zone.kind === "album") { readTracksFile(f, zone.id); return; }
+  hps[0].then(h => importFromFile(f, h));
 });
 ["filter-album", "filter-state", "filter-used"].forEach(id =>
   document.getElementById(id).addEventListener("change", render));
@@ -4436,7 +4701,30 @@ function markFileTarget(t) {
   fileTarget = t ? t.el : null;
   if (fileTarget) fileTarget.classList.add("file-target");
 }
-document.addEventListener("dragover", e => { if (hasFiles(e)) markFileTarget(fileDropAlbum(e.target)); });
+/** Onde o arquivo cai (0.22, DEC-040): sobre um album (com copia guardada), as faixas
+    vao para ele; na lateral fora de um album (com IndexedDB), cada arquivo vira um
+    acervo guardado; no resto da pagina, importa (um) ou abre a janela (varios). */
+function dropZone(el) {
+  const alb = fileDropAlbum(el);
+  if (alb && App.saved) return { kind: "album", el: alb.el, id: alb.id };
+  const side = !alb && el && el.closest ? el.closest("#side") : null;
+  if (side && Store.db) return { kind: "side", el: side };
+  return { kind: "page", el: null };
+}
+/** O texto do aviso do arraste, pela zona e pelo numero de arquivos. */
+function dropHintText(zone, n) {
+  if (zone.kind === "side") return "Solte aqui: cada arquivo vira um acervo guardado";
+  if (zone.kind === "album") return "Solte aqui: as faixas vão para este álbum";
+  return n > 1 ? "Solte para escolher o que cada um vira" : "Solte para importar";
+}
+document.addEventListener("dragover", e => {
+  if (!hasFiles(e)) return;
+  const zone = dropZone(e.target);
+  markFileTarget(zone.el ? zone : null);
+  const n = Array.from(e.dataTransfer.items || []).filter(i => i.kind === "file").length;
+  const hint = document.querySelector(".drop-hint"), text = dropHintText(zone, n);
+  if (hint.textContent !== text) hint.textContent = text;
+});
 document.addEventListener("dragleave", e => { if (hasFiles(e) && !dragDepth) markFileTarget(null); });
 
 /* ---- Teclado (em captura: decide antes da I1 e da I2) ----
@@ -4545,12 +4833,17 @@ function chooseAsk(message, options) {
     vinculo; nos outros, pelo <input type=file> de sempre. */
 async function pickAndImport() {
   if (!canWriteFile()) { document.getElementById("file-input").click(); return; }
-  let h;
-  try { [h] = await window.showOpenFilePicker({ types: JSON_TYPES }); }
+  let hs;
+  try { hs = await window.showOpenFilePicker({ types: JSON_TYPES, multiple: true }); }
   catch (e) { if (e.name !== "AbortError") document.getElementById("file-input").click(); return; }
-  let f;
-  try { f = await h.getFile(); } catch (e) { toast("Não consegui ler o arquivo: " + e.message); return; }
-  importFromFile(f, h);
+  const got = [];
+  for (const h of hs) {
+    try { got.push({ file: await h.getFile(), handle: h }); }
+    catch (e) { toast("Não consegui ler o arquivo: " + e.message); return; }
+  }
+  // 0.22 (i-057): varios abrem a janela de varios, com «Acervo novo» por padrao
+  if (got.length > 1) { openMultiDialog(got, "new"); return; }
+  if (got[0]) importFromFile(got[0].file, got[0].handle);
 }
 
 /** O texto que vai para o arquivo: o do «Baixar .json», com a quebra de linha final. */

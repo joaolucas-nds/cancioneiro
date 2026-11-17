@@ -4,6 +4,24 @@
 
 ---
 
+## [0.22.0] — 2026-11-16
+
+Importar vários `.json` de uma vez, e onde soltar decide o que vira (i-057, DEC-040).
+
+### Added
+- **Janela «Importar N arquivos»:** soltar dois ou mais `.json` na página, ou escolhê-los em «Importar .json…» ou «Importar faixas…», abre uma linha por arquivo, na ordem, com o que ele tem («2 álbuns · 14 faixas · 3 fórmulas») e a escolha **Acervo novo** · **Faixas no acervo aberto** · **Pular**. Arquivo que não é acervo vem desligado e não trava os outros. Soltos na página, a faixa exportada (1 álbum, 1 faixa) vem em «Faixas» e o resto em «Acervo novo»; pelos botões, o padrão é o do botão; sem acervo aberto, «Faixas» vem desligada.
+- **Acervo novo sem trocar o aberto:** cada arquivo fica guardado pelo nome e aparece no seletor e na lateral; sem nenhum aberto, abre o primeiro. O mesmo nome de um guardado com alterações avisa na linha e pede confirmação.
+- **Faixas de vários arquivos numa operação:** um destino para todos (só aparece com «Faixas»), a regra de sempre (idêntica pula, o mesmo id com conteúdo diferente ganha `-2`, também entre os arquivos) e **um «Desfazer»**; o aviso soma («3 arquivos: 12 faixas importadas · 1 já estava»).
+- **A lateral como zona:** soltar um ou vários arquivos na lateral, fora de um álbum, guarda cada um como acervo, sem janela e sem trocar o aberto; o mesmo nome com alterações confirma só para ele. Sobre um álbum da lateral continua «faixas neste álbum» (com vários, a janela abre com «Faixas» e o álbum já escolhidos).
+
+### Changed
+- **O aviso do arraste diz a zona:** «Solte aqui: cada arquivo vira um acervo guardado» (lateral), «Solte aqui: as faixas vão para este álbum» (álbum), «Solte para importar» (um) ou «Solte para escolher o que cada um vira» (vários). O álbum só se destaca quando a importação vai mesmo para ele (com cópia guardada).
+- No Chrome e no Edge do computador, «Importar .json…» aceita vários arquivos na janela do sistema; o vínculo do «Salvar» de cada arquivo solto é pedido durante o `drop`, para todos.
+
+Um arquivo solto na página, num álbum ou escolhido pelos botões faz o que fazia. Spec `meta/specs/261116-varios-json.md`: V1 a V8, com 14 testes novos em `tests/test_varios_json.py` (81 no total).
+
+---
+
 ## [0.21.0] — 2026-11-16
 
 Começar vazio, esquecer todos os acervos e a importação por grupo (i-058, i-059, i-053, DEC-039).

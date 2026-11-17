@@ -3,17 +3,15 @@
 > **O agora.** O que funciona, o que está em progresso, o que está quebrado, backlog curto.
 > Rolante: item resolvido sai daqui e vai para o CHANGELOG. Médio/longo prazo vive no ROADMAP.
 
-**Versão atual:** 0.21.0 · **Fase:** 3a, 3a.2, o BPM da 3b, o prompt-modelo e as conveniências de uso concluídos e conferidos · os álbuns antigos convertidos (i-008, fora do repo) · curadoria no app concluída nas três entregas (DEC-028, DEC-029) · frente de interface concluída e conferida nas quatro entregas (DEC-030 a DEC-033) · organizar os álbuns (0.18.0, DEC-035) conferido · rampa de BPM (0.19.0, DEC-036) conferida · fórmulas de referência (0.20.0, DEC-037) conferidas na tela · a Fase 3 concluída · kit de música lido pelo KCM, à espera da resposta (i-039)
+**Versão atual:** 0.22.0 · **Fase:** 3a, 3a.2, o BPM da 3b, o prompt-modelo e as conveniências de uso concluídos e conferidos · os álbuns antigos convertidos (i-008, fora do repo) · curadoria no app concluída nas três entregas (DEC-028, DEC-029) · frente de interface concluída e conferida nas quatro entregas (DEC-030 a DEC-033) · organizar os álbuns (0.18.0, DEC-035) conferido · rampa de BPM (0.19.0, DEC-036) conferida · fórmulas de referência (0.20.0, DEC-037) conferidas na tela · importar vários `.json` (0.22.0, DEC-040) à espera da conferência na tela · a Fase 3 concluída · kit de música lido pelo KCM, à espera da resposta (i-039)
 
 ---
 
-## Última conversa (2026-11-14 a 2026-11-16, 0.20.0 a 0.21.0, kit v2 completo, i-057 decidida; encerrada por handoff)
+## Última conversa (2026-11-16, 0.22.0: importar vários `.json`, WO 0047)
 
-- **Entregue e conferido nesta conversa do chat:** 0.20.0 (fórmulas de referência, DEC-037) e 0.21.0 (começar vazio, esquecer todos, importação por grupo, DEC-039), as duas conferidas na tela pelo dono `[relatado pelo dono]`; o v6 no kit (Variety em Off, Voices, Letrista); a leva 2 do kit v2 (provada no projeto Rainha); a i-029 fechada sem código. CI verde no `e13b9d9` (run `43877057878`, `[medido pelo Code]`).
-- **i-057 decidida** (DEC-040, os quatro pontos como recomendados `[relatado pelo dono, 2026-11-16 10:45]`); a implementação (0.22.0) fica para a conversa nova.
-- **O KCM copiou o kit do `94235bd`** (D-183, v1.145.0); a carta 07 entra numa cópia curta depois do `e13b9d9` `[relatado pelo KCM]`.
-- **Conversa do chat encerrada** em 2026-11-16 a pedido do dono (pesada); a próxima arranca pelo `../261116-HANDOFF-BRIEF.md`.
-- **Este bloco substitui o anterior** (i-029 fechada, spec da i-057, WO 0045). O que ele dizia está em `logs/2026-11-16.md`.
+- **0.22.0 implementada pelo chat num clone** (i-057, DEC-040): a janela «Importar N arquivos», a lateral como zona de «acervo novo», o aviso do arraste por zona, `multiple` nos botões e os vínculos pegos durante o `drop`. 81 testes, duas rodadas; os 12 de comportamento novo reprovam na 0.21.0, e os 2 de falso positivo (um arquivo) passam nas duas `[medido pelo chat, no clone]`. Falta a conferência na tela do dono (roteiro no log de 2026-11-16, Conversa 6) e o CI.
+- **Escolhidos na implementação** (o que a DEC-040 deixou aberto): os textos da janela e do aviso; o mesmo nome do acervo aberto em «Acervo novo» substitui o que está na tela; sem IndexedDB, a lateral não é zona; os acervos novos entram no seletor pela regra de sempre (o mais recente primeiro).
+- **Este bloco substitui o anterior** (a conversa de 2026-11-14 a 2026-11-16, encerrada por handoff). O que ele dizia está em `logs/2026-11-16.md`.
 
 ## Funciona (pronto)
 
@@ -23,6 +21,7 @@
 - **Controle de BPM no cartão (0.7.0, DEC-020):** campo 20-300 com `−5`/`+5` e «voltar a N» governa todo «NN bpm» do Style principal; o chip de andamento é atalho (no máximo um ligado); variantes e «Baixar .json» não mudam; o valor é só da sessão.
 - **Rampa de BPM** (0.19.0, DEC-036): dois BPM no mesmo trecho do Style, ligados por «to» e afins, saem como foram escritos; o controle vira o rótulo «rampa 95 → 115 bpm», os chips de andamento ficam desligados e a linha de qualidade avisa em âmbar. O `validate.py` dá AVISO; dois números soltos continuam ERRO.
 - **Fórmulas de referência** (0.20.0, DEC-037): `styleReferences` na coleção; a janela «Fórmulas», pela lateral e pelo «⋯», com a linha de qualidade, «Copiar Style» byte a byte, as notas recolhidas e «Excluir» com «Desfazer»; entram pela janela «Importar faixas» (`albums: []` aceito). Salvar leva; exportar faixa ou álbum, não.
+- **Importar vários `.json`** (0.22.0, DEC-040): soltar ou escolher vários abre «Importar N arquivos», com «Acervo novo», «Faixas no acervo aberto» ou «Pular» por arquivo; o acervo novo fica guardado sem trocar o aberto; as faixas de todos entram numa operação, com um «Desfazer». Na lateral, fora de um álbum, cada arquivo vira acervo guardado, sem janela (também um só). O aviso do arraste diz a zona.
 - **Começar vazio e esquecer todos** (0.21.0, DEC-039): sem acervo guardado, o app abre vazio também no Pages; «Esquecer todos os acervos…» no seletor, com dois ou mais. Na importação, a caixa de cada álbum e de cada origem marca o grupo.
 - **Esquema JSON canônico** (`schema/`). Biblioteca de referência para autoria em `schema/style-modules.json` (27 módulos, sete camadas); cada acervo traz os seus (DEC-016).
 - **Datasets:** `data/demo.json` (2 álbuns, 3 faixas: o «Baixar exemplo» e a base dos testes; desde a 0.21.0 não abre sozinho). Os acervos do dono moram fora do repo (DEC-026): `../album-referencias (1).json` (7 faixas, 50 módulos) `rainha-da-preguica.json` (10 álbuns, 151 faixas; desde 2026-11-15 no projeto da Rainha, `C:\Users\alexk\Music\- Compositor\Album - Rainha da Preguiça\album-rainha-da-preguica\cancioneiro\`) e `../acervos/albuns-reagrupados.json` (12 álbuns, 205 faixas), os dois gerados pelos conversores.
@@ -30,7 +29,7 @@
 - **Conversor dos guias de `Albuns/`** (`scripts/convert_guides.py`, 0.10.0): formatos mistos → coleção, com mapa de grupos que reprova faixa perdida. Teste: `python3 scripts/test_convert_guides.py`.
 - **Kit de música** (`kit-musica/`, 0.10.0, DEC-027): bloco para Instruções e CEREBRO de um projeto de música, skills `macetes-suno` e `revisar-faixa`. Uso à mão em `kit-musica/README.md`.
 - **Validação** (`scripts/validate.py`): sintaxe, esquema (com `jsonschema`), integridade referencial dos módulos (id ausente ou objeto no lugar do id, sem traceback — FIX-009), versão igual nos quatro lugares, um BPM só por faixa (DEC-020) e as marcações do prompt que o app lê (DEC-021) e os limites da skill `revisar-faixa` contra o app (DEC-027); código 1 se falhar; a última linha diz se o esquema foi de fato conferido.
-- **Testes do navegador no CI** (DEC-034): `tests/` (pytest e Playwright, 67 testes desde a 0.21.0, dados só sintéticos) e `.github/workflows/testes.yml`, que roda o `validate.py` com esquema, os testes dos conversores e o `pytest tests` a cada push na `main`. O resultado é o ✓ ou ✗ no commit e a aba Actions.
+- **Testes do navegador no CI** (DEC-034): `tests/` (pytest e Playwright, 81 testes desde a 0.22.0, dados só sintéticos) e `.github/workflows/testes.yml`, que roda o `validate.py` com esquema, os testes dos conversores e o `pytest tests` a cada push na `main`. O resultado é o ✓ ou ✗ no commit e a aba Actions.
 - **Export MD** (faixa / álbum / acervo), com o rótulo fora do bloco e o Style da tela nos três (0.9.0, D5).
 - **Exportar faixa como `.json`** (0.11.0, DEC-028): botão no rodapé do cartão; a faixa sai como acervo — o álbum de origem (id e título), a faixa e os módulos que ela cita — e importa como qualquer acervo. Sai o dado do acervo, não os módulos ligados nem o BPM da tela; o toast conta os módulos e os citados que não existem. Conferido na tela pelo dono em 2026-11-04.
 - **Vários acervos no navegador** (0.12.0, DEC-028): cada importado fica no IndexedDB pelo nome do arquivo; o seletor de acervo, na barra, abre ou esquece cada um; reabre no último aberto; marcas «usei» por acervo. Sem IndexedDB, guarda só o último, como antes.
@@ -47,7 +46,7 @@
 
 ## Em progresso
 
-- **Kit de música no KCM (i-039)** — o KCM leu a carta 01 e responde por carta, sem data. Gatilho: sem resposta até o primeiro projeto de música novo, o projeto usa o kit à mão (`kit-musica/README.md`). Kit v2 decidido pelo dono em 2026-11-09 (análise `meta/analises/261109-ANALISE-kit-de-musica-v2.md`): leva 1 depois da i-051, leva 2 com prova de campo, carta 02 no fim.
+- **Kit de música no KCM (i-039)** — em dia: o KCM copiou o kit v2 do `94235bd` (v1.145.0) e a `macetes-suno` do `e13b9d9` (carta 07, v1.146.0), aviso de lido de 2026-11-16 `[relatado pelo KCM]`. O kit anda pelo que o projeto Rainha relatar; o que virar regra vai ao kit e, por carta, ao KCM (a próxima é a 08).
 
 ## Quebrado / pendências que travam
 
@@ -62,7 +61,7 @@
 
 Ordem decidida pelo dono em 2026-11-14 `[relatado pelo dono]`: primeiro o kit no KCM e os projetos de música; depois a paleta e a leva 2; o resto depois de um recesso.
 
-1. **Importar vários `.json` (i-057, 0.22.0, DEC-040)** — spec `meta/specs/261116-varios-json.md` pronta, os quatro pontos decididos: implementar num clone (chat), testes V1 a V8, WO para o Code. Último item antes do recesso.
+1. **Conferir a 0.22.0 na tela** (dono): o roteiro do log de 2026-11-16, Conversa 6. Depois dela, o recesso decidido pelo dono.
 2. **Paleta de módulos do acervo** (i-052) — pede análise; depois dos primeiros projetos. Com o estilo-base fixo e o Variety em Off virando a regra, a análise pode concluir que não compensa.
 3. **Kit de música v2 completo** (i-039) — próximo gatilho: o que o projeto Rainha relatar das próximas faixas (cartas na pasta deles); o que virar regra vai ao kit e, por carta, ao KCM. Ideias à espera do campo: i-055 (configuração junto da faixa) e i-060 (medir a referência).
 4. **Depois de um recesso:** outras plataformas de música por IA (i-032) e arrastar faixa para outro acervo (i-050).
