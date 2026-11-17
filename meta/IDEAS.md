@@ -250,6 +250,18 @@ Achado no teste da entrega 2 (2026-11-05): o CSS `.controls { display: flex }` v
 ### i-060 💡 Medir a referência: andamento, tonalidade e energia de um áudio
 `[pedida pela carta 04 do projeto Rainha, 2026-11-15]` Para refazer uma faixa antiga, o Suno não devolve o style (o mp3 traz a letra e a data nos metadados, não o style), e a descrição que ele «extrai» do áudio saiu genérica e errada. O projeto Rainha mediu por análise de sinal (librosa): andamento, tonalidade provável, energia por trecho. Pergunta deles: vale virar passo do kit, para escrever o style com números reais? Contra: timbre e jeito de cantar, que é o que falta, nenhuma medida dá com confiança; o BPM medido pode sair dobrado ou pela metade (152 ou 76). Esperar uma segunda faixa em que o número tenha mudado o resultado antes de pôr no kit.
 
+### i-061 ✅ Botões de opção no lugar da lista de escolha, na janela de vários
+`[relatado pelo dono, 2026-11-17]` Na janela «Importar N arquivos», trocar a lista de escolha por botões de opção única (ou um deslizar de três): acervo novo, faixas no acervo, pular; o dono pediu sugestão de texto. **Entregue (0.23.0, 2026-11-17, DEC-041):** três botões lado a lado, *Acervo novo* · *Faixas no aberto* · *Pular*.
+
+### i-062 ✅ O clique direito abre o «⋯»
+`[relatado pelo dono, 2026-11-17]` O botão direito do mouse abre o menu de contexto: na faixa, o mesmo do «⋯»; na lateral, o do álbum e o do acervo (ele perguntou se o acervo teria alguma ação). **Entregue (0.23.0, 2026-11-17, DEC-041):** faixa, álbum e acervo, no ponto do clique; o acervo da lateral ganhou «⋯» (Abrir, Baixar .json, Desvincular, Esquecer).
+
+### i-063 ✅ O aviso do arraste não cobre a lateral
+`[relatado pelo dono, 2026-11-17, no roteiro da 0.22.0]` O desenho vermelho do arraste ainda cobria a tela inteira, por cima da lateral, que desde a 0.22.0 é outra zona (acervo novo direto): confuso. Pediu também tirar qualquer outra colisão da função antiga. **Entregue (0.23.0, 2026-11-17):** o aviso da página começa depois da lateral; sobre a lateral, só ela se destaca, com o aviso no pé; sobre um álbum, sem a moldura da página.
+
+### i-064 ✅ A lateral com áreas fixas para Álbuns e Acervos
+`[relatado pelo dono, 2026-11-17]` As duas listas da lateral não têm lugar fixo: dependem do tamanho dos álbuns. Proposta dele: Acervos num espaço fixo no canto de baixo; as duas rolam ao atingir o limite; Álbuns com mais espaço, então Acervos rola mais cedo. Liga-se à i-047 (painel lateral). **Entregue (0.23.0, 2026-11-17, DEC-041):** Álbuns em cima com o que sobra, Acervos presos no pé com teto de um terço; cada lista rola sozinha.
+
 ## Feedback para o Kit
 
 - **[2026-07-19] Nicho pediria uma variante "ferramenta+conteúdo".** Este projeto é dev, mas o "produto" é metade código (app) e metade dado curado (acervo JSON). O template de Desenvolvimento cobre bem a parte código; a parte "acervo de dados como entregável" ficou por conta do CONTEXT. Não faltou nada crítico, mas um nicho híbrido "ferramenta que consome conteúdo estruturado" seria útil.

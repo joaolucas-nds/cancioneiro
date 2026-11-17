@@ -4,6 +4,25 @@
 
 ---
 
+## [0.23.0] — 2026-11-17
+
+O clique direito abre o «⋯», a lateral ganha duas áreas que rolam sozinhas e o aviso do arraste deixa de cobrir a lateral (i-061 a i-064, DEC-041).
+
+### Added
+- **Clique direito** (computador) numa faixa (linha da Lista, cartão ou detalhe), num álbum (cabeçalho ou lateral) ou num acervo da lateral abre o «⋯» dele, no ponto do clique. Com `Shift`, num campo de texto ou com texto selecionado, e no celular, continua o menu do navegador.
+- **O «⋯» do acervo, na lateral:** *Abrir* (os outros), *Baixar .json* (a cópia guardada; o aberto baixa o rascunho da tela), *Desvincular do arquivo* (o aberto, se vinculado) e *Esquecer este acervo…*, pelo mesmo caminho do seletor.
+
+### Changed
+- **Janela «Importar N arquivos»:** a escolha de cada linha é um grupo de três botões, *Acervo novo* · *Faixas no aberto* · *Pular*, no lugar da lista de escolha. No celular, os três dividem a largura, com 44 px de altura.
+- **A lateral em duas áreas:** Álbuns em cima, com o espaço que sobra; Acervos presos no pé, com teto de um terço da altura. Cada lista rola sozinha e os títulos ficam. Enquanto se arrasta uma faixa, *+ Novo álbum* fica à vista no fim da área dos álbuns.
+
+### Fixed
+- **O aviso do arraste cobria a lateral** (0.22.0): o desenho da página começa depois dela. Sobre a lateral, só ela se destaca, com o aviso no pé; sobre um álbum, o álbum fica à vista e o aviso sobe, sem a moldura da página.
+
+10 testes novos em `tests/test_lateral_e_menus.py` (91 no total); os da janela de vários leem os botões de opção.
+
+---
+
 ## [0.22.0] — 2026-11-16
 
 Importar vários `.json` de uma vez, e onde soltar decide o que vira (i-057, DEC-040).

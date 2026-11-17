@@ -69,10 +69,11 @@ def multi_open(page):
 
 
 def multi_rows(page):
+    # 0.23 (i-061): a escolha e um grupo de botoes de opcao; «desligada» = os tres desligados
     return page.eval_on_selector_all(
         "#multi-list > li", "e => e.map(li => [li.querySelector('.multi-name').textContent,"
-        " li.querySelector('.multi-info').textContent, li.querySelector('select').value,"
-        " li.querySelector('select').disabled])")
+        " li.querySelector('.multi-info').textContent, (li.querySelector('.seg input:checked') || {}).value,"
+        " [...li.querySelectorAll('.seg input')].every(r => r.disabled)])")
 
 
 # ---------------------------------------------------------------- V1: um arquivo, nada muda
@@ -153,7 +154,7 @@ def test_v3_sem_faixas_o_destino_some(open_app):
     drop(page, "#main", [("a.json", coll(2, 1, "A", "a")), ("b.json", coll(2, 1, "B", "b"))])
     page.wait_for_selector("#multi-dialog[open]")
     assert page.is_hidden("#multi-dest")
-    page.select_option("#multi-list > li:first-child select", "tracks")
+    page.click("#multi-list > li:first-child .seg label:has(input[value=tracks])")
     assert page.is_visible("#multi-dest")
 
 
@@ -273,7 +274,7 @@ def test_v6_sem_acervo_aberto_tudo_vira_acervo_novo(open_app):
     drop(page, "#main", [("a.json", coll(2, 1, "A", "a")), ("solo.json", track_export())])
     page.wait_for_selector("#multi-dialog[open]")
     assert [r[2] for r in multi_rows(page)] == ["new", "new"]
-    assert page.eval_on_selector_all("#multi-list option[value=tracks]", "e => e.map(o => o.disabled)") == [True, True]
+    assert page.eval_on_selector_all("#multi-list input[value=tracks]", "e => e.map(o => o.disabled)") == [True, True]
     page.click("#multi-ok-btn")
     msg = wait_toast(page, "acervos guardados")
     assert msg.startswith("2 acervos guardados: a.json, solo.json · aberto: A")
@@ -294,7 +295,7 @@ def test_v7_celular_a_janela_ocupa_a_tela(open_app):
     box = page.evaluate("(() => { const r = document.getElementById('multi-dialog').getBoundingClientRect();"
                         " return [r.left, r.width]; })()")
     assert box == [0, 390]
-    small = page.eval_on_selector_all("#multi-dialog select, #multi-dialog button",
+    small = page.eval_on_selector_all("#multi-dialog select, #multi-dialog button, #multi-dialog .seg span",
                                       "e => e.filter(x => x.offsetParent && x.getBoundingClientRect().height < 44).length")
     assert small == 0
     assert page.evaluate("(() => { const d = document.getElementById('multi-dialog');"

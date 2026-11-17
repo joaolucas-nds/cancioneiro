@@ -609,3 +609,16 @@
 **Alternativas consideradas:** tudo «Acervo novo» ou tudo «Faixas» como padrão; abrir o último importado; só a janela, sem a lateral como zona; um arquivo na lateral continuar como hoje.
 **Consequências:** (+) Vários arquivos num gesto, sem perder nenhum em silêncio. (+) A lateral vira o atalho de guardar. (−) Um arquivo solto na lateral passa a não abrir o acervo (muda o gesto de hoje). (−) O vínculo do «Salvar» de cada arquivo tem de ser pego durante o `drop`.
 **Na implementação (0.22.0), o que a decisão deixou aberto:** os textos são os da spec, quase literais. O mesmo nome do acervo aberto, em «Acervo novo», substitui o que está na tela (guardar sem abrir deixaria a tela com um rascunho que já não é o guardado). Sem IndexedDB (um acervo só), a lateral não é zona e a janela abre o último guardado. Os acervos novos entram no seletor pela regra de sempre, o mais recente primeiro. Pelos botões, o padrão de cada linha é o do botão («Importar .json…» → acervo novo; «Importar faixas…» → faixas), como diz a spec, item 5; a forma do arquivo decide só no arraste.
+
+## DEC-041 — O clique direito abre o «⋯», e a lateral tem duas áreas que rolam
+
+**Data:** 2026-11-17
+**Status:** aceita (0.23.0)
+**Contexto:** Depois do roteiro da 0.22.0, o dono pediu (2026-11-17) quatro mudanças antes do recesso: o aviso do arraste não cobrir a lateral (i-063), botões de opção na janela de vários (i-061), o clique direito abrir o menu de contexto da faixa, do álbum e do acervo (i-062) e a lateral com lugar fixo para Álbuns e Acervos, cada um rolando sozinho (i-064) `[relatado pelo dono]`.
+**Decisão:**
+- **O clique direito abre o «⋯» que já existe** (faixa, álbum) **no ponto do clique**: nenhum menu novo para a faixa e o álbum, a mesma lista de ações. O menu do navegador continua com `Shift`, em campo de texto, com texto selecionado e no celular (o toque longo é do navegador; o «⋯» está à mão).
+- **O acervo da lateral ganha o próprio «⋯»**: Abrir (os outros), Baixar .json, Desvincular do arquivo (o aberto, se vinculado) e Esquecer este acervo…, chamando as funções do seletor (`openRecord`, `downloadCollection`, `unlinkFile`, `forgetAcervo`).
+- **A lateral em duas áreas:** Álbuns com o espaço que sobra, Acervos presos no pé com teto de 34% da altura; cada lista rola, os títulos não.
+- **A escolha da janela de vários vira três botões de opção** (rádio estilizado): «Acervo novo · Faixas no aberto · Pular».
+**Alternativas consideradas:** um menu de contexto próprio, diferente do «⋯» (duas listas de ações para manter); tomar o clique direito sempre (perde o «copiar» do navegador sobre texto selecionado); um deslizar de três posições na janela (esconde as opções que não estão marcadas e é menos claro com o teclado); a lateral rolando inteira, como antes.
+**Consequências:** (+) Um gesto a menos para cada ação, sem nada novo para aprender. (+) A lista de acervos não some para baixo de uma lista longa de álbuns. (−) Com muitos acervos e pouca altura, a área deles mostra poucas linhas de cada vez. (−) O «Desvincular» do acervo só aparece no aberto, porque o vínculo vive no acervo aberto.

@@ -253,10 +253,16 @@
   @container lista (max-width: 600px) { .row-state { display: none; } }
 
   .side { display: none; flex: 0 0 232px; width: 232px; box-sizing: border-box; position: sticky; top: var(--top-h);
-    height: calc(100vh - var(--top-h)); overflow: auto; padding: 12px 8px; border-right: 1px solid var(--line); }
-  @media (min-width: 1280px) { .side { display: block; } }
+    height: calc(100vh - var(--top-h)); overflow: hidden; padding: 12px 8px; border-right: 1px solid var(--line);
+    flex-direction: column; }
+  @media (min-width: 1280px) { .side { display: flex; } }
   .side-head { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); padding: 4px 8px; }
-  .side-head + .side-list { margin-bottom: 18px; }
+  /* 0.23 (i-064): Albuns em cima, com o espaco que sobra; Acervos presos embaixo, com
+     teto menor, entao rolam antes. Cada lista rola sozinha; os titulos ficam. */
+  .side-sec { display: flex; flex-direction: column; min-height: 0; }
+  .side-sec > .side-list { overflow: auto; min-height: 0; }
+  .side-sec-albums { flex: 1 1 auto; }
+  .side-sec-acervos { flex: 0 1 auto; max-height: 34%; margin-top: 12px; padding-top: 8px; border-top: 1px solid var(--line); }
   .side-list { list-style: none; margin: 0; padding: 0; }
   .side-item { width: 100%; display: flex; align-items: center; gap: 8px; padding: 7px 8px; border: 0; border-radius: 6px;
     background: transparent; text-align: left; }
@@ -339,12 +345,13 @@
   @container lista (max-width: 600px) { .row-health { width: 18px; } .row-health .ht { display: none; } }
 
   .side-new-li { display: none; }
-  body.dragging-track .side-new-li { display: list-item; }
+  body.dragging-track .side-new-li { display: list-item; position: sticky; bottom: 0; background: var(--paper); }
   .side-new { margin-top: 4px; border: 1px dashed var(--line) !important; color: var(--ink-soft); }
   .drop-hover, .file-target { background: #e5c9ba !important; outline: 2px dashed var(--ember); outline-offset: -2px; }
   .detail-body .card-more { display: none; }
 
-  #track-pop, #album-pop { position: fixed; z-index: 40; width: 240px; }
+  #track-pop, #album-pop, #store-pop { position: fixed; z-index: 40; width: 240px; }
+  #store-pop .tm-danger { color: var(--ember); }
   #track-pop .tm-row, #album-pop .tm-row { display: flex; gap: 4px; }
   #track-pop .tm-row button, #album-pop .tm-row button { flex: 1; }
   #track-pop .kbd-hint, #album-pop .kbd-hint { color: var(--ink-soft); font-size: 11px; margin-left: 6px; }
@@ -523,7 +530,15 @@
      janela para os lados: quebra em qualquer ponto. No celular, em tela cheia, alvos de 44 px. */
   .multi-list .multi-name { font-size: 13px; overflow-wrap: anywhere; }
   .multi-list .acervo-meta { font-size: 12px; color: var(--ink-soft); overflow-wrap: anywhere; }
-  .multi-list select { margin: 4px 0 0; }
+  /* 0.23 (i-061): os tres botoes de opcao de cada linha */
+  .seg { display: inline-flex; align-self: flex-start; margin: 6px 0 2px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .seg label { display: flex; cursor: pointer; }
+  .seg label + label { border-left: 1px solid var(--line); }
+  .seg input { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+  .seg span { padding: 6px 12px; font-size: 13px; color: var(--ink-soft); }
+  .seg input:checked + span { background: var(--ink); color: var(--paper); }
+  .seg input:focus-visible + span { outline: 2px solid var(--ember); outline-offset: -2px; }
+  .seg input:disabled + span { opacity: .45; cursor: default; }
   .multi-list li.is-off { opacity: .6; }
   .multi-list .multi-warn { color: var(--amber); font-size: 12px; font-weight: 600; }
   dialog.prompt-dialog.multi-dialog { box-sizing: border-box; max-height: calc(100vh - 48px); overflow: auto; }
@@ -531,6 +546,10 @@
     dialog.prompt-dialog.multi-dialog { width: 100vw; max-width: 100vw; height: 100dvh; max-height: 100dvh; margin: 0;
       border: 0; border-radius: 0; }
     .multi-dialog select, .multi-dialog input[type="text"], .multi-dialog button { min-height: 44px; }
+    .multi-dialog .seg { display: flex; align-self: stretch; }
+    .multi-dialog .seg label { flex: 1; }
+    .multi-dialog .seg span { flex: 1; min-height: 44px; display: flex; align-items: center; justify-content: center;
+      text-align: center; box-sizing: border-box; padding: 4px 6px; }
     .multi-dialog .import-list { max-height: none; }
   }
 
@@ -646,6 +665,18 @@
     pointer-events: none;
   }
   body.dragging .drop-hint { display: flex; }
+  .drop-hint span { padding: 6px 14px; border-radius: 999px; background: rgba(244, 239, 230, .96); }
+  /* 0.23 (i-063): com a lateral a vista, o aviso da pagina comeca depois dela: a
+     lateral e outra zona (acervo novo), e o desenho de uma nao cobre a outra. */
+  @media (min-width: 1280px) { body:has(#side:not([hidden])) .drop-hint { left: 244px; } }
+  /* Sobre a lateral: so ela se destaca, com o proprio aviso; o da pagina some. */
+  body.drop-zone-side .drop-hint { display: none; }
+  #side.file-target { position: sticky; }
+  #side.file-target::after { content: attr(data-drop-label); position: absolute; left: 8px; right: 8px; bottom: 12px;
+    padding: 10px; border-radius: 8px; background: var(--paper); color: var(--ember); border: 2px dashed var(--ember);
+    font-family: var(--serif); font-size: 15px; text-align: center; }
+  /* Sobre um album: o album fica a vista (o aviso perde o fundo e sobe para o alto). */
+  body.drop-zone-album .drop-hint { background: transparent; border-color: transparent; align-items: flex-start; padding-top: 16px; }
 </style>
 </head>
 <body>
@@ -658,7 +689,7 @@
     <h1>Cancioneiro</h1>
     <!-- Versao: a mesma do topo do meta/CHANGELOG.md. O scripts/validate.py confere
          que app, CHANGELOG, README e STATUS dizem a mesma (i-027). -->
-    <span class="version" data-role="app-version">v0.22.0</span>
+    <span class="version" data-role="app-version">v0.23.0</span>
   </div>
   <div class="pop-wrap" id="acervo-wrap">
     <button type="button" id="acervo-btn" class="acervo-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="acervo-pop" title="Os acervos guardados neste navegador">
@@ -766,10 +797,14 @@
   <ul class="side-list side-formulas" id="side-formulas" hidden>
     <li><button type="button" class="side-item" id="side-formulas-btn" aria-haspopup="dialog"><span class="t">Fórmulas</span><span class="n" id="side-formulas-n"></span></button></li>
   </ul>
+  <div class="side-sec side-sec-albums">
   <div class="side-head">Álbuns</div>
   <ul class="side-list" id="side-albums"></ul>
+  </div>
+  <div class="side-sec side-sec-acervos">
   <div class="side-head">Acervos neste navegador</div>
   <ul class="side-list" id="side-acervos"></ul>
+  </div>
 </nav>
 <main id="main">
   <div class="empty" id="empty">
@@ -829,6 +864,15 @@
   <button type="button" role="menuitem" class="tm-danger" id="am-delete">Excluir álbum…</button>
   <p class="pop-note" id="am-note" hidden>Para organizar, importe o .json: a cópia guardada é o rascunho.</p>
   <button type="button" role="menuitem" class="mobile-only" id="am-cancel">Cancelar</button>
+</div>
+<!-- 0.23 (i-062): o «⋯» de um acervo da lateral (e o clique direito nele). -->
+<div class="pop" id="store-pop" role="menu" aria-labelledby="store-pop-title" hidden>
+  <div class="pop-head" id="store-pop-title"></div>
+  <button type="button" role="menuitem" id="cm-open">Abrir</button>
+  <button type="button" role="menuitem" id="cm-json">Baixar .json</button>
+  <button type="button" role="menuitem" id="cm-unlink">Desvincular do arquivo</button>
+  <div class="pop-sep"></div>
+  <button type="button" role="menuitem" class="tm-danger" id="cm-forget">Esquecer este acervo…</button>
 </div>
 <div class="batch" id="batch" role="toolbar" aria-label="Ações em lote" hidden>
   <span class="batch-count" id="batch-count"></span>
@@ -967,7 +1011,7 @@
   <div class="formulas-body" id="formulas-body"></div>
 </dialog>
 
-<div class="drop-hint" aria-hidden="true">Solte para importar</div>
+<div class="drop-hint" aria-hidden="true"><span>Solte para importar</span></div>
 
 <script id="lib-sortable">
 /* SortableJS 1.15.7 (https://github.com/SortableJS/Sortable), embutida pela I3 (DEC-030, DEC-032).
@@ -3134,17 +3178,28 @@ async function openMultiDialog(entries, mode, dest) {
     const nm = document.createElement("strong"); nm.className = "multi-name"; nm.textContent = e.name;
     const info = document.createElement("span"); info.className = "acervo-meta multi-info";
     info.textContent = e.json ? entrySummary(e.json) + (e.extracted ? " · JSON extraído de um bloco de código" : "") : e.why;
-    const sel = document.createElement("select");
-    sel.className = "multi-choice";
-    sel.setAttribute("aria-label", "O que " + e.name + " vira");
-    sel.appendChild(new Option("Acervo novo", "new"));
-    const ot = new Option(tracksOk ? "Faixas no acervo aberto" : "Faixas no acervo aberto (nenhum aberto)", "tracks");
-    ot.disabled = !tracksOk;
-    sel.appendChild(ot);
-    sel.appendChild(new Option("Pular", "skip"));
+    // 0.23 (i-061): tres botoes de opcao, lado a lado, no lugar da lista de escolha
+    const seg = document.createElement("div");
+    seg.className = "seg multi-choice"; seg.setAttribute("role", "radiogroup");
+    seg.setAttribute("aria-label", "O que " + e.name + " vira");
+    const radio = {};
+    [["new", "Acervo novo"], ["tracks", "Faixas no aberto"], ["skip", "Pular"]].forEach(([v, label]) => {
+      const lab = document.createElement("label");
+      const r = document.createElement("input");
+      r.type = "radio"; r.name = "multi-" + i; r.value = v;
+      const sp = document.createElement("span"); sp.textContent = label;
+      lab.appendChild(r); lab.appendChild(sp); seg.appendChild(lab);
+      radio[v] = r;
+    });
+    if (!tracksOk) { radio.tracks.disabled = true; radio.tracks.parentNode.title = "Nenhum acervo aberto"; }
+    // A escolha da linha, lida e gravada como era no <select>
+    const sel = {
+      get value() { const r = seg.querySelector("input:checked"); return r ? r.value : "skip"; },
+      set value(v) { radio[v].checked = true; }
+    };
     const warn = document.createElement("span"); warn.className = "multi-warn"; warn.hidden = true;
     if (!e.json) {
-      li.classList.add("is-off"); sel.value = "skip"; sel.disabled = true;
+      li.classList.add("is-off"); sel.value = "skip"; Object.values(radio).forEach(r => { r.disabled = true; });
     } else {
       sel.value = tracksOk && (mode === "tracks" || (mode === "shape" && isTrackExport(e.json))) ? "tracks" : "new";
       // O aviso de substituir aparece so com «Acervo novo» (a confirmacao final repete)
@@ -3155,10 +3210,10 @@ async function openMultiDialog(entries, mode, dest) {
       if (names.filter(x => x === e.name).length > 1) notes.push("outro arquivo desta lista tem o mesmo nome; fica o último");
       warn.textContent = notes.join(" · ");
       const syncWarn = () => { warn.hidden = !notes.length || sel.value !== "new"; };
-      sel.addEventListener("change", () => { syncWarn(); syncDest(); });
+      seg.addEventListener("change", () => { syncWarn(); syncDest(); });
       syncWarn();
     }
-    li.appendChild(nm); li.appendChild(info); li.appendChild(sel); li.appendChild(warn);
+    li.appendChild(nm); li.appendChild(info); li.appendChild(seg); li.appendChild(warn);
     list.appendChild(li);
     return { e, sel };
   });
@@ -3451,7 +3506,7 @@ document.addEventListener("dragover", e => { if (hasFiles(e)) e.preventDefault()
 document.addEventListener("dragleave", e => {
   if (!hasFiles(e)) return;
   dragDepth = Math.max(0, dragDepth - 1);
-  if (!dragDepth) document.body.classList.remove("dragging");
+  if (!dragDepth) { document.body.classList.remove("dragging"); setDropZone(null); }
 });
 /** O vinculo de um item solto (I4), como Promise de handle ou null. So vale chamado
     durante o drop; se o navegador recusar (ou nao tiver a API), resolve null. */
@@ -3462,7 +3517,7 @@ function handleOf(item) {
 }
 document.addEventListener("drop", e => {
   if (!hasFiles(e)) return;
-  e.preventDefault(); dragDepth = 0; document.body.classList.remove("dragging");
+  e.preventDefault(); dragDepth = 0; document.body.classList.remove("dragging"); setDropZone(null);
   const files = Array.from(e.dataTransfer.files || []);
   const f = files[0];
   // I3: sobre um album (o cabecalho na Lista, ou a lateral), as faixas vao para ele.
@@ -3998,9 +4053,110 @@ async function renderSideAcervos() {
       if (!rec || !openRecord(rec)) { toast("Não consegui abrir " + r.source); return; }
       toast("Acervo aberto: " + (rec.json.title || rec.source) + moduleRefsNotice(rec.json));
     });
-    li.appendChild(b); ul.appendChild(li);
+    li.appendChild(b);
+    // 0.23 (i-062): o «⋯» do acervo, como o dos albuns
+    li.className = "side-album side-acervo";
+    const m = document.createElement("button");
+    m.type = "button"; m.className = "side-more"; m.textContent = "⋯"; m.dataset.source = r.source || "";
+    m.setAttribute("aria-haspopup", "menu"); m.setAttribute("aria-expanded", "false");
+    m.setAttribute("aria-label", "Ações do acervo " + (r.title || r.source));
+    m.addEventListener("click", ev => openAcervoMenu(r.source, r.title || r.source, ev.currentTarget));
+    li.appendChild(m);
+    ul.appendChild(li);
   });
 }
+
+/* ---- O «⋯» de um acervo da lateral (0.23.0, i-062) ----
+   Abrir (os outros), Baixar .json (a copia guardada), Desvincular (o aberto, se
+   vinculado) e Esquecer, pelo mesmo caminho do seletor de acervo. */
+let acervoMenuFor = null, acervoMenuAnchor = null;
+function openAcervoMenu(source, title, anchor) {
+  if (acervoMenuFor === source && acervoMenuAnchor === anchor) { closeAcervoMenu(true); return; }
+  closeAcervoMenu(false); closeAlbumMenu(false); closeTrackMenu(false); closePopovers(false);
+  acervoMenuFor = source; acervoMenuAnchor = anchor;
+  const open = source === App.source;
+  document.getElementById("store-pop-title").textContent = title;
+  document.getElementById("cm-open").hidden = open;
+  document.getElementById("cm-unlink").hidden = !(open && App.link);
+  const pop = document.getElementById("store-pop");
+  pop.hidden = false;
+  anchor.setAttribute("aria-expanded", "true");
+  const r = anchor.getBoundingClientRect(), h = pop.offsetHeight, w = pop.offsetWidth;
+  pop.style.top = (r.bottom + 4 + h > window.innerHeight ? Math.max(8, r.top - 4 - h) : r.bottom + 4) + "px";
+  pop.style.left = Math.max(8, Math.min(window.innerWidth - w - 8, r.left)) + "px";
+  const first = [...pop.querySelectorAll('[role="menuitem"]')].find(b => !b.hidden);
+  if (first) first.focus();
+}
+function closeAcervoMenu(restore) {
+  if (!acervoMenuFor) return;
+  document.getElementById("store-pop").hidden = true;
+  const a = acervoMenuAnchor;
+  acervoMenuFor = null; acervoMenuAnchor = null;
+  if (a) { a.setAttribute("aria-expanded", "false"); if (restore && a.isConnected) a.focus(); }
+}
+/** Liga um item do menu do acervo: fecha o menu e roda a acao com a origem. */
+function acervoItem(elId, fn) {
+  document.getElementById(elId).addEventListener("click", () => {
+    const src = acervoMenuFor;
+    closeAcervoMenu(false);
+    if (src) fn(src);
+  });
+}
+acervoItem("cm-open", async src => {
+  let rec = null;
+  try { rec = await dbGet(src); } catch (e) { /* trata abaixo */ }
+  if (!rec || !openRecord(rec)) { toast("Não consegui abrir " + src); return; }
+  toast("Acervo aberto: " + (rec.json.title || rec.source) + moduleRefsNotice(rec.json));
+});
+acervoItem("cm-json", async src => {
+  // O aberto baixa pelo caminho de sempre (o rascunho da tela); os outros, a copia guardada.
+  if (src === App.source) { downloadCollection(); return; }
+  let rec = null;
+  try { rec = await dbGet(src); } catch (e) { /* trata abaixo */ }
+  if (!rec) { toast("Não consegui ler " + src); return; }
+  downloadFile(src, JSON.stringify(rec.json, null, 2), "application/json");
+  toast("Baixado em Downloads como " + src + ".");
+});
+acervoItem("cm-unlink", () => unlinkFile());
+acervoItem("cm-forget", src => forgetAcervo(src));
+document.addEventListener("pointerdown", e => {
+  if (!acervoMenuFor) return;
+  if (document.getElementById("store-pop").contains(e.target) || (acervoMenuAnchor && acervoMenuAnchor.contains(e.target))) return;
+  closeAcervoMenu(false);
+});
+
+/* ---- Clique direito (0.23.0, i-062): abre o «⋯» de onde se clicou ----
+   Faixa (linha da Lista, cartao, detalhe), album (cabecalho e lateral) e acervo
+   (lateral); o menu abre no ponto do clique. O menu do navegador continua em campo
+   de texto, com texto selecionado, com Shift e no celular (o toque longo seleciona). */
+function contextMore(el) {
+  const row = el.closest("#main li.row");
+  if (row) return row.querySelector(".row-more");
+  if (el.closest("#detail")) return App.detailId ? document.getElementById("detail-more") : null;
+  const card = el.closest("#main .card");
+  if (card) return card.querySelector(".card-more");
+  const head = el.closest("#main .album-head");
+  if (head) return head.querySelector(".album-more");
+  const li = el.closest("#side li.side-album");
+  return li ? li.querySelector(".side-more") : null;
+}
+document.addEventListener("contextmenu", e => {
+  if (e.shiftKey || isMobile()) return;
+  const el = e.target;
+  if (!el || !el.closest || el.closest("input, textarea, select, [contenteditable], .pop, dialog")) return;
+  const sel = window.getSelection();
+  if (sel && !sel.isCollapsed && String(sel).trim()) return;
+  const more = contextMore(el);
+  if (!more) return;
+  e.preventDefault();
+  closeTrackMenu(false); closeAlbumMenu(false); closeAcervoMenu(false);   // reabre no ponto novo
+  more.click();
+  const pop = ["track-pop", "album-pop", "store-pop"].map(k => document.getElementById(k)).find(p => !p.hidden);
+  if (!pop) return;
+  const w = pop.offsetWidth, h = pop.offsetHeight;
+  pop.style.left = Math.max(8, Math.min(window.innerWidth - w - 8, e.clientX)) + "px";
+  pop.style.top = Math.max(8, Math.min(window.innerHeight - h - 8, e.clientY)) + "px";
+});
 
 if (SIDE_MQ.addEventListener) SIDE_MQ.addEventListener("change", () => renderSideAcervos());
 document.getElementById("view-list").addEventListener("click", () => setView("list"));
@@ -4721,10 +4877,17 @@ document.addEventListener("dragover", e => {
   if (!hasFiles(e)) return;
   const zone = dropZone(e.target);
   markFileTarget(zone.el ? zone : null);
+  setDropZone(zone.kind);
   const n = Array.from(e.dataTransfer.items || []).filter(i => i.kind === "file").length;
-  const hint = document.querySelector(".drop-hint"), text = dropHintText(zone, n);
+  const hint = document.querySelector(".drop-hint span"), text = dropHintText(zone, n);
   if (hint.textContent !== text) hint.textContent = text;
+  // 0.23: na lateral, o aviso e dela (o CSS o desenha no pe da lateral)
+  if (zone.kind === "side" && zone.el.dataset.dropLabel !== text) zone.el.dataset.dropLabel = text;
 });
+/** A zona do arraste no <body> (0.23): o CSS decide o que desenhar em cada uma. */
+function setDropZone(kind) {
+  ["page", "album", "side"].forEach(k => document.body.classList.toggle("drop-zone-" + k, k === kind));
+}
 document.addEventListener("dragleave", e => { if (hasFiles(e) && !dragDepth) markFileTarget(null); });
 
 /* ---- Teclado (em captura: decide antes da I1 e da I2) ----
@@ -4744,6 +4907,7 @@ document.addEventListener("keydown", e => {
     }
     if (trackMenuFor) { e.preventDefault(); e.stopImmediatePropagation(); closeTrackMenu(true); return; }
     if (albumMenuFor) { e.preventDefault(); e.stopImmediatePropagation(); closeAlbumMenu(true); return; }
+    if (acervoMenuFor) { e.preventDefault(); e.stopImmediatePropagation(); closeAcervoMenu(true); return; }
     if ((App.selection.size || App.selecting) && !openPop && !document.querySelector("dialog[open]") && !isTextField(t)) {
       e.preventDefault(); e.stopImmediatePropagation(); clearSelection(); return;
     }
