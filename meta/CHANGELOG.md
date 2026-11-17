@@ -4,6 +4,17 @@
 
 ---
 
+## [0.23.1] — 2026-11-17
+
+As duas zonas do arraste aparecem juntas (i-063).
+
+### Fixed
+- **Durante o arraste, a lateral e o resto da tela se desenham ao mesmo tempo**, cada um com o seu tracejado e o seu aviso: a lateral («Solte aqui: cada arquivo vira um acervo guardado») e o resto («Solte para importar» ou «Solte para escolher o que cada um vira»). A zona sob o ponteiro fica forte; a outra, esmaecida, mas à vista. Na 0.23.0 só a zona sob o ponteiro aparecia, e a lateral só se mostrava quando o arquivo já estava em cima dela `[relatado pelo dono]`.
+
+Os testes do aviso (`tests/test_lateral_e_menus.py`) passam a conferir as duas zonas juntas e que nenhuma fica para trás quando o arraste acaba (92 no total).
+
+---
+
 ## [0.23.0] — 2026-11-17
 
 O clique direito abre o «⋯», a lateral ganha duas áreas que rolam sozinhas e o aviso do arraste deixa de cobrir a lateral (i-061 a i-064, DEC-041).

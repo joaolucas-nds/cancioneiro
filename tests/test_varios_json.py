@@ -242,7 +242,10 @@ def test_v5_o_aviso_do_arraste_diz_a_zona(open_app):
     page = open_app()
     import_demo(page)
     alb = page.evaluate("App.collection.albums[0].id")
-    assert page.evaluate(HOVER_JS, ["#side .side-head", 2]) == "Solte aqui: cada arquivo vira um acervo guardado"
+    # 0.23.1: sobre a lateral, o aviso dela e o da propria lateral (o da pagina continua o da pagina)
+    assert page.evaluate(HOVER_JS, ["#side .side-head", 2]) == "Solte para escolher o que cada um vira"
+    assert page.evaluate("getComputedStyle(document.getElementById('side'), '::after').content") \
+        == '"Solte aqui: cada arquivo vira um acervo guardado"'
     assert page.evaluate(HOVER_JS, [f'#side .side-item[data-album="{alb}"]', 1]) == "Solte aqui: as faixas vão para este álbum"
     assert page.evaluate(HOVER_JS, ["#main", 1]) == "Solte para importar"
     assert page.evaluate(HOVER_JS, ["#main", 3]) == "Solte para escolher o que cada um vira"

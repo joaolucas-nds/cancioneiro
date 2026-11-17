@@ -49,23 +49,44 @@ def store(page, n):
 
 
 # ---------------------------------------------------------------- i-063: o aviso do arraste
-def test_w1_o_aviso_da_pagina_nao_cobre_a_lateral(open_app):
-    """W1: com a lateral a vista, o aviso da pagina comeca depois dela; sobre a lateral, o aviso da pagina
-    some e a lateral mostra o proprio; sobre um album, o aviso perde o fundo."""
+SIDE_LABEL = '"Solte aqui: cada arquivo vira um acervo guardado"'
+ZONES_JS = """(() => {
+  const h = document.querySelector('.drop-hint'), side = document.getElementById('side');
+  return { hint: getComputedStyle(h).display, hintText: h.textContent, hintLeft: h.getBoundingClientRect().left,
+           sideRight: side.getBoundingClientRect().right,
+           sideFrame: getComputedStyle(side, '::before').borderTopStyle, sideLabel: getComputedStyle(side, '::after').content,
+           sideStrong: getComputedStyle(side, '::before').opacity === '1' };
+})()"""
+
+
+def test_w1_as_duas_zonas_aparecem_juntas(open_app):
+    """W1 (0.23.1): durante o arraste, as DUAS zonas se desenham, cada uma com o seu tracejado e o seu aviso:
+    a pagina (fora da lateral) e a lateral; a que esta sob o ponteiro fica forte."""
     page = open_app()
     import_demo(page)
     page.evaluate(HOVER_JS, ["#main", 1])
-    side_right = page.evaluate("document.getElementById('side').getBoundingClientRect().right")
-    hint = page.evaluate("(() => { const r = document.querySelector('.drop-hint').getBoundingClientRect(); return [r.left, r.width]; })()")
-    assert hint[0] >= side_right and hint[1] > 0
+    z = page.evaluate(ZONES_JS)
+    assert z["hint"] == "flex" and z["hintText"] == "Solte para importar" and z["hintLeft"] >= z["sideRight"]
+    assert z["sideFrame"] == "dashed" and z["sideLabel"] == SIDE_LABEL and not z["sideStrong"]
     page.evaluate(HOVER_JS, ["#side .side-head", 2])
-    assert page.evaluate("getComputedStyle(document.querySelector('.drop-hint')).display") == "none"
-    label = page.evaluate("getComputedStyle(document.getElementById('side'), '::after').content")
-    assert label == '"Solte aqui: cada arquivo vira um acervo guardado"'
+    z = page.evaluate(ZONES_JS)
+    assert z["hint"] == "flex" and z["hintText"] == "Solte para escolher o que cada um vira"
+    assert z["sideFrame"] == "dashed" and z["sideLabel"] == SIDE_LABEL and z["sideStrong"]
     alb = page.evaluate("App.collection.albums[0].id")
     page.evaluate(HOVER_JS, [f'#main section.album[data-album="{alb}"] .album-head', 1])
     assert page.evaluate("getComputedStyle(document.querySelector('.drop-hint')).backgroundColor") == "rgba(0, 0, 0, 0)"
-    assert page.evaluate("getComputedStyle(document.getElementById('side'), '::after').content") == "none"
+    assert page.evaluate(ZONES_JS)["sideFrame"] == "dashed"
+
+
+def test_w1_o_arraste_acaba_e_as_zonas_somem(open_app):
+    """W1 (0.23.1): ao soltar fora ou sair da janela, nenhuma das duas molduras fica para tras."""
+    page = open_app()
+    import_demo(page)
+    page.evaluate(HOVER_JS, ["#main", 1])
+    page.evaluate("""(() => { const dt = new DataTransfer(); dt.items.add(new File(['{}'], 'x.json'));
+      document.querySelector('#main').dispatchEvent(new DragEvent('dragleave', { bubbles: true, cancelable: true, dataTransfer: dt })); })()""")
+    z = page.evaluate(ZONES_JS)
+    assert z["hint"] == "none" and z["sideFrame"] == "none" and z["sideLabel"] == "none"
 
 
 def test_w1_sem_lateral_o_aviso_cobre_a_tela(open_app):

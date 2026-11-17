@@ -669,12 +669,19 @@
   /* 0.23 (i-063): com a lateral a vista, o aviso da pagina comeca depois dela: a
      lateral e outra zona (acervo novo), e o desenho de uma nao cobre a outra. */
   @media (min-width: 1280px) { body:has(#side:not([hidden])) .drop-hint { left: 244px; } }
-  /* Sobre a lateral: so ela se destaca, com o proprio aviso; o da pagina some. */
-  body.drop-zone-side .drop-hint { display: none; }
-  #side.file-target { position: sticky; }
-  #side.file-target::after { content: attr(data-drop-label); position: absolute; left: 8px; right: 8px; bottom: 12px;
-    padding: 10px; border-radius: 8px; background: var(--paper); color: var(--ember); border: 2px dashed var(--ember);
-    font-family: var(--serif); font-size: 15px; text-align: center; }
+  /* 0.23.1 (i-063): as DUAS zonas desenhadas o arraste inteiro, cada uma com o seu
+     tracejado e o seu aviso: a lateral (acervo novo) e o resto da tela (importar).
+     A que esta sob o ponteiro fica forte; a outra, esmaecida, mas a vista. */
+  body.side-drop #side::before { content: ""; position: absolute; inset: 4px; z-index: 49; pointer-events: none;
+    border: 3px dashed var(--ember); border-radius: var(--radius); opacity: .55; }
+  body.side-drop #side::after { content: attr(data-drop-label); position: absolute; left: 12px; right: 12px; bottom: 16px;
+    z-index: 49; pointer-events: none; padding: 10px; border-radius: 8px; background: var(--paper); color: var(--ember);
+    font-family: var(--serif); font-size: 15px; text-align: center; box-shadow: 0 0 0 1px var(--line); }
+  /* Esmaecida, so a cor do texto: o fundo do aviso fica opaco, para nao misturar com a lista */
+  body.side-drop:not(.drop-zone-side) #side::after { color: color-mix(in srgb, var(--ember) 65%, var(--paper)); }
+  body.side-drop.drop-zone-side #side::before { opacity: 1; }
+  body.drop-zone-side .drop-hint { background: rgba(244, 239, 230, .45); border-color: color-mix(in srgb, var(--ember) 50%, transparent); }
+  body.drop-zone-side .drop-hint span { opacity: .6; }
   /* Sobre um album: o album fica a vista (o aviso perde o fundo e sobe para o alto). */
   body.drop-zone-album .drop-hint { background: transparent; border-color: transparent; align-items: flex-start; padding-top: 16px; }
 </style>
@@ -689,7 +696,7 @@
     <h1>Cancioneiro</h1>
     <!-- Versao: a mesma do topo do meta/CHANGELOG.md. O scripts/validate.py confere
          que app, CHANGELOG, README e STATUS dizem a mesma (i-027). -->
-    <span class="version" data-role="app-version">v0.23.0</span>
+    <span class="version" data-role="app-version">v0.23.1</span>
   </div>
   <div class="pop-wrap" id="acervo-wrap">
     <button type="button" id="acervo-btn" class="acervo-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="acervo-pop" title="Os acervos guardados neste navegador">
@@ -4879,14 +4886,18 @@ document.addEventListener("dragover", e => {
   markFileTarget(zone.el ? zone : null);
   setDropZone(zone.kind);
   const n = Array.from(e.dataTransfer.items || []).filter(i => i.kind === "file").length;
-  const hint = document.querySelector(".drop-hint span"), text = dropHintText(zone, n);
+  // 0.23.1: o aviso da pagina e sempre o da pagina (ou o do album); a lateral tem o seu
+  const hint = document.querySelector(".drop-hint span"), text = dropHintText(zone.kind === "side" ? { kind: "page" } : zone, n);
   if (hint.textContent !== text) hint.textContent = text;
-  // 0.23: na lateral, o aviso e dela (o CSS o desenha no pe da lateral)
-  if (zone.kind === "side" && zone.el.dataset.dropLabel !== text) zone.el.dataset.dropLabel = text;
 });
-/** A zona do arraste no <body> (0.23): o CSS decide o que desenhar em cada uma. */
+/** A zona do arraste no <body> (0.23): o CSS decide o que desenhar em cada uma. Com
+    o arraste em curso e IndexedDB (a lateral e zona), a lateral se desenha sempre
+    (`side-drop`, 0.23.1); `null` encerra o arraste. */
 function setDropZone(kind) {
   ["page", "album", "side"].forEach(k => document.body.classList.toggle("drop-zone-" + k, k === kind));
+  const side = document.getElementById("side");
+  document.body.classList.toggle("side-drop", !!kind && !!Store.db && !!side && !side.hidden);
+  if (side) side.dataset.dropLabel = dropHintText({ kind: "side" }, 1);
 }
 document.addEventListener("dragleave", e => { if (hasFiles(e) && !dragDepth) markFileTarget(null); });
 
