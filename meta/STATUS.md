@@ -3,16 +3,17 @@
 > **O agora.** O que funciona, o que está em progresso, o que está quebrado, backlog curto.
 > Rolante: item resolvido sai daqui e vai para o CHANGELOG. Médio/longo prazo vive no ROADMAP.
 
-**Versão atual:** 0.23.1 · **Fase:** 3a, 3a.2, o BPM da 3b, o prompt-modelo e as conveniências de uso concluídos e conferidos · os álbuns antigos convertidos (i-008, fora do repo) · curadoria no app concluída nas três entregas (DEC-028, DEC-029) · frente de interface concluída e conferida nas quatro entregas (DEC-030 a DEC-033) · organizar os álbuns (0.18.0, DEC-035) conferido · rampa de BPM (0.19.0, DEC-036) conferida · fórmulas de referência (0.20.0, DEC-037) conferidas na tela · importar vários `.json` (0.22.0, DEC-040) conferido na tela · clique direito e lateral em duas áreas (0.23.0, DEC-041) e as duas zonas do arraste juntas (0.23.1) à espera da conferência na tela · a Fase 3 concluída · kit de música lido pelo KCM, à espera da resposta (i-039)
+**Versão atual:** 0.23.1 · **Fase:** 3a, 3a.2, o BPM da 3b, o prompt-modelo e as conveniências de uso concluídos e conferidos · os álbuns antigos convertidos (i-008, fora do repo) · curadoria no app concluída nas três entregas (DEC-028, DEC-029) · frente de interface concluída e conferida nas quatro entregas (DEC-030 a DEC-033) · organizar os álbuns (0.18.0, DEC-035) conferido · rampa de BPM (0.19.0, DEC-036) conferida · fórmulas de referência (0.20.0, DEC-037) conferidas na tela · importar vários `.json` (0.22.0, DEC-040) conferido na tela · clique direito e lateral em duas áreas (0.23.0, DEC-041) e as duas zonas do arraste juntas (0.23.1) conferidos na tela · Pages sem Jekyll (FIX-010) · **em recesso** desde 2026-11-17 · a Fase 3 concluída · kit de música lido pelo KCM, à espera da resposta (i-039)
 
 ---
 
-## Última conversa (2026-11-16 a 2026-11-17, 0.22.0 e 0.23.0, WO 0047 e 0048)
+## Última conversa (2026-11-16 a 2026-11-17, 0.22.0 a 0.23.1, WO 0047 a 0051)
 
 - **0.22.0 aplicada e conferida:** `a6aa20a`, CI verde (run `44082742521`, `[medido pelo Code]`); roteiro de tela feito pelo dono `[relatado pelo dono, 2026-11-17]`, com um defeito (o aviso do arraste cobria a lateral, i-063). O passo 7 (o vínculo do arraste) tem a marca no disco: o arquivo do teste foi regravado às 09:39, depois do apply `[medido pelo chat]`.
 - **0.23.0 implementada pelo chat num clone** (DEC-041): o aviso do arraste fora da lateral (i-063), os botões de opção na janela de vários (i-061), o clique direito (i-062) e a lateral em duas áreas (i-064). 91 testes, duas rodadas; os 7 de comportamento novo reprovam na 0.22.0 e os 3 de falso positivo passam nas duas `[medido pelo chat, no clone]`. Falta o CI e a conferência na tela (roteiro no log de 2026-11-17).
 - **0.23.0 aplicada** (`c04bd78`, CI verde, run `44090505271`, `[medido pelo Code]`). O dono apontou, sem o roteiro, que as duas zonas do arraste deviam aparecer juntas `[relatado pelo dono, 2026-11-17]`; a 0.23.1 corrige (WO 0049). O roteiro da 0.23.0 não foi feito; vale o da 0.23.1, no log de 2026-11-17.
 - **0.23.1 aplicada** (`b5b3d1e`, CI verde, run `44201279713`, `[medido pelo Code]`). **O Pages parou na 0.22.0 desde o `c04bd78`** (FIX-010): o `{{` de um teste dentro da WO 0048 derrubava a montagem do Jekyll. As capturas do dono de 18:16 e 21:05 mostram «v0.22.0» `[medido pelo chat]`, então o que ele testou foi a 0.22.0. O `.nojekyll` (WO 0050) desliga o Jekyll; o roteiro da 0.23.1 se refaz depois do deploy.
+- **0.23.1 publicada e conferida:** o Pages montou o `786749d` sem erro e o site serve a v0.23.1 (WO 0050, `[medido pelo Code]`); o roteiro da 0.23.1 deu ok `[relatado pelo dono, 2026-11-17 21:25]`. Começa o recesso decidido pelo dono.
 - **Este bloco substitui o anterior** (a 0.22.0 no clone). O que ele dizia está em `logs/2026-11-16.md`, Conversa 6.
 
 ## Funciona (pronto)
@@ -64,7 +65,7 @@
 
 Ordem decidida pelo dono em 2026-11-14 `[relatado pelo dono]`: primeiro o kit no KCM e os projetos de música; depois a paleta e a leva 2; o resto depois de um recesso.
 
-1. **Conferir a 0.23.1 na tela** (dono): o roteiro do log de 2026-11-17, Conversa 2 (com `Ctrl+F5` antes, para o navegador largar a versão em cache). Depois dela, o recesso decidido pelo dono.
+1. **Recesso** (decidido pelo dono): nada do app em andamento. Na volta, os itens abaixo.
 2. **Paleta de módulos do acervo** (i-052) — pede análise; depois dos primeiros projetos. Com o estilo-base fixo e o Variety em Off virando a regra, a análise pode concluir que não compensa.
 3. **Kit de música v2 completo** (i-039) — próximo gatilho: o que o projeto Rainha relatar das próximas faixas (cartas na pasta deles); o que virar regra vai ao kit e, por carta, ao KCM. Ideias à espera do campo: i-055 (configuração junto da faixa) e i-060 (medir a referência).
 4. **Depois de um recesso:** outras plataformas de música por IA (i-032) e arrastar faixa para outro acervo (i-050).
