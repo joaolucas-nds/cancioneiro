@@ -14,6 +14,8 @@
 - **0.23.0 aplicada** (`c04bd78`, CI verde, run `44090505271`, `[medido pelo Code]`). O dono apontou, sem o roteiro, que as duas zonas do arraste deviam aparecer juntas `[relatado pelo dono, 2026-11-17]`; a 0.23.1 corrige (WO 0049). O roteiro da 0.23.0 não foi feito; vale o da 0.23.1, no log de 2026-11-17.
 - **0.23.1 aplicada** (`b5b3d1e`, CI verde, run `44201279713`, `[medido pelo Code]`). **O Pages parou na 0.22.0 desde o `c04bd78`** (FIX-010): o `{{` de um teste dentro da WO 0048 derrubava a montagem do Jekyll. As capturas do dono de 18:16 e 21:05 mostram «v0.22.0» `[medido pelo chat]`, então o que ele testou foi a 0.22.0. O `.nojekyll` (WO 0050) desliga o Jekyll; o roteiro da 0.23.1 se refaz depois do deploy.
 - **0.23.1 publicada e conferida:** o Pages montou o `786749d` sem erro e o site serve a v0.23.1 (WO 0050, `[medido pelo Code]`); o roteiro da 0.23.1 deu ok `[relatado pelo dono, 2026-11-17 21:25]`. Começa o recesso decidido pelo dono.
+- **Registro aplicado** (WO 0051, `bf5b29f`); o CI desse commit estava rodando quando o Code escreveu o relatório. A WO 0052 confere o CI dele e o do próprio commit.
+- **Conversa do chat encerrada** em 2026-11-17 a pedido do dono (pesada); a próxima arranca pelo `../261117-HANDOFF-BRIEF.md`.
 - **Este bloco substitui o anterior** (a 0.22.0 no clone). O que ele dizia está em `logs/2026-11-16.md`, Conversa 6.
 
 ## Funciona (pronto)
