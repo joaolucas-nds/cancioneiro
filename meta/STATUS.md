@@ -12,6 +12,7 @@
 - **0.22.0 aplicada e conferida:** `a6aa20a`, CI verde (run `44082742521`, `[medido pelo Code]`); roteiro de tela feito pelo dono `[relatado pelo dono, 2026-11-17]`, com um defeito (o aviso do arraste cobria a lateral, i-063). O passo 7 (o vínculo do arraste) tem a marca no disco: o arquivo do teste foi regravado às 09:39, depois do apply `[medido pelo chat]`.
 - **0.23.0 implementada pelo chat num clone** (DEC-041): o aviso do arraste fora da lateral (i-063), os botões de opção na janela de vários (i-061), o clique direito (i-062) e a lateral em duas áreas (i-064). 91 testes, duas rodadas; os 7 de comportamento novo reprovam na 0.22.0 e os 3 de falso positivo passam nas duas `[medido pelo chat, no clone]`. Falta o CI e a conferência na tela (roteiro no log de 2026-11-17).
 - **0.23.0 aplicada** (`c04bd78`, CI verde, run `44090505271`, `[medido pelo Code]`). O dono apontou, sem o roteiro, que as duas zonas do arraste deviam aparecer juntas `[relatado pelo dono, 2026-11-17]`; a 0.23.1 corrige (WO 0049). O roteiro da 0.23.0 não foi feito; vale o da 0.23.1, no log de 2026-11-17.
+- **0.23.1 aplicada** (`b5b3d1e`, CI verde, run `44201279713`, `[medido pelo Code]`). **O Pages parou na 0.22.0 desde o `c04bd78`** (FIX-010): o `{{` de um teste dentro da WO 0048 derrubava a montagem do Jekyll. As capturas do dono de 18:16 e 21:05 mostram «v0.22.0» `[medido pelo chat]`, então o que ele testou foi a 0.22.0. O `.nojekyll` (WO 0050) desliga o Jekyll; o roteiro da 0.23.1 se refaz depois do deploy.
 - **Este bloco substitui o anterior** (a 0.22.0 no clone). O que ele dizia está em `logs/2026-11-16.md`, Conversa 6.
 
 ## Funciona (pronto)
@@ -44,7 +45,7 @@
 - **Prompt-modelo** (`schema/PROMPT-PARA-CHATS.md`, DEC-021, DEC-023): contrato de módulo, style com 6 a 8 tags e até 10 com os módulos ligados; pede o JSON como arquivo e, sem arquivo, em bloco de código. Dois retestes em 2026-10-29: 6 de 6 faixas dentro do contrato e do orçamento, nos dois.
 - **«Prompt para chats» e «Baixar exemplo»** (0.8.0, DEC-021; no «⋯» desde a 0.14.0): buscam o prompt e o `data/demo.json` do repositório no clique; a janela do prompt recebe o «Meu pedido».
 - **Conveniências (0.9.0, DEC-022, DEC-023):** «Estrutura» do cartão (ordem e blocos visíveis, no navegador); copiar o título; arrastar o `.json` para importar; o último acervo importado volta ao abrir, com origem, data e «esquecer»; a importação aceita a resposta do chat colada inteira e avisa.
-- **Publicado no GitHub Pages** em `https://joaolucas-nds.github.io/cancioneiro/app/index.html` — o push em `main` publica.
+- **Publicado no GitHub Pages** em `https://joaolucas-nds.github.io/cancioneiro/app/index.html` — o push em `main` publica. Sem Jekyll desde a WO 0050 (`.nojekyll`, FIX-010): os arquivos saem como estão.
 
 ## Em progresso
 

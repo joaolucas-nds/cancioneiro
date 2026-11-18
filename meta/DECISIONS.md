@@ -622,3 +622,12 @@
 - **A escolha da janela de vários vira três botões de opção** (rádio estilizado): «Acervo novo · Faixas no aberto · Pular».
 **Alternativas consideradas:** um menu de contexto próprio, diferente do «⋯» (duas listas de ações para manter); tomar o clique direito sempre (perde o «copiar» do navegador sobre texto selecionado); um deslizar de três posições na janela (esconde as opções que não estão marcadas e é menos claro com o teclado); a lateral rolando inteira, como antes.
 **Consequências:** (+) Um gesto a menos para cada ação, sem nada novo para aprender. (+) A lista de acervos não some para baixo de uma lista longa de álbuns. (−) Com muitos acervos e pouca altura, a área deles mostra poucas linhas de cada vez. (−) O «Desvincular» do acervo só aparece no aberto, porque o vínculo vive no acervo aberto.
+
+## FIX-010 — O Pages parou de publicar na 0.22.0: um `{{` dentro de um `.md` derrubava o Jekyll
+
+**Data:** 2026-11-17
+**Status:** resolvida (WO 0050)
+**Sintoma:** depois do push da 0.23.0 (`c04bd78`) e da 0.23.1 (`b5b3d1e`), o site publicado continuava na 0.22.0. O dono testou duas vezes e viu o desenho antigo do arraste (capturas de 18:16 e 21:05, com «v0.22.0» no cabeçalho) `[relatado pelo dono]`. O CI de testes ficou verde nos dois commits: ele não monta o Pages.
+**Causa raiz:** o GitHub Pages monta o site com Jekyll, que lê todo `.md` em busca de template Liquid. A WO 0048 (`meta/workorders/261117-wo0048-…`) trazia um teste em Python com `{{` (chaves dobradas de f-string). Era o primeiro `{{` em `.md` do repositório: `git grep` no `a6aa20a` não acha nenhum, no `c04bd78` acha esse. O Liquid falha nesse trecho, a montagem inteira falha, e o Pages segue servindo a última que deu certo. Nem o chat nem o Code olhavam o deploy: o «push publica» do STATUS era suposição.
+**Solução:** um `.nojekyll` vazio na raiz. O Pages passa a servir os arquivos como estão, sem Jekyll. Nada no app dependia dele: o app busca `schema/PROMPT-PARA-CHATS.md` e `data/demo.json` como arquivos simples, servidos do mesmo jeito.
+**Lição:** CI verde não é site publicado. Toda WO que muda o app confere, depois do push, a versão no cabeçalho do site publicado; é a checagem da WO 0050. O roteiro do dono abre conferindo a versão no cabeçalho, antes de qualquer passo.
